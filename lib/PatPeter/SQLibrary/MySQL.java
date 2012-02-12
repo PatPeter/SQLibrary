@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 //import java.util.logging.Logger;
 import java.util.logging.Logger;
+//import com.sun.rowset.JdbcRowSetImpl;
 
 public class MySQL extends DatabaseHandler {
 	private String hostname = "localhost";
@@ -40,10 +41,10 @@ public class MySQL extends DatabaseHandler {
 				 String username,
 				 String password) {
 		super(log,prefix,"[MySQL] ");
-		this.hostname = hostname.replace("_", "\\_");
+		this.hostname = hostname;
 		this.portnmbr = portnmbr;
-		this.database = database.replace("_", "\\_");
-		this.username = username.replace("_", "\\_");
+		this.database = database;
+		this.username = username;
 		this.password = password;
 	}
 	
@@ -110,24 +111,22 @@ public class MySQL extends DatabaseHandler {
 	}
 	
 	@Override
-	public boolean checkConnection() {
-		Connection connection = open();
-		if (connection == null) {
-			open();
+	public boolean checkConnection() { // http://forums.bukkit.org/threads/lib-tut-mysql-sqlite-bukkit-drivers.33849/page-4#post-701550
+		Connection connection = this.open();
+		if (connection != null)
 			return true;
-		}
 		return false;
 	}
 	
 	@Override
 	public ResultSet query(String query) {
-		//Connection connection = null;
+		Connection connection = null;
 		Statement statement = null;
-		ResultSet result = null;
+		ResultSet result = null/*new JdbcRowSetImpl()*/;
 		try {
-			//connection = open();
-			this.connection = this.open();
-		    statement = this.connection.createStatement();
+			connection = open();
+		    statement = connection.createStatement();
+		    result = statement.executeQuery("SELECT CURTIME()");
 		    
 		    switch (this.getStatement(query)) {
 			    case SELECT:
@@ -138,8 +137,8 @@ public class MySQL extends DatabaseHandler {
 			    	statement.executeUpdate(query);
 			    	return result;
 		    }
-		} catch (SQLException ex) {
-			this.writeError("Error in SQL query: " + ex.getMessage(), false);
+		} catch (SQLException e) {
+			this.writeError("Error in SQL query: " + e.getMessage(), false);
 		}
 		return result;
 	}
@@ -147,16 +146,17 @@ public class MySQL extends DatabaseHandler {
 	@Override
 	public PreparedStatement prepare(String query) {
 		Connection connection = null;
+		PreparedStatement ps = null;
 		try
-	    {
-	        connection = open();
-	        PreparedStatement ps = connection.prepareStatement(query);
-	        return ps;
-	    } catch(SQLException e) {
-	        if(!e.toString().contains("not return ResultSet"))
-	        	this.writeError("Error in SQL prepare() query: " + e.getMessage(), false);
-	    }
-	    return null;
+		{
+			connection = open();
+			ps = connection.prepareStatement(query);
+			return ps;
+		} catch(SQLException e) {
+			if(!e.toString().contains("not return ResultSet"))
+				this.writeError("Error in SQL prepare() query: " + e.getMessage(), false);
+		}
+		return ps;
 	}
 	
 	@Override
