@@ -19,6 +19,7 @@ import java.sql.DatabaseMetaData;
 //import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -81,21 +82,21 @@ public class SQLite extends DatabaseHandler {
 	public Connection open() {
 		if (initialize()) {
 			try {
-			  this.connection = DriverManager.getConnection("jdbc:sqlite:" +
+			  return DriverManager.getConnection("jdbc:sqlite:" +
 					  	   sqlFile.getAbsolutePath());
-			  return this.connection;
 			} catch (SQLException e) {
 			  this.writeError("SQLite exception on initialize " + e, true);
 			}
 		}
-		return this.connection;
+		return null;
 	}
 	
 	@Override
 	public void close() {
-		if (this.connection != null)
+		Connection connection = this.open();
+		if (connection != null)
 			try {
-				this.connection.close();
+				connection.close();
 			} catch (SQLException ex) {
 				this.writeError("Error on Connection close: " + ex, true);
 			}
@@ -110,21 +111,21 @@ public class SQLite extends DatabaseHandler {
 	
 	@Override
 	public boolean checkConnection() {
-		//Connection con = this.getConnection(); // Why reopen the connection if the user only wants to check it?
-		if (this.connection != null)
+		Connection connection = this.open();
+		if (connection != null)
 			return true;
 		return false;
 	}
 	
 	@Override
 	public ResultSet query(String query) {
-		//Connection connection = null;
+		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
 		
 		try {
-			this.connection = this.getConnection();
-			statement = this.connection.createStatement();
+			connection = this.open();
+			statement = connection.createStatement();
 			
 			switch (this.getStatement(query)) {
 				case SELECT:
@@ -146,9 +147,25 @@ public class SQLite extends DatabaseHandler {
 		}
 		return null;
 	}
+
+	@Override
+	PreparedStatement prepare(String query) {
+		Connection connection = null;
+		try
+	    {
+	        connection = open();
+	        PreparedStatement ps = connection.prepareStatement(query);
+	        return ps;
+	    } catch(SQLException e) {
+	        if(!e.toString().contains("not return ResultSet"))
+	        	this.writeError("Error in SQL prepare() query: " + e.getMessage(), false);
+	    }
+	    return null;
+	}
 	
 	@Override
 	public boolean createTable(String query) {
+		Connection connection = open();
 		Statement statement = null;
 		try {
 			if (query.equals("") || query == null) {
@@ -156,7 +173,7 @@ public class SQLite extends DatabaseHandler {
 				return false;
 			}
 			
-			statement = this.connection.createStatement();
+			statement = connection.createStatement();
 			statement.execute(query);
 			return true;
 		} catch (SQLException ex){
@@ -169,7 +186,7 @@ public class SQLite extends DatabaseHandler {
 	public boolean checkTable(String table) {
 		DatabaseMetaData dbm = null;
 		try {
-			dbm = this.getConnection().getMetaData();
+			dbm = this.open().getMetaData();
 			ResultSet tables = dbm.getTables(null, null, table, null);
 			if (tables.next())
 			  return true;
@@ -183,6 +200,7 @@ public class SQLite extends DatabaseHandler {
 	
 	@Override
 	public boolean wipeTable(String table) {
+		Connection connection = open();
 		Statement statement = null;
 		String query = null;
 		try {
@@ -190,9 +208,7 @@ public class SQLite extends DatabaseHandler {
 				this.writeError("Error at Wipe Table: table, " + table + ", does not exist", true);
 				return false;
 			}
-			//Connection connection = getConnection();
-			this.connection = this.getConnection();
-			statement = this.connection.createStatement();
+			statement = connection.createStatement();
 			query = "DELETE FROM " + table + ";";
 			statement.executeQuery(query);
 			return true;
@@ -215,13 +231,12 @@ public class SQLite extends DatabaseHandler {
 	 */
 	public void retry(String query) {
 		boolean passed = false;
+		Connection connection = open();
 		Statement statement = null;
 		
 		while (!passed) {
 			try {
-				//Connection connection = getConnection();
-				this.connection = this.getConnection();
-				statement = this.connection.createStatement();
+				statement = connection.createStatement();
 				statement.executeQuery(query);
 				passed = true;
 			} catch (SQLException ex) {
@@ -242,14 +257,13 @@ public class SQLite extends DatabaseHandler {
 	 */
 	public ResultSet retryResult(String query) {
 		boolean passed = false;
+		Connection connection = open();
 		Statement statement = null;
 		ResultSet result = null;
 		
 		while (!passed) {
 			try {
-				//Connection connection = getConnection();
-				this.connection = this.getConnection();
-				statement = this.connection.createStatement();
+				statement = connection.createStatement();
 				result = statement.executeQuery(query);
 				passed = true;
 				return result;

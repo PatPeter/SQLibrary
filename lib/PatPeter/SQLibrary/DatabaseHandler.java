@@ -10,7 +10,7 @@ package lib.PatPeter.SQLibrary;
 /*
  *  MySQL
  */
-import java.net.MalformedURLException;
+// import java.net.MalformedURLException;
 
 /*
  *  SQLLite
@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
  *  Both
  */
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 //import java.sql.DriverManager;
 import java.sql.ResultSet;
 //import java.sql.SQLException;
@@ -32,6 +33,7 @@ public abstract class DatabaseHandler {
 	protected Logger log;
 	protected final String PREFIX;
 	protected final String DATABASE_PREFIX;
+	protected boolean connected;
 	protected Connection connection;
 	protected enum Statements {
 		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
@@ -46,6 +48,7 @@ public abstract class DatabaseHandler {
 		this.log = log;
 		this.PREFIX = prefix;
 		this.DATABASE_PREFIX = dp;
+		this.connected = false;
 		this.connection = null;
 	}
 	
@@ -100,12 +103,8 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * <br>
 	 * @return the success of the method.
-	 * @throws MalformedURLException - cannot access database because of a syntax error in the jdbc:// protocol.
-	 * @throws InstantiationException - cannot instantiate an interface or abstract class.
-	 * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
 	 */
-	abstract Connection open()
-		throws MalformedURLException, InstantiationException, IllegalAccessException;
+	abstract Connection open();
 	
 	/**
 	 * <b>close</b><br>
@@ -123,12 +122,8 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * <br>
 	 * @return the <a href="http://download.oracle.com/javase/6/docs/api/java/sql/Connection.html">Connection</a> variable.
-	 * @throws MalformedURLException - cannot access database because of a syntax error in the jdbc:// protocol.
-	 * @throws InstantiationException - cannot instantiate an interface or abstract class.
-	 * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
 	 */
-	abstract Connection getConnection()
-		throws MalformedURLException, InstantiationException, IllegalAccessException;
+	abstract Connection getConnection();
 	
 	/**
 	 * <b>checkConnection</b><br>
@@ -147,48 +142,54 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @param query - the SQL query to send to the database.
 	 * @return the table of results from the query.
-	 * @throws MalformedURLException - cannot access database because of a syntax error in the jdbc:// protocol.
-	 * @throws InstantiationException - cannot instantiate an interface or abstract class.
-	 * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
 	 */
-	abstract ResultSet query(String query)
-		throws MalformedURLException, InstantiationException, IllegalAccessException;
+	abstract ResultSet query(String query);
+	
+	/**
+	 * <b>prepare</b><br>
+	 * &nbsp;&nbsp;Prepares to send a query to the database.
+	 * <br>
+	 * <br>
+	 * @param query - the SQL query to prepare to send to the database.
+	 * @return the prepared statement.
+	 */
+	abstract PreparedStatement prepare(String query);
 	
 	/**
 	 * <b>getStatement</b><br>
-	 * 
+	 * &nbsp;&nbsp;Determines the name of the statement and converts it into an enum.
 	 * <br>
 	 * <br>
 	 */
 	protected Statements getStatement(String query) {
 		String trimmedQuery = query.trim();
-		if (trimmedQuery.substring(0,6).equals("SELECT"))
+		if (trimmedQuery.substring(0,6).equalsIgnoreCase("SELECT"))
 			return Statements.SELECT;
-		else if (trimmedQuery.substring(0,6).equals("INSERT"))
+		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("INSERT"))
 			return Statements.INSERT;
-		else if (trimmedQuery.substring(0,6).equals("UPDATE"))
+		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("UPDATE"))
 			return Statements.UPDATE;
-		else if (trimmedQuery.substring(0,6).equals("DELETE"))
+		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("DELETE"))
 			return Statements.DELETE;
-		else if (trimmedQuery.substring(0,6).equals("CREATE"))
+		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("CREATE"))
 			return Statements.CREATE;
-		else if (trimmedQuery.substring(0,5).equals("ALTER"))
+		else if (trimmedQuery.substring(0,5).equalsIgnoreCase("ALTER"))
 			return Statements.ALTER;
-		else if (trimmedQuery.substring(0,4).equals("DROP"))
+		else if (trimmedQuery.substring(0,4).equalsIgnoreCase("DROP"))
 			return Statements.DROP;
-		else if (trimmedQuery.substring(0,8).equals("TRUNCATE"))
+		else if (trimmedQuery.substring(0,8).equalsIgnoreCase("TRUNCATE"))
 			return Statements.TRUNCATE;
-		else if (trimmedQuery.substring(0,6).equals("RENAME"))
+		else if (trimmedQuery.substring(0,6).equalsIgnoreCase("RENAME"))
 			return Statements.RENAME;
-		else if (trimmedQuery.substring(0,2).equals("DO"))
+		else if (trimmedQuery.substring(0,2).equalsIgnoreCase("DO"))
 			return Statements.DO;
-		else if (trimmedQuery.substring(0,7).equals("REPLACE"))
+		else if (trimmedQuery.substring(0,7).equalsIgnoreCase("REPLACE"))
 			return Statements.REPLACE;
-		else if (trimmedQuery.substring(0,4).equals("LOAD"))
+		else if (trimmedQuery.substring(0,4).equalsIgnoreCase("LOAD"))
 			return Statements.LOAD;
-		else if (trimmedQuery.substring(0,7).equals("HANDLER"))
+		else if (trimmedQuery.substring(0,7).equalsIgnoreCase("HANDLER"))
 			return Statements.HANDLER;
-		else if (trimmedQuery.substring(0,4).equals("CALL"))
+		else if (trimmedQuery.substring(0,4).equalsIgnoreCase("CALL"))
 			return Statements.CALL;
 		else
 			return Statements.SELECT;
@@ -213,12 +214,8 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @param table - name of the table to check.
 	 * @return success of the method.
-	 * @throws MalformedURLException - cannot access database because of a syntax error in the jdbc:// protocol.
-	 * @throws InstantiationException - cannot instantiate an interface or abstract class.
-	 * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
 	 */
-	abstract boolean checkTable(String table)
-		throws MalformedURLException, InstantiationException, IllegalAccessException;
+	abstract boolean checkTable(String table);
 	
 	/**
 	 * <b>wipeTable</b><br>
@@ -228,32 +225,6 @@ public abstract class DatabaseHandler {
 	 * <br>
 	 * @param table - name of the table to wipe.
 	 * @return success of the method.
-	 * @throws MalformedURLException - cannot access database because of a syntax error in the jdbc:// protocol.
-	 * @throws InstantiationException - cannot instantiate an interface or abstract class.
-	 * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
 	 */
-	abstract boolean wipeTable(String table)
-		throws MalformedURLException, InstantiationException, IllegalAccessException;
-	
-	/*
-	 *  SQLLite
-	 */
-	
-	/*
-	 * <b>retry</b><br>
-	 * <br>
-	 * Retries.
-	 * <br>
-	 * <br>
-	 * @param query The SQL query.
-	 */
-	//abstract void retry(String query);
-	
-	/*
-	 * Retries a result.
-	 * 
-	 * @param query The SQL query to retry.
-	 * @return The SQL query result.
-	 */
-	//abstract ResultSet retryResult(String query);
+	abstract boolean wipeTable(String table);
 }
