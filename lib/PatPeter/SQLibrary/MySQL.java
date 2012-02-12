@@ -25,14 +25,22 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 
 public class MySQL extends DatabaseHandler {
-	private String hostname;
+	private String hostname = "localhost";
+	private String portnmbr = "3306";
 	private String username;
 	private String password;
-	private String database;
+	private String database = "minecraft";
 	
-	public MySQL(Logger log, String prefix, String hostname, String database, String username, String password) {
+	public MySQL(Logger log,
+				 String prefix,
+				 String hostname,
+				 String portnmbr,
+				 String database,
+				 String username,
+				 String password) {
 		super(log,prefix,"[MySQL] ");
 		this.hostname = hostname;
+		this.portnmbr = portnmbr;
 		this.database = database;
 		this.username = username;
 		this.password = password;
@@ -61,7 +69,7 @@ public class MySQL extends DatabaseHandler {
 		String url = "";
 		try {
 			Class.forName("com.mysql.jdbc.Driver"); // Check that server's Java has MySQL support.
-			url = "jdbc:mysql://" + this.hostname + "/" + this.database + "/";
+			url = "jdbc:mysql://" + this.hostname + ":" + this.portnmbr + "/" + this.database;
 			connection = DriverManager.getConnection(url, this.username, this.password);
 			return true;
 	    } catch (ClassNotFoundException e) {
