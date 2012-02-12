@@ -12,14 +12,14 @@ import java.util.logging.Logger;*/
 
 public class Oracle extends DatabaseHandler {
 	public Oracle(Logger log, String prefix) {
-		super(log, prefix, " [Oracle] ");
+		super(log, prefix, "[Oracle] ");
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	void writeInfo(String toWrite) {
 		if (toWrite != null) {
-			this.log.info(this.prefix + toWrite);
+			this.log.info(this.PREFIX + toWrite);
 		}
 	}
 
@@ -27,11 +27,11 @@ public class Oracle extends DatabaseHandler {
 	void writeError(String toWrite, boolean severe) {
 		if (severe) {
 			if (toWrite != null) {
-				this.log.severe(this.prefix + toWrite);
+				this.log.severe(this.PREFIX + toWrite);
 			}
 		} else {
 			if (toWrite != null) {
-				this.log.warning(this.prefix + toWrite);
+				this.log.warning(this.PREFIX + toWrite);
 			}
 		}
 	}

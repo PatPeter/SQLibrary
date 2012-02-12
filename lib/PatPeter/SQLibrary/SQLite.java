@@ -30,7 +30,7 @@ public class SQLite extends DatabaseHandler {
 	private File sqlFile;
 	
 	public SQLite(Logger log, String prefix, String name, String location) {
-		super(log,prefix," [SQLite] ");
+		super(log,prefix,"[SQLite] ");
 		this.name = name;
 		this.location = location;
 		File folder = new File(this.location);
@@ -49,7 +49,7 @@ public class SQLite extends DatabaseHandler {
 	@Override
 	public void writeInfo(String toWrite) {
 		if (toWrite != null) {
-			this.log.info(this.prefix + this.DATABASE_PREFIX + toWrite);
+			this.log.info(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 		}
 	}
 	
@@ -57,11 +57,11 @@ public class SQLite extends DatabaseHandler {
 	public void writeError(String toWrite, boolean severe) {
 		if (severe) {
 			if (toWrite != null) {
-				this.log.severe(this.prefix + this.DATABASE_PREFIX + toWrite);
+				this.log.severe(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 			}
 		} else {
 			if (toWrite != null) {
-				this.log.warning(this.prefix + this.DATABASE_PREFIX + toWrite);
+				this.log.warning(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 			}
 		}
 	}
@@ -73,10 +73,10 @@ public class SQLite extends DatabaseHandler {
 	      connection = DriverManager.getConnection("jdbc:sqlite:" +
 	    		  	   sqlFile.getAbsolutePath());
 	      return true;
-	    } catch (SQLException ex) {
-	      this.writeError("SQLite exception on initialize " + ex, true);
-	    } catch (ClassNotFoundException ex) {
-	      this.writeError("You need the SQLite library " + ex, true);
+	    } catch (SQLException e) {
+	      this.writeError("SQLite exception on initialize " + e, true);
+	    } catch (ClassNotFoundException e) {
+	      this.writeError("You need the SQLite library " + e, true);
 	    }
 	    return false;
 	}

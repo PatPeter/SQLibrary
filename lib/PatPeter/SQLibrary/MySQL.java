@@ -31,7 +31,7 @@ public class MySQL extends DatabaseHandler {
 	private String database;
 	
 	public MySQL(Logger log, String prefix, String hostname, String database, String username, String password) {
-		super(log,prefix," [MySQL] ");
+		super(log,prefix,"[MySQL] ");
 		this.hostname = hostname;
 		this.database = database;
 		this.username = username;
@@ -41,7 +41,7 @@ public class MySQL extends DatabaseHandler {
 	@Override
 	public void writeInfo(String toWrite) {
 		if (toWrite != null) {
-			this.log.info(this.prefix + this.DATABASE_PREFIX + toWrite);
+			this.log.info(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 		}
 	}
 	
@@ -49,23 +49,26 @@ public class MySQL extends DatabaseHandler {
 	public void writeError(String toWrite, boolean severe) {
 		if (toWrite != null) {
 			if (severe) {
-				this.log.severe(this.prefix + this.DATABASE_PREFIX + toWrite);
+				this.log.severe(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 			} else {
-				this.log.warning(this.prefix + this.DATABASE_PREFIX + toWrite);
+				this.log.warning(this.PREFIX + this.DATABASE_PREFIX + toWrite);
 			}
 		}
 	}
 	
 	@Override
 	public boolean open() throws MalformedURLException, InstantiationException, IllegalAccessException {
+		String url = "";
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://" + hostname + "/" + database, username, password);
+			Class.forName("com.mysql.jdbc.Driver"); // Check that server's Java has MySQL support.
+			url = "jdbc:mysql://" + this.hostname + "/" + this.database + "/";
+			connection = DriverManager.getConnection(url, this.username, this.password);
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("ClassNotFoundException: " + e.getMessage(), true);
+	    	this.writeError("Class Not Found Exception: " + e.getMessage() + ".", true);
 	    } catch (SQLException e) {
-	    	this.writeError("SQLException: " + e.getMessage(), true);
+	    	this.writeError(url,true);
+	    	this.writeError("Could not be resolved because of an SQL Exception: " + e.getMessage() + ".", true);
 	    }
 	    return false;
 	}
