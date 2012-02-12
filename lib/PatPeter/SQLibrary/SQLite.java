@@ -5,7 +5,7 @@
  * Date Created: 2011-08-26 19:08
  * @author PatPeter
  */
-package com.PatPeter.SQLibrary;
+package lib.PatPeter.SQLibrary;
 
 /*
  * SQLite
@@ -22,7 +22,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-//import java.util.logging.Logger;
 import java.util.logging.Logger;
 
 public class SQLite extends DatabaseHandler {
@@ -54,7 +53,7 @@ public class SQLite extends DatabaseHandler {
 	}
 	
 	@Override
-	public void writeError(String toWrite, Boolean severe) {
+	public void writeError(String toWrite, boolean severe) {
 		if (severe) {
 			if (toWrite != null) {
 				this.log.severe(this.prefix + toWrite);
@@ -70,7 +69,8 @@ public class SQLite extends DatabaseHandler {
 	public boolean open() {
 		try {
 	      Class.forName("org.sqlite.JDBC");
-	      connection = DriverManager.getConnection("jdbc:sqlite:" + sqlFile.getAbsolutePath());
+	      connection = DriverManager.getConnection("jdbc:sqlite:" +
+	    		  	   sqlFile.getAbsolutePath());
 	      return true;
 	    } catch (SQLException ex) {
 	      this.writeError("SQLite exception on initialize " + ex, true);
@@ -119,7 +119,8 @@ public class SQLite extends DatabaseHandler {
 		    return result;
 		} catch (SQLException ex) {
 			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				return retryResult(query);
+				//return retryResult(query);
+				this.writeError("",false);
 			} else {
 				this.writeError("Error at SQL Query: " + ex.getMessage(), false);
 			}
@@ -128,61 +129,8 @@ public class SQLite extends DatabaseHandler {
 		return null;
 	}
 	
-	/*public void insertQuery(String query) {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-		    
-		    statement.executeQuery(query);
-		    
-		    
-		} catch (SQLException ex) {
-			
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				retry(query);
-			}else{
-				if (!ex.toString().contains("not return ResultSet")) this.writeError("Error at SQL INSERT Query: " + ex, false);
-			}
-			
-		}
-	}
-	
-	public void updateQuery(String query) {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-		    
-		    statement.executeQuery(query);
-		    
-		    
-		} catch (SQLException ex) {
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				retry(query);
-			}else{
-				if (!ex.toString().contains("not return ResultSet")) this.writeError("Error at SQL UPDATE Query: " + ex, false);
-			}
-		}
-	}
-	
-	public void deleteQuery(String query) {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-		    
-		    statement.executeQuery(query);
-		    
-		    
-		} catch (SQLException ex) {
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				retry(query);
-			}else{
-				if (!ex.toString().contains("not return ResultSet")) this.writeError("Error at SQL DELETE Query: " + ex, false);
-			}
-		}
-	}*/
-	
 	@Override
-	public Boolean createTable(String query) {
+	public boolean createTable(String query) {
 		try {
 			if (query == null) { this.writeError("SQL Create Table query empty.", true); return false; }
 		    
@@ -196,7 +144,7 @@ public class SQLite extends DatabaseHandler {
 	}
 	
 	@Override
-	public Boolean checkTable(String table) {
+	public boolean checkTable(String table) {
 		DatabaseMetaData dbm;
 		try {
 			dbm = this.getConnection().getMetaData();
@@ -208,14 +156,13 @@ public class SQLite extends DatabaseHandler {
 			  return false;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			this.writeError("Failed to check if table \"" + table + "\" exists: " + e.getMessage(), true);
 			return false;
 		}
 	}
 	
 	@Override
-	public Boolean wipeTable(String table) {
+	public boolean wipeTable(String table) {
 		try {
 			if (!this.checkTable(table)) {
 				this.writeError("Error at Wipe Table: table, " + table + ", does not exist", true);
@@ -228,18 +175,17 @@ public class SQLite extends DatabaseHandler {
 		    
 		    return true;
 		} catch (SQLException ex) {
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				//retryWipe(query);
-			}else{
-				if (!ex.toString().contains("not return ResultSet")) this.writeError("Error at SQL WIPE TABLE Query: " + ex, false);
-			}
+			if (!(ex.getMessage().toLowerCase().contains("locking") ||
+				ex.getMessage().toLowerCase().contains("locked")) &&
+				!ex.toString().contains("not return ResultSet"))
+					this.writeError("Error at SQL Wipe Table Query: " + ex, false);
 			return false;
 		}
 	}
 	
-	@Override
+	/*@Override
 	public void retry(String query) {
-		Boolean passed = false;
+		boolean passed = false;
 		
 		while (!passed) {
 			try {
@@ -252,7 +198,6 @@ public class SQLite extends DatabaseHandler {
 			    
 			    return;
 			} catch (SQLException ex) {
-				
 				if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked") ) {
 					passed = false;
 				} else {
@@ -266,7 +211,7 @@ public class SQLite extends DatabaseHandler {
 	
 	@Override
 	public ResultSet retryResult(String query) {
-		Boolean passed = false;
+		boolean passed = false;
 		
 		while (!passed) {
 			try {
@@ -282,12 +227,12 @@ public class SQLite extends DatabaseHandler {
 				
 				if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
 					passed = false;
-				}else{
+				} else {
 					this.writeError("Error at SQL Query: " + ex.getMessage(), false);
 				}
 			}
 		}
 		
 		return null;
-	}
+	}*/
 }

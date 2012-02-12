@@ -5,7 +5,7 @@
  * Date Created: 2011-08-26 19:08
  * @author PatPeter
  */
-package com.PatPeter.SQLibrary;
+package lib.PatPeter.SQLibrary;
 
 /*
  * MySQL
@@ -31,6 +31,7 @@ public class MySQL extends DatabaseHandler {
 	private String database;
 	
 	public MySQL(Logger log, String prefix, String hostname, String database, String username, String password) {
+		
 		this.hostname = hostname;
 		this.database = database;
 		this.username = username;
@@ -45,7 +46,7 @@ public class MySQL extends DatabaseHandler {
 	}
 	
 	@Override
-	public void writeError(String toWrite, Boolean severe) {
+	public void writeError(String toWrite, boolean severe) {
 		if (severe) {
 			if (toWrite != null) {
 				this.log.severe(this.prefix + toWrite);
@@ -119,62 +120,16 @@ public class MySQL extends DatabaseHandler {
 		    
 		    return result;
 		} catch (SQLException ex) {
-			this.writeError("Error at SQL Query: " + ex.getMessage(), false);
+			this.writeError("MySQL: Error in SQL query: " + ex.getMessage(), false);
 		}
 		return null;
 	}
 	
-	/*public void insertQuery(String query) throws MalformedURLException, InstantiationException, IllegalAccessException {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-		    
-		    statement.executeUpdate(query);
-		    
-		    
-		} catch (SQLException ex) {
-			
-				if (!ex.toString().contains("not return ResultSet")) this.writeError("Error at SQL INSERT Query: " + ex, false);
-			
-			
-		}
-	}
-	
-	public void updateQuery(String query) throws MalformedURLException, InstantiationException, IllegalAccessException {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-		    
-		    statement.executeUpdate(query);
-		    
-		    
-		} catch (SQLException ex) {
-			
-				if (!ex.toString().contains("not return ResultSet")) this.writeError("Error at SQL UPDATE Query: " + ex, false);
-			
-		}
-	}
-	
-	public void deleteQuery(String query) throws MalformedURLException, InstantiationException, IllegalAccessException {
-		try {
-			Connection connection = getConnection();
-		    Statement statement = connection.createStatement();
-		    
-		    statement.executeUpdate(query);
-		    
-		    
-		} catch (SQLException ex) {
-			
-				if (!ex.toString().contains("not return ResultSet")) this.writeError("Error at SQL DELETE Query: " + ex, false);
-			
-		}
-	}*/
-	
 	@Override
-	public Boolean createTable(String query) {
+	public boolean createTable(String query) {
 		try {
 			if (query == null) {
-				this.writeError("SQL Create Table query empty.", true);
+				this.writeError("MySQL: SQL createTable() query empty.", true);
 				return false;
 			}
 		    
@@ -188,7 +143,7 @@ public class MySQL extends DatabaseHandler {
 	}
 	
 	@Override
-	public Boolean checkTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException {
+	public boolean checkTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException {
 		try {
 			Connection connection = getConnection();
 		    Statement statement = connection.createStatement();
@@ -201,7 +156,7 @@ public class MySQL extends DatabaseHandler {
 			if (ex.getMessage().contains("exist")) {
 				return false;
 			} else {
-				this.writeError("Error at SQL Query: " + ex.getMessage(), false);
+				this.writeError("MySQL: Error in SQL query: " + ex.getMessage(), false);
 			}
 		}
 		
@@ -211,7 +166,7 @@ public class MySQL extends DatabaseHandler {
 	}
 	
 	@Override
-	public Boolean wipeTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException {
+	public boolean wipeTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException {
 		try {
 			if (!this.checkTable(table)) {
 				this.writeError("Error at Wipe Table: table, " + table + ", does not exist", true);
@@ -229,7 +184,7 @@ public class MySQL extends DatabaseHandler {
 		}
 	}
 
-	@Override
+	/*@Override
 	ResultSet retryResult(String query) {
 		// TODO Auto-generated method stub
 		return null;
@@ -239,5 +194,5 @@ public class MySQL extends DatabaseHandler {
 	void retry(String query) {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 }
