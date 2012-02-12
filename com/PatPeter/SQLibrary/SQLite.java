@@ -23,13 +23,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 //import java.util.logging.Logger;
+import java.util.logging.Logger;
 
 public class SQLite extends DatabaseHandler {
 	public String location;
 	public String name;
 	private File sqlFile;
 	
-	public SQLite(String name, String location) {
+	public SQLite(Logger log, String prefix, String name, String location) {
 		this.name = name;
 		this.location = location;
 		File folder = new File(this.location);
@@ -48,7 +49,7 @@ public class SQLite extends DatabaseHandler {
 	@Override
 	public void writeInfo(String toWrite) {
 		if (toWrite != null) {
-			this.log.info(this.logPrefix + toWrite);
+			this.log.info(this.prefix + toWrite);
 		}
 	}
 	
@@ -56,11 +57,11 @@ public class SQLite extends DatabaseHandler {
 	public void writeError(String toWrite, Boolean severe) {
 		if (severe) {
 			if (toWrite != null) {
-				this.log.severe(this.logPrefix + toWrite);
+				this.log.severe(this.prefix + toWrite);
 			}
 		} else {
 			if (toWrite != null) {
-				this.log.warning(this.logPrefix + toWrite);
+				this.log.warning(this.prefix + toWrite);
 			}
 		}
 	}
@@ -98,7 +99,7 @@ public class SQLite extends DatabaseHandler {
 	}
 	
 	@Override
-	public Boolean checkConnection() {
+	public boolean checkConnection() {
 		Connection con = this.getConnection();
 		
 		if (con != null) {

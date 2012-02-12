@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 //import java.util.logging.Logger;
+import java.util.logging.Logger;
 
 public class MySQL extends DatabaseHandler {
 	private String hostname;
@@ -29,7 +30,7 @@ public class MySQL extends DatabaseHandler {
 	private String password;
 	private String database;
 	
-	public MySQL(String hostname, String database, String username, String password) {
+	public MySQL(Logger log, String prefix, String hostname, String database, String username, String password) {
 		this.hostname = hostname;
 		this.database = database;
 		this.username = username;
@@ -39,7 +40,7 @@ public class MySQL extends DatabaseHandler {
 	@Override
 	public void writeInfo(String toWrite) {
 		if (toWrite != null) {
-			this.log.info(this.logPrefix + toWrite);
+			this.log.info(this.prefix + toWrite);
 		}
 	}
 	
@@ -47,11 +48,11 @@ public class MySQL extends DatabaseHandler {
 	public void writeError(String toWrite, Boolean severe) {
 		if (severe) {
 			if (toWrite != null) {
-				this.log.severe(this.logPrefix + toWrite);
+				this.log.severe(this.prefix + toWrite);
 			}
 		} else {
 			if (toWrite != null) {
-				this.log.warning(this.logPrefix + toWrite);
+				this.log.warning(this.prefix + toWrite);
 			}
 		}
 	}
@@ -90,7 +91,7 @@ public class MySQL extends DatabaseHandler {
 	}
 	
 	@Override
-	public Boolean checkConnection() {
+	public boolean checkConnection() {
 		if (connection == null) {
 			try {
 				open();
