@@ -1,0 +1,14 @@
+Version 2.0
+- Added MySQL support
+- New Structure
+- Need to update tutorial
+- New Example plugin
+
+Version 1.2
+- added checkTable(String table) - will return true/false
+
+Version 1.1
+- Added insertQuery(String query) - Use this when inserting data to a table! In the tutorial I use querySQL(String query) please use this instead!!!!
+
+Version 1.0
+- Release
