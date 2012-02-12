@@ -29,6 +29,7 @@ import java.sql.ResultSet;
 import java.util.logging.Logger;
 
 public abstract class DatabaseHandler {
+	protected final String DATABASE_PREFIX;
 	protected Logger log;
 	protected String prefix;
 	protected Connection connection;
@@ -36,6 +37,12 @@ public abstract class DatabaseHandler {
 	/*
 	 *  MySQL, SQLLite
 	 */
+	
+	public DatabaseHandler(Logger log, String prefix, String dp) {
+		this.log = log;
+		this.prefix = prefix;
+		this.DATABASE_PREFIX = dp;
+	}
 	
 	/**
 	 * <b>writeInfo</b><br>

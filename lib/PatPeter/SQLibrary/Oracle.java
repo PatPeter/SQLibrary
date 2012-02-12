@@ -4,12 +4,18 @@ import java.net.MalformedURLException;
 import java.sql.Connection;
 //import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.logging.Logger;
 
 /*import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;*/
 
 public class Oracle extends DatabaseHandler {
+	public Oracle(Logger log, String prefix) {
+		super(log, prefix, " [Oracle] ");
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	void writeInfo(String toWrite) {
 		if (toWrite != null) {

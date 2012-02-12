@@ -31,7 +31,7 @@ public class MySQL extends DatabaseHandler {
 	private String database;
 	
 	public MySQL(Logger log, String prefix, String hostname, String database, String username, String password) {
-		
+		super(log,prefix," [MySQL] ");
 		this.hostname = hostname;
 		this.database = database;
 		this.username = username;
@@ -41,19 +41,17 @@ public class MySQL extends DatabaseHandler {
 	@Override
 	public void writeInfo(String toWrite) {
 		if (toWrite != null) {
-			this.log.info(this.prefix + toWrite);
+			this.log.info(this.prefix + this.DATABASE_PREFIX + toWrite);
 		}
 	}
 	
 	@Override
 	public void writeError(String toWrite, boolean severe) {
-		if (severe) {
-			if (toWrite != null) {
-				this.log.severe(this.prefix + toWrite);
-			}
-		} else {
-			if (toWrite != null) {
-				this.log.warning(this.prefix + toWrite);
+		if (toWrite != null) {
+			if (severe) {
+				this.log.severe(this.prefix + this.DATABASE_PREFIX + toWrite);
+			} else {
+				this.log.warning(this.prefix + this.DATABASE_PREFIX + toWrite);
 			}
 		}
 	}
@@ -65,9 +63,9 @@ public class MySQL extends DatabaseHandler {
 			connection = DriverManager.getConnection("jdbc:mysql://" + hostname + "/" + database, username, password);
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("ClassNotFoundException! " + e.getMessage(), true);
+	    	this.writeError("ClassNotFoundException: " + e.getMessage(), true);
 	    } catch (SQLException e) {
-	    	this.writeError("SQLException! " + e.getMessage(), true);
+	    	this.writeError("SQLException: " + e.getMessage(), true);
 	    }
 	    return false;
 	}
@@ -78,7 +76,7 @@ public class MySQL extends DatabaseHandler {
 			if (connection != null)
 				connection.close();
 		} catch (Exception e) {
-			this.writeError("Failed to close database connection! " + e.getMessage(), true);
+			this.writeError("Failed to close database connection: " + e.getMessage(), true);
 		}
 	}
 	
@@ -98,11 +96,11 @@ public class MySQL extends DatabaseHandler {
 				open();
 				return true;
 			} catch (MalformedURLException ex) {
-				this.writeError("MalformedURLException! " + ex.getMessage(), true);
+				this.writeError("MalformedURLException: " + ex.getMessage(), true);
 			} catch (InstantiationException ex) {
-				this.writeError("InstantiationExceptioon! " + ex.getMessage(), true);
+				this.writeError("InstantiationExceptioon: " + ex.getMessage(), true);
 			} catch (IllegalAccessException ex) {
-				this.writeError("IllegalAccessException! " + ex.getMessage(), true);
+				this.writeError("IllegalAccessException: " + ex.getMessage(), true);
 			}
 			return false;
 		}
@@ -120,7 +118,7 @@ public class MySQL extends DatabaseHandler {
 		    
 		    return result;
 		} catch (SQLException ex) {
-			this.writeError("MySQL: Error in SQL query: " + ex.getMessage(), false);
+			this.writeError("Error in SQL query: " + ex.getMessage(), false);
 		}
 		return null;
 	}
@@ -129,7 +127,7 @@ public class MySQL extends DatabaseHandler {
 	public boolean createTable(String query) {
 		try {
 			if (query == null) {
-				this.writeError("MySQL: SQL createTable() query empty.", true);
+				this.writeError("SQL query empty: createTable(" + query + ")", true);
 				return false;
 			}
 		    
@@ -152,11 +150,11 @@ public class MySQL extends DatabaseHandler {
 		    
 		    if (result == null) return false;
 		    if (result != null) return true;
-		} catch (SQLException ex) {
-			if (ex.getMessage().contains("exist")) {
+		} catch (SQLException e) {
+			if (e.getMessage().contains("exist")) {
 				return false;
 			} else {
-				this.writeError("MySQL: Error in SQL query: " + ex.getMessage(), false);
+				this.writeError("Error in SQL query: " + e.getMessage(), false);
 			}
 		}
 		
@@ -169,7 +167,7 @@ public class MySQL extends DatabaseHandler {
 	public boolean wipeTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException {
 		try {
 			if (!this.checkTable(table)) {
-				this.writeError("Error at Wipe Table: table, " + table + ", does not exist", true);
+				this.writeError("Error wiping table: \"" + table + "\" does not exist.", true);
 				return false;
 			}
 			Connection connection = getConnection();
@@ -178,10 +176,11 @@ public class MySQL extends DatabaseHandler {
 		    statement.executeUpdate(query);
 		    
 		    return true;
-		} catch (SQLException ex) {
-			if (!ex.toString().contains("not return ResultSet")) this.writeError("Error at SQL WIPE TABLE Query: " + ex, false);
-			return false;
+		} catch (SQLException e) {
+			if (!e.toString().contains("not return ResultSet"))
+				return false;
 		}
+		return false;
 	}
 
 	/*@Override

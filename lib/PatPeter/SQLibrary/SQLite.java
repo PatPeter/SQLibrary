@@ -30,6 +30,7 @@ public class SQLite extends DatabaseHandler {
 	private File sqlFile;
 	
 	public SQLite(Logger log, String prefix, String name, String location) {
+		super(log,prefix," [SQLite] ");
 		this.name = name;
 		this.location = location;
 		File folder = new File(this.location);
@@ -48,7 +49,7 @@ public class SQLite extends DatabaseHandler {
 	@Override
 	public void writeInfo(String toWrite) {
 		if (toWrite != null) {
-			this.log.info(this.prefix + toWrite);
+			this.log.info(this.prefix + this.DATABASE_PREFIX + toWrite);
 		}
 	}
 	
@@ -56,11 +57,11 @@ public class SQLite extends DatabaseHandler {
 	public void writeError(String toWrite, boolean severe) {
 		if (severe) {
 			if (toWrite != null) {
-				this.log.severe(this.prefix + toWrite);
+				this.log.severe(this.prefix + this.DATABASE_PREFIX + toWrite);
 			}
 		} else {
 			if (toWrite != null) {
-				this.log.warning(this.prefix + toWrite);
+				this.log.warning(this.prefix + this.DATABASE_PREFIX + toWrite);
 			}
 		}
 	}
