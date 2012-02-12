@@ -16,15 +16,15 @@ public class Oracle extends DatabaseHandler {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	void writeInfo(String toWrite) {
+	/*@Override
+	public void writeInfo(String toWrite) {
 		if (toWrite != null) {
 			this.log.info(this.PREFIX + toWrite);
 		}
 	}
 
 	@Override
-	void writeError(String toWrite, boolean severe) {
+	public void writeError(String toWrite, boolean severe) {
 		if (severe) {
 			if (toWrite != null) {
 				this.log.severe(this.PREFIX + toWrite);
@@ -34,13 +34,20 @@ public class Oracle extends DatabaseHandler {
 				this.log.warning(this.PREFIX + toWrite);
 			}
 		}
+	}*/
+	
+	@Override
+	protected boolean initialize() {
+		
+		return true;
 	}
 
 	@Override
-	boolean open() throws MalformedURLException, InstantiationException,
+	public Connection open() throws MalformedURLException, InstantiationException,
 			IllegalAccessException {
 		// TODO Auto-generated method stub
-		return false;
+		Connection connection = null;
+		return connection;
 	}
 
 	@Override
