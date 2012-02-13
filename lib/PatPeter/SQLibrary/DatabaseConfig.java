@@ -47,8 +47,7 @@ public class DatabaseConfig {
 		DB_LOCATION(DatabaseType.SQLITE),
 		DB_NAME(DatabaseType.SQLITE);
 		private Set<DatabaseType> dbTypes = new HashSet<DatabaseType>();
-		private final static Map<DatabaseType, Integer> count = new EnumMap<DatabaseType, Integer>(
-				DatabaseType.class);
+		private static Map<DatabaseType, Integer> count;
 
 		/**
 		 * 
@@ -70,12 +69,17 @@ public class DatabaseConfig {
 
 		}
 
-		private void updateCount(DatabaseType type) {
+		private static void updateCount(DatabaseType type) {
+			if (count == null)
+				count = new EnumMap<DatabaseType, Integer>(DatabaseType.class);
 			Integer nb = count.get(type);
-			nb++;
+			if (nb == null)
+				nb = 1;
+			else
+				nb++;
 			count.put(type, nb);
 		}
-		
+
 		public static int getCount(DatabaseType type) {
 			int nb = count.get(DatabaseType.ALL) + count.get(type);
 			return nb;
