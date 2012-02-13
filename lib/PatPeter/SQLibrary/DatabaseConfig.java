@@ -122,7 +122,7 @@ public class DatabaseConfig {
 		return log;
 	}
 
-	public void setParameter(Parameter param, String value) throws NullPointerException,
+	public DatabaseConfig setParameter(Parameter param, String value) throws NullPointerException,
 			InvalidConfiguration {
 		if (this.type == null)
 			throw new NullPointerException("You must set the type of the database first");
@@ -130,6 +130,7 @@ public class DatabaseConfig {
 			throw new InvalidConfiguration(param.toString()
 					+ " is invalid for a database type of : " + type.toString());
 		config.put(param, value);
+		return this;
 
 	}
 
