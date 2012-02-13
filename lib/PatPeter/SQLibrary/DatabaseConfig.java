@@ -50,21 +50,14 @@ public class DatabaseConfig {
 		private final static Map<DatabaseType, Integer> count = new EnumMap<DatabaseType, Integer>(
 				DatabaseType.class);
 
-		static {
-			for (Parameter param : values())
-				for (DatabaseType type : param.getDbTypes()) {
-					Integer nb = count.get(type);
-					nb++;
-					count.put(type, nb);
-				}
-		}
-
 		/**
 		 * 
 		 */
 		private Parameter(DatabaseType... type) {
-			for (int i = 0; i < type.length; i++)
+			for (int i = 0; i < type.length; i++) {
 				dbTypes.add(type[i]);
+				updateCount(type[i]);
+			}
 
 		}
 
@@ -77,13 +70,12 @@ public class DatabaseConfig {
 
 		}
 
-		/**
-		 * @return the dbTypes
-		 */
-		private Set<DatabaseType> getDbTypes() {
-			return dbTypes;
+		private void updateCount(DatabaseType type) {
+			Integer nb = count.get(type);
+			nb++;
+			count.put(type, nb);
 		}
-
+		
 		public static int getCount(DatabaseType type) {
 			int nb = count.get(DatabaseType.ALL) + count.get(type);
 			return nb;
