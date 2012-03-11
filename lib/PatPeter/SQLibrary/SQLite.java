@@ -16,7 +16,6 @@ import java.sql.DatabaseMetaData;
 /*
  * Both
  */
-//import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -25,7 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-public class SQLite extends DatabaseHandler {
+public class SQLite extends Database {
 	public String location;
 	public String name;
 	private File sqlFile;
@@ -47,26 +46,6 @@ public class SQLite extends DatabaseHandler {
 		sqlFile = new File(folder.getAbsolutePath() + File.separator + name + ".db");
 	}
 	
-	/*@Override
-	public void writeInfo(String toWrite) {
-		if (toWrite != null) {
-			this.log.info(this.PREFIX + this.DATABASE_PREFIX + toWrite);
-		}
-	}
-	
-	@Override
-	public void writeError(String toWrite, boolean severe) {
-		if (severe) {
-			if (toWrite != null) {
-				this.log.severe(this.PREFIX + this.DATABASE_PREFIX + toWrite);
-			}
-		} else {
-			if (toWrite != null) {
-				this.log.warning(this.PREFIX + this.DATABASE_PREFIX + toWrite);
-			}
-		}
-	}*/
-	
 	protected boolean initialize() {
 		try {
 		  Class.forName("org.sqlite.JDBC");
@@ -82,8 +61,9 @@ public class SQLite extends DatabaseHandler {
 	public Connection open() {
 		if (initialize()) {
 			try {
-			  return DriverManager.getConnection("jdbc:sqlite:" +
+			  this.connection = DriverManager.getConnection("jdbc:sqlite:" +
 					  	   sqlFile.getAbsolutePath());
+			  return this.connection;
 			} catch (SQLException e) {
 			  this.writeError("SQLite exception on initialize " + e, true);
 			}
@@ -93,7 +73,6 @@ public class SQLite extends DatabaseHandler {
 	
 	@Override
 	public void close() {
-		Connection connection = this.open();
 		if (connection != null)
 			try {
 				connection.close();
@@ -111,7 +90,6 @@ public class SQLite extends DatabaseHandler {
 	
 	@Override
 	public boolean checkConnection() {
-		Connection connection = this.open();
 		if (connection != null)
 			return true;
 		return false;
@@ -119,7 +97,6 @@ public class SQLite extends DatabaseHandler {
 	
 	@Override
 	public ResultSet query(String query) {
-		Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null;
 		
@@ -138,7 +115,7 @@ public class SQLite extends DatabaseHandler {
 			}
 		} catch (SQLException ex) {
 			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-				return retryResult(query);
+				return retry(query);
 				//this.writeError("",false);
 			} else {
 				this.writeError("Error at SQL Query: " + ex.getMessage(), false);
@@ -150,7 +127,6 @@ public class SQLite extends DatabaseHandler {
 
 	@Override
 	PreparedStatement prepare(String query) {
-		Connection connection = null;
 		try
 	    {
 	        connection = open();
@@ -165,7 +141,6 @@ public class SQLite extends DatabaseHandler {
 	
 	@Override
 	public boolean createTable(String query) {
-		Connection connection = open();
 		Statement statement = null;
 		try {
 			if (query.equals("") || query == null) {
@@ -200,7 +175,6 @@ public class SQLite extends DatabaseHandler {
 	
 	@Override
 	public boolean wipeTable(String table) {
-		Connection connection = open();
 		Statement statement = null;
 		String query = null;
 		try {
@@ -224,57 +198,60 @@ public class SQLite extends DatabaseHandler {
 	/*
 	 * <b>retry</b><br>
 	 * <br>
-	 * Retries.
+	 * Retries a statement and does not return a ResultSet.
 	 * <br>
 	 * <br>
 	 * @param query The SQL query.
 	 */
-	public void retry(String query) {
-		boolean passed = false;
-		Connection connection = open();
+	/*public void retry(String query) {
+		//boolean passed = false;
 		Statement statement = null;
 		
-		while (!passed) {
-			try {
-				statement = connection.createStatement();
-				statement.executeQuery(query);
-				passed = true;
-			} catch (SQLException ex) {
-				if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked") ) {
-					passed = false;
-				} else {
-					this.writeError("Error at SQL Query: " + ex.getMessage(), false);
-				}
+		//while (!passed) {
+		try {
+			statement = connection.createStatement();
+			statement.executeQuery(query);
+			//passed = true;
+		} catch (SQLException e) {
+			if (e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked") ) {
+				this.writeError("Please close your previous ResultSet.", true);
+				//passed = false;
+			} else {
+				this.writeError("Error at SQL Query: " + e.getMessage(), false);
 			}
 		}
-	}
+		//}
+	}*/
 	
 	/*
-	 * Retries a result.
-	 * 
+	 * <b>retry</b><br>
+	 * <br>
+	 * Retries a statement and returns a ResultSet.
+	 * <br>
+	 * <br>
 	 * @param query The SQL query to retry.
 	 * @return The SQL query result.
 	 */
-	public ResultSet retryResult(String query) {
-		boolean passed = false;
-		Connection connection = open();
+	public ResultSet retry(String query) {
+		//boolean passed = false;
 		Statement statement = null;
 		ResultSet result = null;
 		
-		while (!passed) {
+		//while (!passed) {
 			try {
 				statement = connection.createStatement();
 				result = statement.executeQuery(query);
-				passed = true;
+				//passed = true;
 				return result;
 			} catch (SQLException ex) {
 				if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-					passed = false;
+					this.writeError("Please close your previous ResultSet to run the query: \n" + query, false);
+					//passed = false;
 				} else {
-					this.writeError("Error at SQL Query: " + ex.getMessage(), false);
+					this.writeError("Error in SQL query: " + ex.getMessage(), false);
 				}
 			}
-		}
+		//}
 		
 		return null;
 	}

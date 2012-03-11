@@ -1,3 +1,65 @@
+Version 3.0.6 (alpha)
+- 2011-12-10 03:16 - Fixed "Too many connections" propagated from faulty Linux fix.
+- 2012-02-12 17:18 - Renamed DatabaseHandler.java to simply Database.java.
+- 2012-02-12 18:39 - Removed imports in Oracle.java until developed.
+- 2012-03-11 14:08 - Removed infinite loop in SQLite and the original retry().
+- 2012-03-11 14:11 - Merged CHANGELOG with README.
+- 2012-03-11 14:20 - Added SQLibrary.java on jertocvil's request.
+
+Version 3.0.5.2 (alpha-fix)
+- 2011-12-10 03:17 - Class only uses one connection to avoid "Too Many Connections".
+
+Version 3.0.5.1 (alpha-fix)
+- 2011-10-03 04:15 - Removed .replace("_","\\_") from variables.
+- 2011-10-03 04:20 - Fixed checkConnection() based on Feed_Dante's analysis.
+- 2011-10-03 04:30 - Attempted yet another fix to query() saying it does not return a ResultSet.
+
+Version 3.0.5 (alpha)
+- 2011-09-03 16:40 - Made MySQL getConnection() reopen the connection with open() every time.
+- 2011-09-03 16:42 - Added support for underscores in hostnames, databases, and usernames by escaping them.
+- 2011-09-03 17:02 - Added prepare().
+- 2011-09-03 17:14 - Removed this.connection and converted all instances to local variables.
+- 2011-09-03 17:19 - Added empty class files for future database support.
+- 2011-09-13 03:01 - Fixed getStatement() by changing equals() to equalsIgnoreCase().
+- 2011-09-17 19:06 - Fixed query() by having it return result instead of null.
+-         ??       - Removed redundant exceptions from methods.
+- 2011-09-17 20:07 - Released 3.0.5.
+
+Version 3.0.4 (alpha)
+- 2011/08/30 17:02 - Moved writeInfo and writeError into superclass.
+- 2011/08/30 17:59 - Moved retry and retryResult back into SQLite.
+- 2011/08/30 20:35 - Fixed error where query() could only run SELECT statements by adding an enum and test method.
+- 2011/08/30 21:09 - Added initialize() method that checks for the library.
+- 2011/08/30 21:12 - Connection defaults to null in superclass.
+- 2011/08/30 21:15 - Methods always reference this.connection.
+- 2011/08/30 21:35 - Fixed createTable() wrongly checking for null strings.
+- 2011/08/30 22:34 - Added getStatement() method that determines what statement the user is calling.
+
+Version 3.0.3.2 (alpha, fix)
+- 2011/08/29 19:10 - Added port number to the MySQL constructor and class.
+- 2011/08/29 19:17 - Added default values for hostname, port number, and database.
+
+Version 3.0.3.1 (alpha, fix)
+- 2011/08/28 22:24 - Attempted fix for 68x's bug: http://forums.bukkit.org/threads/lib-tut-mysql-sqlite-bukkit-drivers.33849/#post-629713 . Added "/" to the end of the jdbc: url.
+
+Version 3.0.3 (alpha)
+- 2011/08/28 03:06 - Added constructor to DatabaseHandler for use of super() in subclasses.
+- 2011/08/28 03:14 - Added DATABASE_PREFIX to DatabaseHandler.
+
+Version 3.0.2 (alpha)
+- Changed top level of package from 'com' to 'lib', which makes much more sense. Do not "Link to files and recreate folder structure with virtual folders", it will not allow you to add other libraries with the same top level.
+- Added Javadoc for all methods.
+- Fixed several typos.
+- Removed redundant methods retry() and retryResult().
+- Created empty Oracle driver to finish later and as an example for anyone wishing to add more drivers (Microsoft SQL, PostgreSQL, etc.).
+
+Version 3.0.1 (alpha)
+- Changed developer from alta189 to PatPeter.
+- Consolidated two packages (MySQL and SQLLite) into one.
+- Converted DatabaseHandler.java into an abstract class so that additional database engines can be supported.
+- Removed redundant methods (methods pointing to a method in another file with no changes or methods that change very minor aspects of code in other methods).
+- Changed all *Query methods to simply query().
+
 Version 2.0
 - Added MySQL support
 - New Structure

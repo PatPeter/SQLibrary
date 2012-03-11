@@ -7,26 +7,15 @@
  */
 package lib.PatPeter.SQLibrary;
 
-/*
- * MySQL
- */
-//import java.net.MalformedURLException;
-
-/*
- * Both
- */
-//import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-//import java.util.logging.Logger;
 import java.util.logging.Logger;
-//import com.sun.rowset.JdbcRowSetImpl;
 
-public class MySQL extends DatabaseHandler {
+public class MySQL extends Database {
 	private String hostname = "localhost";
 	private String portnmbr = "3306";
 	private String username = "minecraft";
@@ -48,24 +37,6 @@ public class MySQL extends DatabaseHandler {
 		this.password = password;
 	}
 	
-	/*@Override
-	public void writeInfo(String toWrite) {
-		if (toWrite != null) {
-			this.log.info(this.PREFIX + this.DATABASE_PREFIX + toWrite);
-		}
-	}
-	
-	@Override
-	public void writeError(String toWrite, boolean severe) {
-		if (toWrite != null) {
-			if (severe) {
-				this.log.severe(this.PREFIX + this.DATABASE_PREFIX + toWrite);
-			} else {
-				this.log.warning(this.PREFIX + this.DATABASE_PREFIX + toWrite);
-			}
-		}
-	}*/
-	
 	@Override
 	protected boolean initialize() {
 		try {
@@ -83,7 +54,8 @@ public class MySQL extends DatabaseHandler {
 			String url = "";
 		    try {
 				url = "jdbc:mysql://" + this.hostname + ":" + this.portnmbr + "/" + this.database;
-				return DriverManager.getConnection(url, this.username, this.password);
+				//return DriverManager.getConnection(url, this.username, this.password);
+				this.connection = DriverManager.getConnection(url, this.username, this.password);
 		    } catch (SQLException e) {
 		    	this.writeError(url,true);
 		    	this.writeError("Could not be resolved because of an SQL Exception: " + e.getMessage() + ".", true);
@@ -94,7 +66,7 @@ public class MySQL extends DatabaseHandler {
 	
 	@Override
 	public void close() {
-		Connection connection = open();
+		//Connection connection = open();
 		try {
 			if (connection != null)
 				connection.close();
@@ -106,13 +78,13 @@ public class MySQL extends DatabaseHandler {
 	@Override
 	public Connection getConnection() {
 		//if (this.connection == null)
-		return open();
-		//return this.connection;
+		//return open();
+		return this.connection;
 	}
 	
 	@Override
 	public boolean checkConnection() { // http://forums.bukkit.org/threads/lib-tut-mysql-sqlite-bukkit-drivers.33849/page-4#post-701550
-		Connection connection = this.open();
+		//Connection connection = this.open();
 		if (connection != null)
 			return true;
 		return false;
@@ -120,23 +92,25 @@ public class MySQL extends DatabaseHandler {
 	
 	@Override
 	public ResultSet query(String query) {
-		Connection connection = null;
+		//Connection connection = null;
 		Statement statement = null;
 		ResultSet result = null/*new JdbcRowSetImpl()*/;
 		try {
-			connection = open();
-		    statement = connection.createStatement();
+			//connection = open();
+			//if (checkConnection())
+		    statement = this.connection.createStatement();
 		    result = statement.executeQuery("SELECT CURTIME()");
 		    
 		    switch (this.getStatement(query)) {
 			    case SELECT:
 				    result = statement.executeQuery(query);
-				    return result;
+				    break;
 			    
 			    default:
 			    	statement.executeUpdate(query);
-			    	return result;
 		    }
+		    //connection.close();
+	    	return result;
 		} catch (SQLException e) {
 			this.writeError("Error in SQL query: " + e.getMessage(), false);
 		}
@@ -145,11 +119,11 @@ public class MySQL extends DatabaseHandler {
 	
 	@Override
 	public PreparedStatement prepare(String query) {
-		Connection connection = null;
+		//Connection connection = null;
 		PreparedStatement ps = null;
 		try
 		{
-			connection = open();
+			//connection = open();
 			ps = connection.prepareStatement(query);
 			return ps;
 		} catch(SQLException e) {
@@ -163,7 +137,7 @@ public class MySQL extends DatabaseHandler {
 	public boolean createTable(String query) {
 		Statement statement = null;
 		try {
-			this.connection = this.open();
+			//this.connection = this.open();
 			if (query.equals("") || query == null) {
 				this.writeError("SQL query empty: createTable(" + query + ")", true);
 				return false;
@@ -184,7 +158,7 @@ public class MySQL extends DatabaseHandler {
 	@Override
 	public boolean checkTable(String table) {
 		try {
-			Connection connection = open();
+			//Connection connection = open();
 			//this.connection = this.open();
 		    Statement statement = connection.createStatement();
 		    
@@ -218,7 +192,7 @@ public class MySQL extends DatabaseHandler {
 				return false;
 			}
 			//connection = open();
-			this.connection = this.open();
+			//this.connection = this.open();
 		    statement = this.connection.createStatement();
 		    query = "DELETE FROM " + table + ";";
 		    statement.executeUpdate(query);
