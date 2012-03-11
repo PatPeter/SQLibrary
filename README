@@ -1,10 +1,16 @@
+Version 3.0.7 (alpha)
+- 2012-03-11 14:33 - Created plugin.yml for exporting jar files.
+- 2012-03-11 14:48 - Merged Belphemur's code in with the Library's main code.
+
 Version 3.0.6 (alpha)
 - 2011-12-10 03:16 - Fixed "Too many connections" propagated from faulty Linux fix.
 - 2012-02-12 17:18 - Renamed DatabaseHandler.java to simply Database.java.
 - 2012-02-12 18:39 - Removed imports in Oracle.java until developed.
+- 2012-02-17 01:17 - Merged Test Suite with library in GitHub.
 - 2012-03-11 14:08 - Removed infinite loop in SQLite and the original retry().
 - 2012-03-11 14:11 - Merged CHANGELOG with README.
 - 2012-03-11 14:20 - Added SQLibrary.java on jertocvil's request.
+- 2012-03-11 14:27 - Released 3.0.6.
 
 Version 3.0.5.2 (alpha-fix)
 - 2011-12-10 03:17 - Class only uses one connection to avoid "Too Many Connections".

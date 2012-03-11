@@ -1,0 +1,16 @@
+# http://wiki.bukkit.org/Plugin_YAML
+name: SQLibrary
+version: 3.0.6
+description: A library for ease of connection between a plugin and any database engine.
+
+author: PatPeter
+#authors: 
+#website: 
+
+main: lib.PatPeter.SQLibrary.SQLibrary
+database: false
+#depend: []
+
+#commands:
+
+#permissions:
