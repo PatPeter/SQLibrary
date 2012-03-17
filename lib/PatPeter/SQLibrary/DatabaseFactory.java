@@ -23,7 +23,7 @@ import lib.PatPeter.SQLibrary.DatabaseConfig.Parameter;
  * 
  */
 public class DatabaseFactory {
-	public static DatabaseHandler createDatabase(DatabaseConfig config) throws InvalidConfiguration {
+	public static Database createDatabase(DatabaseConfig config) throws InvalidConfiguration {
 		if (!config.isValid())
 			throw new InvalidConfiguration(
 					"The configuration is invalid, you don't have enought parameter for that DB : "

@@ -35,10 +35,24 @@ public abstract class Database {
 	protected final String DATABASE_PREFIX;
 	protected boolean connected;
 	protected Connection connection;
+	
+	// http://dev.mysql.com/doc/refman/5.6/en/sql-syntax.html
+	// http://sqlite.org/lang.html
 	protected enum Statements {
 		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
-		CREATE, ALTER, DROP, TRUNCATE, RENAME  // Data definition statements
+		CREATE, ALTER, DROP, TRUNCATE, RENAME,  // Data definition statements
+		
+		// MySQL-specific
+		START, COMMIT, ROLLBACK, SAVEPOINT, LOCK, UNLOCK, // MySQL Transactional and Locking Statements
+		PREPARE, EXECUTE, DEALLOCATE, // Prepared Statements
+		SET, SHOW, // Database Administration
+		DESCRIBE, EXPLAIN, HELP, USE, // Utility Statements
+		
+		// SQLite-specific
+		ANALYZE, ATTACH, BEGIN, DETACH, END, INDEXED, ON, PRAGMA, REINDEX, RELEASE, VACUUM
 	}
+	
+	public int lastUpdate;
 	
 	/*
 	 *  MySQL, SQLite

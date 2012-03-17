@@ -1,6 +1,14 @@
 Version 3.0.7 (alpha)
 - 2012-03-11 14:33 - Created plugin.yml for exporting jar files.
 - 2012-03-11 14:48 - Merged Belphemur's code in with the Library's main code.
+- 2012-03-17 11:39 - Fixed DatabaseFactory returning DatabaseHandler and InvalidConfiguration using an inappropriate super().
+- 2012-03-17 12:52 - Specified method names in error messages for easier debugging.
+- 2012-03-17 13:10 - Changed executeQuery() to executeUpdate() in query() for SQLite.
+- 2012-03-17 13:15 - Added lastUpdate to Database for any executeUpdate() queries.
+- 2012-03-17 13:25 - Added INSERT, UPDATE, and DELETE to query() switches.
+- 2012-03-17 13:50 - Added the rest of standard statements to switches.
+- 2012-03-17 13:53 - Added many more statements for MySQL and SQLite to Database.Statements.
+- 2012-03-17 14:00 - Released 3.0.7.
 
 Version 3.0.6 (alpha)
 - 2011-12-10 03:16 - Fixed "Too many connections" propagated from faulty Linux fix.

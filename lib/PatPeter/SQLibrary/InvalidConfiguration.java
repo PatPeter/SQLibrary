@@ -67,7 +67,8 @@ public class InvalidConfiguration extends Exception {
 	 */
 	public InvalidConfiguration(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(message,cause);
+		//super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
 
