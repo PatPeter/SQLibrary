@@ -14,12 +14,12 @@ public class SQLibrary extends JavaPlugin {
     public static final Logger logger = Logger.getLogger("Minecraft");
  
     @Override
-    public void onDisable() {
-        SQLibrary.logger.log(Level.INFO, "SQLibrary stopped.");
+    public void onEnable() {
+        SQLibrary.logger.log(Level.INFO, "SQLibrary loaded.");
     }
  
     @Override
-    public void onEnable() {
-        SQLibrary.logger.log(Level.INFO, "SQLibrary loaded.");
+    public void onDisable() {
+        SQLibrary.logger.log(Level.INFO, "SQLibrary stopped.");
     }
 } 

@@ -1,6 +1,5 @@
 package me.PatPeter.SQLTestSuite;
 
-//import java.net.MalformedURLException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -9,10 +8,14 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.Listener;
 
-public class OwnerPlayerListener extends PlayerListener{
+public class OwnerPlayerListener implements Listener {
 	private OwnerCore plugin;
+	
+	public OwnerPlayerListener() {
+		
+	}
 	
 	public OwnerPlayerListener(OwnerCore plugin) {
 		this.plugin = plugin;
@@ -31,18 +34,11 @@ public class OwnerPlayerListener extends PlayerListener{
 			ResultSet result = null;
 			
 			if (plugin.MySQL) {
-				//try {
+				try {
 					result = this.plugin.mysql.query(query);
-				/*} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
+				} catch (SQLException e) {
 					e.printStackTrace();
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
+				}
 			} else {
 				result = this.plugin.sqlite.query(query);
 			}
@@ -62,7 +58,6 @@ public class OwnerPlayerListener extends PlayerListener{
 					player.sendMessage(ChatColor.GREEN + "This block is not owned");
 				}
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else if (this.plugin.commandUsers.get(player.getName().toLowerCase()) == 1){ //Create Mode
@@ -73,18 +68,11 @@ public class OwnerPlayerListener extends PlayerListener{
 			String query = "INSERT INTO blocks (owner, x, y, z) VALUES ('" + player.getName().toLowerCase() +"', " + block.getX() + ", " + block.getY() + ", " + block.getZ() + ");";
 			
 			if (plugin.MySQL) {
-				//try {
+				try {
 					this.plugin.mysql.query(query);
-				/*} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
+				} catch (SQLException e) {
 					e.printStackTrace();
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
+				}
 				player.sendMessage(ChatColor.GREEN + "This block is now owned by alta189");
 			} else {
 				this.plugin.sqlite.query(query);
@@ -98,18 +86,11 @@ public class OwnerPlayerListener extends PlayerListener{
 		ResultSet result = null;
 		
 		if (plugin.MySQL) {
-			//try {
+			try {
 				result = this.plugin.mysql.query(query);
-			/*} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
+			} catch (SQLException e) {
 				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+			}
 		} else {
 			result = this.plugin.sqlite.query(query);
 		}
@@ -121,7 +102,6 @@ public class OwnerPlayerListener extends PlayerListener{
 				return true;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;

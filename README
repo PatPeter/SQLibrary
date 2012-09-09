@@ -1,3 +1,16 @@
+Version 3.1 (release)
+2012-09-09
+- Added support for every statement in MySQL and SQLite into their respective query() methods.
+- All boolean methods return false on fail, all other methods throw exceptions so that plugin authors can check for errors.
+- Moved close(), getConnection(), checkConnection(), and prepare() into Database.java.
+- Actually implemented the prefix() method.
+
+Version 3.0.8 (alpha)
+- 2012-03-21 21:07 - Fixed IndexOutOfBoundsException in getStatement() (thanks robxu9).
+- 2012-03-21 22:10 - Added DatabaseException to getStatement() and MySQL.
+- 2012-03-24 14:10 - Updated the Test Suite to 1.2 and added DatabaseException to SQLite.
+- 2012-07-26 19:20 - query() now throws DatabaseException so that plugins can know whether a query failed or not.
+
 Version 3.0.7 (alpha)
 - 2012-03-11 14:33 - Created plugin.yml for exporting jar files.
 - 2012-03-11 14:48 - Merged Belphemur's code in with the Library's main code.
@@ -36,29 +49,29 @@ Version 3.0.5 (alpha)
 - 2011-09-03 17:19 - Added empty class files for future database support.
 - 2011-09-13 03:01 - Fixed getStatement() by changing equals() to equalsIgnoreCase().
 - 2011-09-17 19:06 - Fixed query() by having it return result instead of null.
--         ??       - Removed redundant exceptions from methods.
+- Removed redundant exceptions from methods.
 - 2011-09-17 20:07 - Released 3.0.5.
 
 Version 3.0.4 (alpha)
-- 2011/08/30 17:02 - Moved writeInfo and writeError into superclass.
-- 2011/08/30 17:59 - Moved retry and retryResult back into SQLite.
-- 2011/08/30 20:35 - Fixed error where query() could only run SELECT statements by adding an enum and test method.
-- 2011/08/30 21:09 - Added initialize() method that checks for the library.
-- 2011/08/30 21:12 - Connection defaults to null in superclass.
-- 2011/08/30 21:15 - Methods always reference this.connection.
-- 2011/08/30 21:35 - Fixed createTable() wrongly checking for null strings.
-- 2011/08/30 22:34 - Added getStatement() method that determines what statement the user is calling.
+- 2011-08-30 17:02 - Moved writeInfo and writeError into superclass.
+- 2011-08-30 17:59 - Moved retry and retryResult back into SQLite.
+- 2011-08-30 20:35 - Fixed error where query() could only run SELECT statements by adding an enum and test method.
+- 2011-08-30 21:09 - Added initialize() method that checks for the library.
+- 2011-08-30 21:12 - Connection defaults to null in superclass.
+- 2011-08-30 21:15 - Methods always reference this.connection.
+- 2011-08-30 21:35 - Fixed createTable() wrongly checking for null strings.
+- 2011-08-30 22:34 - Added getStatement() method that determines what statement the user is calling.
 
 Version 3.0.3.2 (alpha, fix)
-- 2011/08/29 19:10 - Added port number to the MySQL constructor and class.
-- 2011/08/29 19:17 - Added default values for hostname, port number, and database.
+- 2011-08-29 19:10 - Added port number to the MySQL constructor and class.
+- 2011-08-29 19:17 - Added default values for hostname, port number, and database.
 
 Version 3.0.3.1 (alpha, fix)
-- 2011/08/28 22:24 - Attempted fix for 68x's bug: http://forums.bukkit.org/threads/lib-tut-mysql-sqlite-bukkit-drivers.33849/#post-629713 . Added "/" to the end of the jdbc: url.
+- 2011-08-28 22:24 - Attempted fix for 68x's bug: http://forums.bukkit.org/threads/lib-tut-mysql-sqlite-bukkit-drivers.33849/#post-629713 . Added "/" to the end of the jdbc: url.
 
 Version 3.0.3 (alpha)
-- 2011/08/28 03:06 - Added constructor to DatabaseHandler for use of super() in subclasses.
-- 2011/08/28 03:14 - Added DATABASE_PREFIX to DatabaseHandler.
+- 2011-08-28 03:06 - Added constructor to DatabaseHandler for use of super() in subclasses.
+- 2011-08-28 03:14 - Added DATABASE_PREFIX to DatabaseHandler.
 
 Version 3.0.2 (alpha)
 - Changed top level of package from 'com' to 'lib', which makes much more sense. Do not "Link to files and recreate folder structure with virtual folders", it will not allow you to add other libraries with the same top level.

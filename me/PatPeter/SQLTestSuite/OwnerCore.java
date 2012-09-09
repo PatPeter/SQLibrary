@@ -4,6 +4,7 @@ import static java.lang.System.out;
 
 import java.io.File;
 //import java.net.MalformedURLException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -11,8 +12,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.plugin.PluginManager;
+//import org.bukkit.event.Event;
+//import org.bukkit.event.EventPriority;
+//import org.bukkit.event.entity.EntityInteractEvent;
+//import org.bukkit.plugin.EventExecutor;
+//import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lib.PatPeter.SQLibrary.*;
@@ -108,7 +112,7 @@ public class OwnerCore extends JavaPlugin {
 					if (!this.mysql.checkTable("blocks")) { // Check if the table exists in the database if not create it
 						this.log.info(this.logPrefix + "Creating table blocks");
 						String query = "CREATE TABLE blocks (id INT, owner VARCHAR(255), x INT, y INT, z INT);";
-						this.mysql.createTable(query); // Use MySQL.createTable(query) to create tables
+						this.mysql.createTable(query);
 					}
 				} else {
 					this.log.severe(this.logPrefix + "MySQL connection failed");
@@ -131,7 +135,12 @@ public class OwnerCore extends JavaPlugin {
 			this.sqlite = new SQLite(this.log, this.logPrefix, "Owners", pFolder.getPath());
 			
 			// Initialize SQLite handler
-			this.sqlite.open();
+			try {
+				this.sqlite.open();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			// Check if the table exists, if it doesn't create it
 			if (!this.sqlite.checkTable("blocks")) {
@@ -143,8 +152,8 @@ public class OwnerCore extends JavaPlugin {
 		}
 		
 		// Register Listeners \\
-		PluginManager pm = this.getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, new OwnerPlayerListener(this), Event.Priority.Normal, this);
+		//PluginManager pm = this.getServer().getPluginManager();
+		//pm.registerEvent(, new OwnerPlayerListener(this), EventPriority.NORMAL, new SQLEventExecutor(), this);
 		
 		this.log.info(this.logPrefix + "Owner is finished initializing");
 		

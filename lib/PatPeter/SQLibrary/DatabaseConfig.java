@@ -34,6 +34,10 @@ public class DatabaseConfig {
 	public enum DatabaseType {
 		MYSQL,
 		SQLITE,
+		MICROSOFTSQL,
+		ORACLE,
+		POSTGRESQL,
+		H2,
 		ALL;
 	}
 

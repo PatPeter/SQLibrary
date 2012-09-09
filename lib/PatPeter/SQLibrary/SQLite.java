@@ -18,7 +18,6 @@ import java.sql.DatabaseMetaData;
  */
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -58,33 +57,38 @@ public class SQLite extends Database {
 	}
 	
 	@Override
-	public Connection open() {
+	public Connection open() throws SQLException {
 		if (initialize()) {
 			try {
-			  this.connection = DriverManager.getConnection("jdbc:sqlite:" +
-					  	   sqlFile.getAbsolutePath());
-			  return this.connection;
+				this.connection = DriverManager.getConnection("jdbc:sqlite:" +
+				sqlFile.getAbsolutePath());
+				return this.connection;
 			} catch (SQLException e) {
-			  this.writeError("SQL exception in open(): " + e, true);
+				//this.writeError("SQL exception in open(): " + e, true);
+				this.writeError("open() threw an SQLException: " + e.getMessage(), true);
 			}
 		}
 		return null;
 	}
 	
-	@Override
-	public void close() {
-		if (connection != null)
+	/*@Override
+	public boolean close() {
+		if (connection != null) {
 			try {
 				connection.close();
-			} catch (SQLException ex) {
-				this.writeError("SQL exception in close(): " + ex, true);
+				return true;
+			} catch (SQLException e) {
+				this.writeError("Could not close connection, SQLException: " + e.getMessage(), true);
+				return false;
 			}
+		} else {
+			this.writeError("Could not close connection, it is null.", true);
+			return false;
+		}
 	}
 	
 	@Override
 	public Connection getConnection() {
-		if (this.connection == null)
-			return open();
 		return this.connection;
 	}
 	
@@ -93,7 +97,7 @@ public class SQLite extends Database {
 		if (connection != null)
 			return true;
 		return false;
-	}
+	}*/
 	
 	@Override
 	public ResultSet query(String query) {
@@ -106,86 +110,100 @@ public class SQLite extends Database {
 			result = statement.executeQuery("SELECT date('now')");
 			
 			switch (this.getStatement(query)) {
-				case SELECT:
-					result = statement.executeQuery(query);
-					break;
+			    case SELECT:
+			    case DO:
+			    case HANDLER:
+				    result = statement.executeQuery(query);
+				    break;
 				
 			    case INSERT:
 			    case UPDATE:
-			    case DELETE:	
+			    case DELETE:
+				    
+			    case REPLACE:
+			    case LOAD:
+			    case CALL:
+			    
 			    case CREATE:
 			    case ALTER:
 			    case DROP:
 			    case TRUNCATE:
 			    case RENAME:
-			    case DO:
-			    case REPLACE:
-			    case LOAD:
-			    case HANDLER:
-			    case CALL:
+			    	
+			    case ANALYZE:
+			    case ATTACH:
+			    case BEGIN:
+			    case DETACH:
+			    case END:
+			    case INDEXED:
+			    case ON:
+			    case PRAGMA:
+			    case REINDEX:
+			    case RELEASE:
+			    case VACUUM:
 			    	this.lastUpdate = statement.executeUpdate(query);
 			    	break;
-				
-				default:
-					result = statement.executeQuery(query);
-					
+			    	
+			    default:
+			    	result = statement.executeQuery(query);
 			}
-			return result;	
+			return result;
 		} catch (SQLException e) {
 			if (e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked")) {
 				return retry(query);
 			} else {
-				this.writeError("SQL exception in query(): " + e.getMessage(), false);
+				this.writeError("Query failed: " + e.getMessage(), false);
 			}
 			
 		}
 		return null;
 	}
 
-	@Override
-	PreparedStatement prepare(String query) {
-		try
+	/*@Override
+	PreparedStatement prepare(String query) throws SQLException {
+		/*try
 	    {
-	        connection = open();
-	        PreparedStatement ps = connection.prepareStatement(query);
-	        return ps;
-	    } catch(SQLException e) {
+	        connection = open();*
+        //PreparedStatement ps = connection.prepareStatement(query);
+        return connection.prepareStatement(query);
+	    /*} catch(SQLException e) {
 	        if(!e.toString().contains("not return ResultSet"))
-	        	this.writeError("SQL exception in prepare(): " + e.getMessage(), false);
+	        	this.writeError("Could not prepare query: " + e.getMessage(), false);
 	    }
-	    return null;
-	}
+	    return null;*
+	}*/
 	
 	@Override
 	public boolean createTable(String query) {
 		Statement statement = null;
 		try {
 			if (query.equals("") || query == null) {
-				this.writeError("Parameter 'query' empty or null in createTable().", true);
+				this.writeError("Could not create table: query is empty or null.", true);
 				return false;
 			}
 			
 			statement = connection.createStatement();
 			statement.execute(query);
 			return true;
-		} catch (SQLException ex){
-			this.writeError(ex.getMessage(), true);
+		} catch (SQLException e){
+			this.writeError("Could not create table, SQLException: " + e.getMessage(), true);
 			return false;
 		}
 	}
 	
 	@Override
 	public boolean checkTable(String table) {
-		DatabaseMetaData dbm = null;
+		DatabaseMetaData md = null;
 		try {
-			dbm = this.open().getMetaData();
-			ResultSet tables = dbm.getTables(null, null, table, null);
+			//dbm = this.open().getMetaData();
+			md = this.connection.getMetaData();
+			ResultSet tables = md.getTables(null, null, table, null);
 			if (tables.next())
-			  return true;
+				return true;
 			else
-			  return false;
+				return false;
 		} catch (SQLException e) {
-			this.writeError("Failed to check if table \"" + table + "\" exists: " + e.getMessage(), true);
+			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
 			return false;
 		}
 	}
@@ -196,18 +214,17 @@ public class SQLite extends Database {
 		String query = null;
 		try {
 			if (!this.checkTable(table)) {
-				this.writeError("Table \"" + table + "\" in wipeTable() does not exist.", true);
+				this.writeError("Table \"" + table + "\" does not exist.", true);
 				return false;
 			}
 			statement = connection.createStatement();
 			query = "DELETE FROM " + table + ";";
 			statement.executeQuery(query);
 			return true;
-		} catch (SQLException ex) {
-			if (!(ex.getMessage().toLowerCase().contains("locking") ||
-				ex.getMessage().toLowerCase().contains("locked")) &&
-				!ex.toString().contains("not return ResultSet"))
-					this.writeError("Error at SQL Wipe Table Query: " + ex, false);
+		} catch (SQLException e) {
+			if (!(e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked")) &&
+				!e.toString().contains("not return ResultSet"))
+					this.writeError("Error in wipeTable() query: " + e, false);
 			return false;
 		}
 	}
@@ -229,11 +246,11 @@ public class SQLite extends Database {
 			statement = connection.createStatement();
 			result = statement.executeQuery(query);
 			return result;
-		} catch (SQLException ex) {
-			if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
+		} catch (SQLException e) {
+			if (e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked")) {
 				this.writeError("Please close your previous ResultSet to run the query: \n\t" + query, false);
 			} else {
-				this.writeError("SQL exception in retry(): " + ex.getMessage(), false);
+				this.writeError("SQLException in retry(): " + e.getMessage(), false);
 			}
 		}
 		
