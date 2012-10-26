@@ -1,10 +1,7 @@
 package me.PatPeter.SQLTestSuite;
 
-import static java.lang.System.out;
-
 import java.io.File;
-//import java.net.MalformedURLException;
-import java.sql.SQLException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -12,11 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-//import org.bukkit.event.Event;
-//import org.bukkit.event.EventPriority;
-//import org.bukkit.event.entity.EntityInteractEvent;
-//import org.bukkit.plugin.EventExecutor;
-//import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lib.PatPeter.SQLibrary.*;
@@ -31,6 +23,7 @@ public class OwnerCore extends JavaPlugin {
 	// Handlers
 	public MySQL mysql;
 	public SQLite sqlite;
+	protected OwnerPlayerListener opl;
 	public SettingsHandler settings;
 	public HashMap<String, Integer> commandUsers = new HashMap<String, Integer>(); //Stores info about people using commands
 	
@@ -50,10 +43,16 @@ public class OwnerCore extends JavaPlugin {
 		this.log.info(this.logPrefix + "Owner is initializing"); // Sends to the console
 		
 		// Declare the settings handler
+		this.opl = new OwnerPlayerListener(this);
 		settings = new SettingsHandler("Settings.properties", pFolder.getPath() + File.separator + "MySQL.properties");
 		
 		// load the settings handler
-		settings.load();
+		try {
+			settings.load();
+		} catch (IOException e) {
+			log.severe("Could not load settings! Exiting plugin.");
+			return;
+		}
 		
 		// get variables from settings handler\\
 		if (settings.file.exists() && settings.isValidProperty("MySQL")) {
@@ -100,34 +99,19 @@ public class OwnerCore extends JavaPlugin {
 			
 			this.log.info(this.logPrefix + "MySQL Initializing");
 			// Initialize MySQL Handler
-			try {
-				this.mysql.open();
-			} catch (Exception e) {
-				out.println(e.getMessage());
-			}
+			this.mysql.open();
 			
-			//try {
-				if (this.mysql.checkConnection()) { // Check if the Connection was successful
-					this.log.info(this.logPrefix + "MySQL connection successful");
-					if (!this.mysql.checkTable("blocks")) { // Check if the table exists in the database if not create it
-						this.log.info(this.logPrefix + "Creating table blocks");
-						String query = "CREATE TABLE blocks (id INT, owner VARCHAR(255), x INT, y INT, z INT);";
-						this.mysql.createTable(query);
-					}
-				} else {
-					this.log.severe(this.logPrefix + "MySQL connection failed");
-					this.MySQL = false;
+			if (this.mysql.checkConnection()) { // Check if the Connection was successful
+				this.log.info(this.logPrefix + "MySQL connection successful");
+				if (!this.mysql.checkTable("blocks")) { // Check if the table exists in the database if not create it
+					this.log.info(this.logPrefix + "Creating table blocks");
+					String query = "CREATE TABLE blocks (id INT, owner VARCHAR(255), x INT, y INT, z INT);";
+					this.mysql.createTable(query);
 				}
-			/*} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+			} else {
+				this.log.severe(this.logPrefix + "MySQL connection failed");
+				this.MySQL = false;
+			}
 		} else {
 			this.log.info(this.logPrefix + "SQLite Initializing");
 			
@@ -135,12 +119,7 @@ public class OwnerCore extends JavaPlugin {
 			this.sqlite = new SQLite(this.log, this.logPrefix, "Owners", pFolder.getPath());
 			
 			// Initialize SQLite handler
-			try {
-				this.sqlite.open();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.sqlite.open();
 			
 			// Check if the table exists, if it doesn't create it
 			if (!this.sqlite.checkTable("blocks")) {
@@ -160,8 +139,7 @@ public class OwnerCore extends JavaPlugin {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) { 
-		Player player = (Player)sender;
-		
+		Player player = (Player) sender;
 		
 		if (commandLabel.equalsIgnoreCase("create") && player != null) {
 			

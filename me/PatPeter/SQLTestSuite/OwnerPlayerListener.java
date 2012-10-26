@@ -13,10 +13,6 @@ import org.bukkit.event.Listener;
 public class OwnerPlayerListener implements Listener {
 	private OwnerCore plugin;
 	
-	public OwnerPlayerListener() {
-		
-	}
-	
 	public OwnerPlayerListener(OwnerCore plugin) {
 		this.plugin = plugin;
 	}
@@ -29,18 +25,18 @@ public class OwnerPlayerListener implements Listener {
 		
 		Block block = event.getClickedBlock();
 		
-		if (this.plugin.commandUsers.get(player.getName().toLowerCase()) == 2) { // INFO MODE
+		if (plugin.commandUsers.get(player.getName().toLowerCase()) == 2) { // INFO MODE
 			String query = "SELECT * FROM blocks WHERE x = " + block.getX() + " AND y = " + block.getY() + " AND z = " + block.getZ() + ";";
 			ResultSet result = null;
 			
 			if (plugin.MySQL) {
 				try {
-					result = this.plugin.mysql.query(query);
+					result = plugin.mysql.query(query);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			} else {
-				result = this.plugin.sqlite.query(query);
+				result = plugin.sqlite.query(query);
 			}
 			
 			try {
@@ -60,50 +56,37 @@ public class OwnerPlayerListener implements Listener {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		} else if (this.plugin.commandUsers.get(player.getName().toLowerCase()) == 1){ //Create Mode
-			
-			if (!this.checkBlock(block)) return;
-			
-			
-			String query = "INSERT INTO blocks (owner, x, y, z) VALUES ('" + player.getName().toLowerCase() +"', " + block.getX() + ", " + block.getY() + ", " + block.getZ() + ");";
-			
-			if (plugin.MySQL) {
-				try {
+		} else if (plugin.commandUsers.get(player.getName().toLowerCase()) == 1){ //Create Mode
+			try {
+				if (!checkBlock(block)) return;
+				String query = "INSERT INTO blocks (owner, x, y, z) VALUES ('" + player.getName().toLowerCase() +"', " + block.getX() + ", " + block.getY() + ", " + block.getZ() + ");";
+				
+				if (plugin.MySQL) {
 					this.plugin.mysql.query(query);
-				} catch (SQLException e) {
-					e.printStackTrace();
+					player.sendMessage(ChatColor.GREEN + "This block is now owned by alta189");
+				} else {
+					this.plugin.sqlite.query(query);
 				}
-				player.sendMessage(ChatColor.GREEN + "This block is now owned by alta189");
-			} else {
-				this.plugin.sqlite.query(query);
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			
 		}
 	}
 	
-	public Boolean checkBlock(Block block) {
+	public Boolean checkBlock(Block block) throws SQLException {
 		String query = "SELECT * FROM blocks WHERE x = " + block.getX() + " AND y = " + block.getY() + " AND z = " + block.getZ() + ";";
 		ResultSet result = null;
 		
 		if (plugin.MySQL) {
-			try {
-				result = this.plugin.mysql.query(query);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			result = this.plugin.mysql.query(query);
 		} else {
 			result = this.plugin.sqlite.query(query);
 		}
 		
-		try {
-			if (result != null && result.next()) {
-				return false;
-			} else {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (result != null && result.next()) {
+			return false;
+		} else {
+			return true;
 		}
-		return false;
 	}
 }

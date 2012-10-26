@@ -16,8 +16,8 @@ import java.sql.DatabaseMetaData;
 /*
  * Both
  */
-import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -27,6 +27,13 @@ public class SQLite extends Database {
 	public String location;
 	public String name;
 	private File sqlFile;
+	
+	private enum Statements implements SQLStatement {
+		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
+		CREATE, ALTER, DROP, TRUNCATE, RENAME,  // Data definition statements
+		RELEASE,
+		ANALYZE, ATTACH, BEGIN, DETACH, END, INDEXED, ON, PRAGMA, REINDEX, VACUUM
+	}
 	
 	public SQLite(Logger log, String prefix, String name, String location) {
 		super(log,prefix,"[SQLite] ");
@@ -43,12 +50,12 @@ public class SQLite extends Database {
 		}
 		
 		sqlFile = new File(folder.getAbsolutePath() + File.separator + name + ".db");
+		this.driver = Driver.SQLite;
 	}
 	
 	protected boolean initialize() {
 		try {
 		  Class.forName("org.sqlite.JDBC");
-		  
 		  return true;
 		} catch (ClassNotFoundException e) {
 		  this.writeError("Class not found in initialize(): " + e, true);
@@ -57,47 +64,19 @@ public class SQLite extends Database {
 	}
 	
 	@Override
-	public Connection open() throws SQLException {
+	public boolean open() {
 		if (initialize()) {
 			try {
-				this.connection = DriverManager.getConnection("jdbc:sqlite:" +
-				sqlFile.getAbsolutePath());
-				return this.connection;
+				this.connection = DriverManager.getConnection("jdbc:sqlite:" + sqlFile.getAbsolutePath());
 			} catch (SQLException e) {
-				//this.writeError("SQL exception in open(): " + e, true);
-				this.writeError("open() threw an SQLException: " + e.getMessage(), true);
-			}
-		}
-		return null;
-	}
-	
-	/*@Override
-	public boolean close() {
-		if (connection != null) {
-			try {
-				connection.close();
-				return true;
-			} catch (SQLException e) {
-				this.writeError("Could not close connection, SQLException: " + e.getMessage(), true);
+				this.writeError("Could not establish an SQLite connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
+			return true;
 		} else {
-			this.writeError("Could not close connection, it is null.", true);
 			return false;
 		}
 	}
-	
-	@Override
-	public Connection getConnection() {
-		return this.connection;
-	}
-	
-	@Override
-	public boolean checkConnection() {
-		if (connection != null)
-			return true;
-		return false;
-	}*/
 	
 	@Override
 	public ResultSet query(String query) {
@@ -105,7 +84,6 @@ public class SQLite extends Database {
 		ResultSet result = null;
 		
 		try {
-			connection = this.open();
 			statement = connection.createStatement();
 			result = statement.executeQuery("SELECT date('now')");
 			
@@ -147,6 +125,9 @@ public class SQLite extends Database {
 			    default:
 			    	result = statement.executeQuery(query);
 			}
+			//result.close(); // This is here to remind you to close your ResultSets
+			//statement.close(); // This closes automatically, don't worry about it
+			
 			return result;
 		} catch (SQLException e) {
 			if (e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked")) {
@@ -158,20 +139,66 @@ public class SQLite extends Database {
 		}
 		return null;
 	}
-
-	/*@Override
-	PreparedStatement prepare(String query) throws SQLException {
-		/*try
-	    {
-	        connection = open();*
-        //PreparedStatement ps = connection.prepareStatement(query);
-        return connection.prepareStatement(query);
-	    /*} catch(SQLException e) {
-	        if(!e.toString().contains("not return ResultSet"))
-	        	this.writeError("Could not prepare query: " + e.getMessage(), false);
-	    }
-	    return null;*
-	}*/
+	
+	@Override
+	public ResultSet query(PreparedStatement ps) {
+		return null;
+	}
+	
+	protected Statements getStatement(String query) throws SQLException {
+		if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("SELECT"))
+			return Statements.SELECT;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("INSERT"))
+			return Statements.INSERT;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("UPDATE"))
+			return Statements.UPDATE;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("DELETE"))
+			return Statements.DELETE;
+		else if (query.length() > 1 && query.substring(0,2).equalsIgnoreCase("DO"))
+			return Statements.DO;
+		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("REPLACE"))
+			return Statements.REPLACE;
+		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("LOAD"))
+			return Statements.LOAD;
+		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("HANDLER"))
+			return Statements.HANDLER;
+		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("CALL"))
+			return Statements.CALL;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("CREATE"))
+			return Statements.CREATE;
+		else if (query.length() > 4 && query.substring(0,5).equalsIgnoreCase("ALTER"))
+			return Statements.ALTER;
+		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("DROP"))
+			return Statements.DROP;
+		else if (query.length() > 7 && query.substring(0,8).equalsIgnoreCase("TRUNCATE"))
+			return Statements.TRUNCATE;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("RENAME"))
+			return Statements.RENAME;
+		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("ANALYSE"))
+			return Statements.ANALYZE;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("ATTACH"))
+			return Statements.ATTACH;
+		else if (query.length() > 4 && query.substring(0,5).equalsIgnoreCase("BEGIN"))
+			return Statements.BEGIN;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("DETACH"))
+			return Statements.DETACH;
+		else if (query.length() > 2 && query.substring(0,3).equalsIgnoreCase("END"))
+			return Statements.END;
+		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("INDEXED"))
+			return Statements.INDEXED;
+		else if (query.length() > 1 && query.substring(0,2).equalsIgnoreCase("ON"))
+			return Statements.ON;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("PRAGMA"))
+			return Statements.PRAGMA;
+		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("REINDEX"))
+			return Statements.REINDEX;
+		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("RELEASE"))
+			return Statements.RELEASE;
+		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("VACUUM"))
+			return Statements.VACUUM;
+		else
+			throw new SQLException("Unknown statement \"" + query + "\".");
+	}
 	
 	@Override
 	public boolean createTable(String query) {
@@ -184,6 +211,7 @@ public class SQLite extends Database {
 			
 			statement = connection.createStatement();
 			statement.execute(query);
+			statement.close();
 			return true;
 		} catch (SQLException e){
 			this.writeError("Could not create table, SQLException: " + e.getMessage(), true);
@@ -195,13 +223,15 @@ public class SQLite extends Database {
 	public boolean checkTable(String table) {
 		DatabaseMetaData md = null;
 		try {
-			//dbm = this.open().getMetaData();
 			md = this.connection.getMetaData();
 			ResultSet tables = md.getTables(null, null, table, null);
-			if (tables.next())
+			if (tables.next()) {
+				tables.close();
 				return true;
-			else
+			} else {
+				tables.close();
 				return false;
+			}
 		} catch (SQLException e) {
 			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
 			return false;
@@ -220,6 +250,7 @@ public class SQLite extends Database {
 			statement = connection.createStatement();
 			query = "DELETE FROM " + table + ";";
 			statement.executeQuery(query);
+			statement.close();
 			return true;
 		} catch (SQLException e) {
 			if (!(e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked")) &&

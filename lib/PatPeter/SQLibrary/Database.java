@@ -14,15 +14,13 @@ import java.util.logging.Logger;
  * @author PatPeter
  */
 public abstract class Database {
-	protected Logger log;
-	protected final String PREFIX;
-	protected final String DATABASE_PREFIX;
-	protected boolean connected;
-	protected Connection connection;
+	public enum Driver {
+		MySQL, SQLite, H2, MicrosoftSQL, Oracle, PostgreSQL
+	}
 	
 	// http://dev.mysql.com/doc/refman/5.6/en/sql-syntax.html
 	// http://sqlite.org/lang.html
-	protected enum Statements {
+	/*protected enum Statements {
 		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
 		CREATE, ALTER, DROP, TRUNCATE, RENAME,  // Data definition statements
 		
@@ -36,8 +34,15 @@ public abstract class Database {
 		
 		// SQLite-specific
 		ANALYZE, ATTACH, BEGIN, DETACH, END, INDEXED, ON, PRAGMA, REINDEX, VACUUM
-	}
+	}*/
 	
+	protected Logger log;
+	protected final String PREFIX;
+	protected final String DATABASE_PREFIX;
+	protected boolean connected;
+	protected Connection connection;
+	
+	public Driver driver;
 	public int lastUpdate;
 	
 	/*
@@ -106,7 +111,7 @@ public abstract class Database {
 	 * <br>
 	 * <br>
 	 */
-	abstract boolean initialize();
+	protected abstract boolean initialize();
 	
 	/**
 	 * <b>open</b><br>
@@ -116,7 +121,7 @@ public abstract class Database {
 	 * <br>
 	 * @return the success of the method.
 	 */
-	abstract Connection open() throws SQLException;
+	public abstract boolean open();
 	
 	/**
 	 * <b>close</b><br>
@@ -177,7 +182,9 @@ public abstract class Database {
 	 * @param query the SQL query to send to the database.
 	 * @return the table of results from the query.
 	 */
-	abstract ResultSet query(String query) throws SQLException;
+	public abstract ResultSet query(String query) throws SQLException;
+	
+	public abstract ResultSet query(PreparedStatement ps) throws SQLException;
 	
 	/**
 	 * <b>prepare</b><br>
@@ -198,11 +205,13 @@ public abstract class Database {
 	 * <br>
 	 * <br>
 	 */
-	protected Statements getStatement(String query) throws SQLException {
-		/*String query = rawQuery.trim();
+	protected abstract SQLStatement getStatement(String query) throws SQLException;
+	
+	/*protected Statements getStatement(String query) throws SQLException {
+		String query = rawQuery.trim();
 		
 		if (query.length() < 10)
-			throw new SQLException("Queries must be at least 10 characters long.");*/
+			throw new SQLException("Queries must be at least 10 characters long.");
 		
 		//try {
 		if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("SELECT"))
@@ -290,7 +299,7 @@ public abstract class Database {
 		//} catch (IndexOutOfBoundsException e) {
 		//	throw new SQLException("Query not long enough: \"" + query + "\".");
 		//}
-	}
+	}*/
 	
 	/**
 	 * <b>createTable</b><br>
@@ -302,7 +311,7 @@ public abstract class Database {
 	 * @return the success of the method.
 	 * @throws SQLException 
 	 */
-	abstract boolean createTable(String query);
+	public abstract boolean createTable(String query);
 	
 	/**
 	 * <b>checkTable</b><br>
@@ -314,7 +323,7 @@ public abstract class Database {
 	 * @return success of the method.
 	 * @throws SQLException 
 	 */
-	abstract boolean checkTable(String table);
+	public abstract boolean checkTable(String table);
 	
 	/**
 	 * <b>wipeTable</b><br>
@@ -325,5 +334,5 @@ public abstract class Database {
 	 * @param table name of the table to wipe.
 	 * @return success of the method.
 	 */
-	abstract boolean wipeTable(String table);
+	public abstract boolean wipeTable(String table);
 }

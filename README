@@ -1,15 +1,33 @@
+Version 3.5 (release)
+2012-09-09 17:30
+- Implemented initialize() and open() for every database driver except H2.
+- Added internal variable driver for Builder checks.
+- Created a package for the Factory classes and a package for the query Builders.
+- Renamed MySQLTable to simply Table.
+- Added classes Select, Insert, and Update.
+- Database abstract methods are now public for better usage in multi-database plugins.
+- open() now returns a boolean instead of a Connection. Use getConnection() if necessary.
+2012-10-11 03:10
+- Added query(PreparedStatement ps) as an abstract function so that the query() shortcuts and validation can be used with PreparedStatements.
+- Made getStatement() an abstract function so that it is no longer breaks the rules of inheritance.
+- Since open() now returns a boolean for error checking, there is no point in using SQLException.
+- Moved Statements to each child class.
+- Created SQLStatement interface to enforce getStatement() in child classes.
+
 Version 3.1 (release)
-2012-09-09
+2012-09-09 03:30
 - Added support for every statement in MySQL and SQLite into their respective query() methods.
 - All boolean methods return false on fail, all other methods throw exceptions so that plugin authors can check for errors.
 - Moved close(), getConnection(), checkConnection(), and prepare() into Database.java.
 - Actually implemented the prefix() method.
+- 2012-09-09 15:30 - Released 3.1.
 
 Version 3.0.8 (alpha)
 - 2012-03-21 21:07 - Fixed IndexOutOfBoundsException in getStatement() (thanks robxu9).
 - 2012-03-21 22:10 - Added DatabaseException to getStatement() and MySQL.
 - 2012-03-24 14:10 - Updated the Test Suite to 1.2 and added DatabaseException to SQLite.
 - 2012-07-26 19:20 - query() now throws DatabaseException so that plugins can know whether a query failed or not.
+- Never released.
 
 Version 3.0.7 (alpha)
 - 2012-03-11 14:33 - Created plugin.yml for exporting jar files.

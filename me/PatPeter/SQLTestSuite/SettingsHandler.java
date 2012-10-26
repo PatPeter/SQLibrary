@@ -20,118 +20,67 @@ public class SettingsHandler {
 		this.name = resourcePath;
 	}
 	
-	private void create(String name) {
+	private void create(String name) throws IOException {
 		if (getClass().getResource(name) == null) {
 			Logger log = Logger.getLogger("Minecraft");
 			log.severe("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 			log.severe("asdddddddddddddddddddddddddddddddddddddddddddd");
 			return;
 		}
-	      InputStream input = getClass().getResourceAsStream(name);
-	      if (input != null) {
-	        FileOutputStream output = null;
-	        try
-	        {
-	          output = new FileOutputStream(file);
-	          byte[] buf = new byte[8192];
-	          int length = 0;
-
-	          while ((length = input.read(buf)) > 0) {
-	            output.write(buf, 0, length);
-	          }
-
-	        } catch (Exception e) {
-	          e.printStackTrace();
-	        } finally {
-	          try {
-	            if (input != null)
-	              input.close();
-	          } catch (Exception e) {
-	          }
-	          try {
-	            if (output != null)
-	              output.close();
-	          }
-	          catch (Exception e)
-	          {
-	          }
-	        }
-	      }
-	     
-	    }
+		
+		InputStream input = getClass().getResourceAsStream(name);
+		if (input != null) {
+			FileOutputStream output = null;
+			
+			output = new FileOutputStream(file);
+			byte[] buf = new byte[8192];
+			int length = 0;
+			
+			while ((length = input.read(buf)) > 0) {
+				output.write(buf, 0, length);
+			}
+			
+			if (input != null)
+				input.close();
+			if (output != null)
+				output.close();
+		}
+	}
 	
-	public Boolean load() { //If force is true than it will delete the file and recreate it
-		
-		if (file == null) {
+	public Boolean load() throws IOException { //If force is true than it will delete the file and recreate it
+		if (file == null)
 			this.file = new File(saveFile);
-			
-		}
 		
-		if (!file.exists()) {
-			
-			// create(); \\
+		if (!file.exists())
 			this.create(name);
-			
-		}
 		
 		this.FileContents = loadFileContents();
 		return true;
 	}
 	
 	public String getPropertyString(String property){
-		
-		try {
-			if (FileContents.containsKey(property)) {
-				return FileContents.get(property);
-			}
-			
-				
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		if (FileContents.containsKey(property))
+			return FileContents.get(property);
 		return null;
-		
 	}
 	
 	public Boolean getPropertyBoolean(String property) {
-		
-		try {
-			String result = FileContents.get(property);
-			if (result.equalsIgnoreCase("true") || result.equalsIgnoreCase("false")) {
-				return Boolean.valueOf(result);
-			} else {
-				return false;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-		
+		String result = FileContents.get(property);
+		if (result.equalsIgnoreCase("true") || result.equalsIgnoreCase("false"))
+			return Boolean.valueOf(result);
+		else
+			return false;
 	}
 
 	public Integer getPropertyInteger(String property) {
-		
-		try {
-			String result = FileContents.get(property);
-			return Integer.valueOf(result);
-				
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 10;
+		String result = FileContents.get(property);
+		return Integer.valueOf(result);
 	}
 	
 	public Double getPropertyDouble(String property) {
-		try {
-			String result = FileContents.get(property);
-			if (!result.contains(".")) result = result + ".0";
-			
-			return Double.valueOf(result);
-				
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -10.0;
+		String result = FileContents.get(property);
+		if (!result.contains(".")) result = result + ".0";
+		return Double.valueOf(result);
 	}
 	
 	public boolean isValidProperty(String property) {
@@ -141,22 +90,16 @@ public class SettingsHandler {
 			return false;
 	}
 	
-	private HashMap<String,String> loadFileContents(){
+	private HashMap<String,String> loadFileContents() throws IOException {
 		HashMap<String,String> result = new HashMap<String,String>();
 		
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String word = null;
-			
-			while((word = br.readLine()) != null) {
-				if ((word.isEmpty()) || (word.startsWith("#")) || (!word.contains(":"))) continue;
-				String[] args = word.split(":");
-				result.put(args[0], args[1]);
-			}
-			
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String word = null;
+		
+		while((word = br.readLine()) != null) {
+			if ((word.isEmpty()) || (word.startsWith("#")) || (!word.contains(":"))) continue;
+			String[] args = word.split(":");
+			result.put(args[0], args[1]);
 		}
 		
 		return result;
