@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import lib.PatPeter.SQLibrary.Database;
 
 /**
- * 
+ * CREATE TABLE query builder.
  * Date Created: 2012-08-18 13:08
  * @author PatPeter
  */

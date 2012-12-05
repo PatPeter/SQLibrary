@@ -38,6 +38,7 @@ public class OwnerCore extends JavaPlugin {
 	@Override
 	public void onDisable() { }
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
 		this.log.info(this.logPrefix + "Owner is initializing"); // Sends to the console

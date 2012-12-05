@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -41,6 +43,7 @@ public abstract class Database {
 	protected final String DATABASE_PREFIX;
 	protected boolean connected;
 	protected Connection connection;
+	protected Map<PreparedStatement, StatementEnum> preparedStatements = new HashMap<PreparedStatement, StatementEnum>();
 	
 	public Driver driver;
 	public int lastUpdate;
@@ -130,7 +133,6 @@ public abstract class Database {
 	 * <br>
 	 * <br>
 	 */
-	//abstract boolean close();
 	public boolean close() {
 		if (connection != null) {
 			try {
@@ -154,7 +156,6 @@ public abstract class Database {
 	 * <br>
 	 * @return the <a href="http://download.oracle.com/javase/6/docs/api/java/sql/Connection.html">Connection</a> variable.
 	 */
-	//abstract Connection getConnection();
 	public Connection getConnection() {
 		return this.connection;
 	}
@@ -167,7 +168,6 @@ public abstract class Database {
 	 * <br>
 	 * @return the status of the connection, true for up, false for down.
 	 */
-	//abstract boolean checkConnection();
 	public boolean checkConnection() {
 		if (connection != null)
 			return true;
@@ -184,7 +184,8 @@ public abstract class Database {
 	 */
 	public abstract ResultSet query(String query) throws SQLException;
 	
-	public abstract ResultSet query(PreparedStatement ps) throws SQLException;
+	protected abstract ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException;
+	
 	
 	/**
 	 * <b>prepare</b><br>
@@ -195,8 +196,25 @@ public abstract class Database {
 	 * @return the prepared statement.
 	 */
 	//abstract PreparedStatement prepare(String query) throws SQLException;
-	public PreparedStatement prepare(String query) throws SQLException {
-        return connection.prepareStatement(query);
+	public final PreparedStatement prepare(String query) throws SQLException {
+		StatementEnum s = getStatement(query); // Throws an exception and stops creation of the PreparedStatement.
+		PreparedStatement ps = connection.prepareStatement(query);
+		preparedStatements.put(ps, s);
+        return ps;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param ps
+	 * @return
+	 * @throws SQLException
+	 */
+	//public abstract ResultSet query(PreparedStatement ps) throws SQLException;
+	public final ResultSet query(PreparedStatement ps) throws SQLException {
+		ResultSet output = query(ps, preparedStatements.get(ps));
+		preparedStatements.remove(ps);
+		return output;
 	}
 	
 	/**
@@ -205,7 +223,7 @@ public abstract class Database {
 	 * <br>
 	 * <br>
 	 */
-	protected abstract SQLStatement getStatement(String query) throws SQLException;
+	protected abstract StatementEnum getStatement(String query) throws SQLException;
 	
 	/*protected Statements getStatement(String query) throws SQLException {
 		String query = rawQuery.trim();
@@ -311,6 +329,7 @@ public abstract class Database {
 	 * @return the success of the method.
 	 * @throws SQLException 
 	 */
+	@Deprecated
 	public abstract boolean createTable(String query);
 	
 	/**
@@ -323,6 +342,7 @@ public abstract class Database {
 	 * @return success of the method.
 	 * @throws SQLException 
 	 */
+	@Deprecated
 	public abstract boolean checkTable(String table);
 	
 	/**
@@ -334,5 +354,6 @@ public abstract class Database {
 	 * @param table name of the table to wipe.
 	 * @return success of the method.
 	 */
+	@Deprecated
 	public abstract boolean wipeTable(String table);
 }

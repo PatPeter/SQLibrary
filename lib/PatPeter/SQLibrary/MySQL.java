@@ -1,10 +1,3 @@
-/**
- * MySQL
- * Inherited subclass for making a connection to a MySQL server.
- * 
- * Date Created: 2011-08-26 19:08
- * @author PatPeter
- */
 package lib.PatPeter.SQLibrary;
 
 import java.sql.DriverManager;
@@ -14,6 +7,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
+/**
+ * MySQL
+ * Inherited subclass for making a connection to a MySQL server.
+ * 
+ * Date Created: 2011-08-26 19:08
+ * @author PatPeter
+ */
 public class MySQL extends Database {
 	private String hostname = "localhost";
 	private String portnmbr = "3306";
@@ -21,14 +21,58 @@ public class MySQL extends Database {
 	private String password = "";
 	private String database = "minecraft";
 	
-	private enum Statements implements SQLStatement {
-		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
-		CREATE, ALTER, DROP, TRUNCATE, RENAME,  // Data definition statements
-		RELEASE,
-		START, COMMIT, SAVEPOINT, ROLLBACK, LOCK, UNLOCK, // Transactional and Locking Statements
-		PREPARE, EXECUTE, DEALLOCATE, // Prepared Statements
-		SET, SHOW, // Database Administration
-		DESCRIBE, EXPLAIN, HELP, USE; // Utility Statements
+	private enum Statements implements StatementEnum {
+		// Data manipulation statements
+		SELECT("SELECT"), 
+		INSERT("INSERT"), 
+		UPDATE("UPDATE"), 
+		DELETE("DELETE"), 
+		DO("DO"), 
+		REPLACE("REPLACE"), 
+		LOAD("LOAD"), 
+		HANDLER("HANDLER"), 
+		CALL("CALL"), 
+		
+		// Data definition statements
+		CREATE("CREATE"), 
+		ALTER("ALTER"), 
+		DROP("DROP"), 
+		TRUNCATE("TRUNCATE"), 
+		RENAME("RENAME"),  
+		
+		// Transactional and Locking Statements
+		START("START"), 
+		COMMIT("COMMIT"), 
+		SAVEPOINT("SAVEPOINT"), // http://dev.mysql.com/doc/refman/5.6/en/implicit-commit.html#savepoint
+		ROLLBACK("ROLLBACK"), // ROLLBACK TO SAVEPOINT
+		RELEASE("RELEASE"), // RELEASE SAVEPOINT
+		LOCK("LOCK"), // http://dev.mysql.com/doc/refman/5.6/en/lock-tables.html
+		UNLOCK("UNLOCK"), 
+		
+		// Prepared Statements
+		PREPARE("PREPARE"), 
+		EXECUTE("EXECUTE"), 
+		DEALLOCATE("DEALLOCATE"), 
+		
+		// Database Administration
+		SET("SET"), 
+		SHOW("SHOW"), 
+		
+		// Utility Statements
+		DESCRIBE("DESCRIBE"), 
+		EXPLAIN("EXPLAIN"), 
+		HELP("HELP"), 
+		USE("USE");
+		
+		private String value;
+		
+		private Statements(String value) {
+			this.value = value;
+		}
+		
+		public String toString() {
+			return value;
+		}
 	}
 	
 	public MySQL(Logger log,
@@ -107,7 +151,7 @@ public class MySQL extends Database {
 		    case INSERT:
 		    case UPDATE:
 		    case DELETE:
-			    
+			
 		    case REPLACE:
 		    case LOAD:
 		    case CALL:
@@ -125,16 +169,16 @@ public class MySQL extends Database {
 		    case RELEASE:
 		    case LOCK:
 		    case UNLOCK:
-		    	
+		    
 		    case SET:
 		    case SHOW:
 		    	this.lastUpdate = statement.executeUpdate(query);
 		    	break;
-
+		    
 		    case USE:
 		    	this.writeError("Please create a new connection to use a different database.", false);
 		    	throw new SQLException("Please create a new connection to use a different database.");
-
+		    
 		    case PREPARE:
 		    case EXECUTE:
 		    case DEALLOCATE:
@@ -148,81 +192,80 @@ public class MySQL extends Database {
 	    //statement.close(); // This closes automatically, don't worry about it
     	return result;
 	}
-	
+
 	@Override
-	public ResultSet query(PreparedStatement ps) throws SQLException {
-		return null;
+	protected ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException {
+		ResultSet result = this.connection.createStatement().executeQuery("SELECT CURTIME()");
+	    
+		switch ((Statements) statement) {
+		    case SELECT:
+		    case DO:
+		    case HANDLER:
+		    case DESCRIBE:
+		    case EXPLAIN:
+		    case HELP:
+			    result = s.executeQuery();
+			    break;
+			
+		    case INSERT:
+		    case UPDATE:
+		    case DELETE:
+			
+		    case REPLACE:
+		    case LOAD:
+		    case CALL:
+		    
+		    case CREATE:
+		    case ALTER:
+		    case DROP:
+		    case TRUNCATE:
+		    case RENAME:
+		    
+		    case START:
+		    case COMMIT:
+		    case SAVEPOINT:
+		    case ROLLBACK:
+		    case RELEASE:
+		    case LOCK:
+		    case UNLOCK:
+		    
+		    case SET:
+		    case SHOW:
+		    	this.lastUpdate = s.executeUpdate();
+		    	break;
+		    
+		    case USE:
+		    	this.writeError("Please create a new connection to use a different database.", false);
+		    	throw new SQLException("Please create a new connection to use a different database.");
+		    
+		    case PREPARE:
+		    case EXECUTE:
+		    case DEALLOCATE:
+		    	this.writeError("Please use the prepare() method to prepare a query.", false);
+		    	throw new SQLException("Please use the prepare() method to prepare a query.");
+		    
+		    default:
+		    	result = s.executeQuery();
+	    }
+		return result;
 	}
 	
 	@Override
 	protected Statements getStatement(String query) throws SQLException {
-		// Data-manipulation 
-		if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("SELECT"))
-			return Statements.SELECT;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("INSERT"))
-			return Statements.INSERT;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("UPDATE"))
-			return Statements.UPDATE;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("DELETE"))
-			return Statements.DELETE;
-		else if (query.length() > 1 && query.substring(0,2).equalsIgnoreCase("DO"))
-			return Statements.DO;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("REPLACE"))
-			return Statements.REPLACE;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("LOAD"))
-			return Statements.LOAD;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("HANDLER"))
-			return Statements.HANDLER;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("CALL"))
-			return Statements.CALL;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("CREATE"))
-			return Statements.CREATE;
-		else if (query.length() > 4 && query.substring(0,5).equalsIgnoreCase("ALTER"))
-			return Statements.ALTER;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("DROP"))
-			return Statements.DROP;
-		else if (query.length() > 7 && query.substring(0,8).equalsIgnoreCase("TRUNCATE"))
-			return Statements.TRUNCATE;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("RENAME"))
-			return Statements.RENAME;
-		else if (query.length() > 4 && query.substring(0,5).equalsIgnoreCase("START"))
-			return Statements.START;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("COMMIT"))
-			return Statements.COMMIT;
-		else if (query.length() > 7 && query.substring(0,8).equalsIgnoreCase("ROLLBACK"))
-			return Statements.ROLLBACK;
-		else if (query.length() > 8 && query.substring(0,9).equalsIgnoreCase("SAVEPOINT"))
-			return Statements.SAVEPOINT;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("LOCK"))
-			return Statements.LOCK;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("UNLOCK"))
-			return Statements.UNLOCK;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("PREPARE"))
-			return Statements.PREPARE;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("EXECUTE"))
-			return Statements.EXECUTE;
-		else if (query.length() > 9 && query.substring(0,10).equalsIgnoreCase("DEALLOCATE"))
-			return Statements.DEALLOCATE;
-		else if (query.length() > 2 && query.substring(0,3).equalsIgnoreCase("SET"))
-			return Statements.SET;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("SHOW"))
-			return Statements.SHOW;
-		else if (query.length() > 7 && query.substring(0,8).equalsIgnoreCase("DESCRIBE"))
-			return Statements.DESCRIBE;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("EXPLAIN"))
-			return Statements.EXPLAIN;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("HELP"))
-			return Statements.HELP;
-		else if (query.length() > 2 && query.substring(0,3).equalsIgnoreCase("USE"))
-			return Statements.USE;
-		else
-			throw new SQLException("Unknown statement \"" + query + "\".");
+		String[] statement = query.trim().split(" ", 2);
+		try {
+			Statements converted = Statements.valueOf(statement[0].toUpperCase());
+			return converted;
+		} catch (IllegalArgumentException e) {
+			throw new SQLException("Unknown statement: \"" + statement[0] + "\".");
+		}
 	}
 	
+	@Deprecated
 	@Override
 	public boolean createTable(String query) {
 		Statement statement = null;
-		if (query.equals("") || query == null) {
+		if (query == null || query.equals("")) {
 			this.writeError("Could not create table: query is empty or null.", true);
 			return false;
 		}
@@ -238,12 +281,26 @@ public class MySQL extends Database {
 	    return true;
 	}
 	
+	@Deprecated
 	@Override
 	public boolean checkTable(String table) {
+	    Statement statement;
 		try {
-		    Statement statement = connection.createStatement();
-		    ResultSet result = statement.executeQuery("SELECT * FROM " + table);
-
+			statement = connection.createStatement();
+		} catch (SQLException e) {
+			this.writeError("Could not create a statement in checkTable(), SQLException: " + e.getMessage(), true);
+			return false;
+		}
+		try {
+			statement.executeQuery("SELECT * FROM " + table);
+			return true;
+		} catch (SQLException e) {
+			// Query failed, table does not exist.
+			return false;
+		}
+		
+		// Result can never be null, bad logic from earlier versions.
+		/*try {
 		    if (result != null) {
 		    	result.close();
 		    	statement.close();
@@ -255,9 +312,10 @@ public class MySQL extends Database {
 		} catch (SQLException e) {
 			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
 			return false;
-		}
+		}*/
 	}
 	
+	@Deprecated
 	@Override
 	public boolean wipeTable(String table) {
 		Statement statement = null;

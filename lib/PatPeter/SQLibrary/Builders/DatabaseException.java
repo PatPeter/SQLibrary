@@ -1,7 +1,4 @@
-/**
- * 
- */
-package lib.PatPeter.SQLibrary;
+package lib.PatPeter.SQLibrary.Builders;
 
 /**
  * DatabaseException
@@ -12,10 +9,6 @@ package lib.PatPeter.SQLibrary;
  */
 public class DatabaseException extends Exception {
 	private static final long serialVersionUID = 3063547825200154629L;
-
-	public DatabaseException() {
-		super("Unknown database error");
-	}
 	
 	public DatabaseException(String message) {
 		super(message);

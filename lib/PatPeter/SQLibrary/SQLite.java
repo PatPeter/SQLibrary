@@ -1,10 +1,3 @@
-/**
- * SQLite
- * Inherited subclass for reading and writing to and from an SQLite file.
- * 
- * Date Created: 2011-08-26 19:08
- * @author PatPeter
- */
 package lib.PatPeter.SQLibrary;
 
 /*
@@ -23,16 +16,97 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
+/**
+ * Inherited subclass for reading and writing to and from an SQLite file.
+ * 
+ * Date Created: 2011-08-26 19:08
+ * @author PatPeter
+ */
 public class SQLite extends Database {
 	public String location;
 	public String name;
 	private File sqlFile;
 	
-	private enum Statements implements SQLStatement {
-		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
-		CREATE, ALTER, DROP, TRUNCATE, RENAME,  // Data definition statements
-		RELEASE,
-		ANALYZE, ATTACH, BEGIN, DETACH, END, INDEXED, ON, PRAGMA, REINDEX, VACUUM
+	private enum Statements implements StatementEnum {
+		/*
+		 * Data manipulation statements
+		 */
+		// SELECT http://www.sqlite.org/lang_select.html
+		SELECT("SELECT"), 
+		// INSERT http://www.sqlite.org/lang_insert.html
+		INSERT("INSERT"), 
+		// UPDATE http://www.sqlite.org/lang_update.html
+		UPDATE("UPDATE"), 
+		// DELETE http://www.sqlite.org/lang_delete.html
+		DELETE("DELETE"), 
+		//DO("DO"), // Not in SQLite.
+		// REPLACE http://www.sqlite.org/lang_replace.html
+		REPLACE("REPLACE"), 
+		//LOAD("LOAD"), // Not in SQLite.
+		//HANDLER("HANDLER"), // Not in SQLite.
+		//CALL("CALL"), // Not in SQLite.
+		
+		/*
+		 * Data definition statements
+		 */
+		// CREATE INDEX         http://www.sqlite.org/lang_createindex.html
+		// CREATE TABLE         http://www.sqlite.org/lang_createtable.html
+		// CREATE TRIGGER       http://www.sqlite.org/lang_createtrigger.html
+		// CREATE VIEW          http://www.sqlite.org/lang_createview.html
+		// CREATE VIRTUAL TABLE http://www.sqlite.org/lang_createvtab.html
+		CREATE("CREATE"), 
+		// ALTER TABLE          http://www.sqlite.org/lang_altertable.html
+		ALTER("ALTER"), 
+		// DROP INDEX           http://www.sqlite.org/lang_dropindex.html
+		// DROP TABLE           http://www.sqlite.org/lang_droptable.html
+		// DROP TRIGGER         http://www.sqlite.org/lang_droptrigger.html
+		// DROP VIEW            http://www.sqlite.org/lang_dropview.html
+		DROP("DROP"), 
+		//TRUNCATE("TRUNCATE"), // Not in SQLite.
+		//RENAME("RENAME"), // Not in SQLite.
+		
+		/* 
+		 * Other
+		 */
+		// ANALYZE           http://www.sqlite.org/lang_analyze.html
+		ANALYZE("ANALYZE"), 
+		// ATTACH DATABASE   http://www.sqlite.org/lang_attach.html
+		ATTACH("ATTACH"), 
+		// BEGIN TRANSACTION http://www.sqlite.org/lang_transaction.html
+		BEGIN("BEGIN"), 
+		// DETACH DATABASE   http://www.sqlite.org/lang_detach.html
+		DETACH("DETACH"), 
+		// END TRANSACTION   http://www.sqlite.org/lang_transaction.html
+		END("END"), 
+		// EXPLAIN           http://www.sqlite.org/lang_explain.html
+		EXPLAIN("EXPLAIN"),
+		// INDEXED BY        http://www.sqlite.org/lang_indexedby.html
+		INDEXED("INDEXED"), 
+		// ON CONFLICT       http://www.sqlite.org/lang_conflict.html
+		// ON("ON"), // Not a statement.
+		// PRAGMA            http://www.sqlite.org/pragma.html#syntax
+		PRAGMA("PRAGMA"), 
+		// REINDEX           http://www.sqlite.org/lang_reindex.html
+		REINDEX("REINDEX"), 
+		// RELEASE SAVEPOINT http://www.sqlite.org/lang_savepoint.html
+		RELEASE("RELEASE"), 
+		// SAVEPOINT         http://www.sqlite.org/lang_savepoint.html
+		SAVEPOINT("SAVEPOINT"),
+		// VACUUM            http://www.sqlite.org/lang_vacuum.html
+		VACUUM("VACUUM"),
+		
+		LINE_COMMENT("--"),
+		BLOCK_COMMENT("/*");
+		
+		private String value;
+		
+		private Statements(String value) {
+			this.value = value;
+		}
+		
+		public String toString() {
+			return value;
+		}
 	}
 	
 	public SQLite(Logger log, String prefix, String name, String location) {
@@ -89,24 +163,18 @@ public class SQLite extends Database {
 			
 			switch (this.getStatement(query)) {
 			    case SELECT:
-			    case DO:
-			    case HANDLER:
+			    case EXPLAIN:
 				    result = statement.executeQuery(query);
 				    break;
 				
 			    case INSERT:
 			    case UPDATE:
 			    case DELETE:
-				    
 			    case REPLACE:
-			    case LOAD:
-			    case CALL:
 			    
 			    case CREATE:
 			    case ALTER:
 			    case DROP:
-			    case TRUNCATE:
-			    case RENAME:
 			    	
 			    case ANALYZE:
 			    case ATTACH:
@@ -114,10 +182,10 @@ public class SQLite extends Database {
 			    case DETACH:
 			    case END:
 			    case INDEXED:
-			    case ON:
 			    case PRAGMA:
 			    case REINDEX:
 			    case RELEASE:
+			    case SAVEPOINT:
 			    case VACUUM:
 			    	this.lastUpdate = statement.executeUpdate(query);
 			    	break;
@@ -141,70 +209,64 @@ public class SQLite extends Database {
 	}
 	
 	@Override
-	public ResultSet query(PreparedStatement ps) {
-		return null;
+	public ResultSet query(PreparedStatement ps, StatementEnum statement) throws SQLException {
+		ResultSet result = this.connection.createStatement().executeQuery("SELECT date('now')");
+		
+		switch ((Statements) statement) {
+		    case SELECT:
+		    case EXPLAIN:
+			    result = ps.executeQuery();
+			    break;
+			
+		    case INSERT:
+		    case UPDATE:
+		    case DELETE:
+		    case REPLACE:
+		    
+		    case CREATE:
+		    case ALTER:
+		    case DROP:
+		    	
+		    case ANALYZE:
+		    case ATTACH:
+		    case BEGIN:
+		    case DETACH:
+		    case END:
+		    case INDEXED:
+		    case PRAGMA:
+		    case REINDEX:
+		    case RELEASE:
+		    case SAVEPOINT:
+		    case VACUUM:
+		    	this.lastUpdate = ps.executeUpdate();
+		    	break;
+		    	
+		    default:
+		    	result = ps.executeQuery();
+		}
+		//result.close(); // This is here to remind you to close your ResultSets
+		//statement.close(); // This closes automatically, don't worry about it
+		
+		return result;
 	}
 	
+	@Override
 	protected Statements getStatement(String query) throws SQLException {
-		if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("SELECT"))
-			return Statements.SELECT;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("INSERT"))
-			return Statements.INSERT;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("UPDATE"))
-			return Statements.UPDATE;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("DELETE"))
-			return Statements.DELETE;
-		else if (query.length() > 1 && query.substring(0,2).equalsIgnoreCase("DO"))
-			return Statements.DO;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("REPLACE"))
-			return Statements.REPLACE;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("LOAD"))
-			return Statements.LOAD;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("HANDLER"))
-			return Statements.HANDLER;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("CALL"))
-			return Statements.CALL;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("CREATE"))
-			return Statements.CREATE;
-		else if (query.length() > 4 && query.substring(0,5).equalsIgnoreCase("ALTER"))
-			return Statements.ALTER;
-		else if (query.length() > 3 && query.substring(0,4).equalsIgnoreCase("DROP"))
-			return Statements.DROP;
-		else if (query.length() > 7 && query.substring(0,8).equalsIgnoreCase("TRUNCATE"))
-			return Statements.TRUNCATE;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("RENAME"))
-			return Statements.RENAME;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("ANALYSE"))
-			return Statements.ANALYZE;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("ATTACH"))
-			return Statements.ATTACH;
-		else if (query.length() > 4 && query.substring(0,5).equalsIgnoreCase("BEGIN"))
-			return Statements.BEGIN;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("DETACH"))
-			return Statements.DETACH;
-		else if (query.length() > 2 && query.substring(0,3).equalsIgnoreCase("END"))
-			return Statements.END;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("INDEXED"))
-			return Statements.INDEXED;
-		else if (query.length() > 1 && query.substring(0,2).equalsIgnoreCase("ON"))
-			return Statements.ON;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("PRAGMA"))
-			return Statements.PRAGMA;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("REINDEX"))
-			return Statements.REINDEX;
-		else if (query.length() > 6 && query.substring(0,7).equalsIgnoreCase("RELEASE"))
-			return Statements.RELEASE;
-		else if (query.length() > 5 && query.substring(0,6).equalsIgnoreCase("VACUUM"))
-			return Statements.VACUUM;
-		else
-			throw new SQLException("Unknown statement \"" + query + "\".");
+		String[] statement = query.trim().split(" ", 2);
+		try {
+			Statements converted = Statements.valueOf(statement[0].toUpperCase());
+			return converted;
+		} catch (IllegalArgumentException e) {
+			throw new SQLException("Unknown statement: \"" + statement[0] + "\".");
+		}
 	}
 	
+	@Deprecated
 	@Override
 	public boolean createTable(String query) {
 		Statement statement = null;
 		try {
-			if (query.equals("") || query == null) {
+			if (query == null || query.equals("")) {
 				this.writeError("Could not create table: query is empty or null.", true);
 				return false;
 			}
@@ -213,18 +275,33 @@ public class SQLite extends Database {
 			statement.execute(query);
 			statement.close();
 			return true;
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			this.writeError("Could not create table, SQLException: " + e.getMessage(), true);
 			return false;
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public boolean checkTable(String table) {
 		DatabaseMetaData md = null;
 		try {
 			md = this.connection.getMetaData();
-			ResultSet tables = md.getTables(null, null, table, null);
+		} catch (SQLException e) {
+			this.writeError("Could not fetch metadata for table \"" + table + "\", SQLException: " + e.getMessage(), true);
+			return false;
+		}
+		//ResultSet tables;
+		try {
+			//tables = md.getTables(null, null, table, null);
+			md.getTables(null, null, table, null);
+			return true;
+		} catch (SQLException e) {
+			//this.writeError("Could not check the table \"" + table + "\" using metadata, SQLException: " + e.getMessage(), true);
+			return false;
+		}
+		// Table can exist without having a row.
+		/*try {
 			if (tables.next()) {
 				tables.close();
 				return true;
@@ -233,11 +310,12 @@ public class SQLite extends Database {
 				return false;
 			}
 		} catch (SQLException e) {
-			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
+			this.writeError("Could not get the first row of table \"" + table + "\" to check that it exists, SQLException: " + e.getMessage(), true);
 			return false;
-		}
+		}*/
 	}
 	
+	@Deprecated
 	@Override
 	public boolean wipeTable(String table) {
 		Statement statement = null;

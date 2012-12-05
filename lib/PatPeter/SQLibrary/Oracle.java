@@ -13,7 +13,7 @@ public class Oracle extends Database {
 	private String password = "";
 	private String database = "minecraft";
 	
-	protected enum Statements implements SQLStatement {
+	protected enum Statements implements StatementEnum {
 		SELECT, INSERT, UPDATE, DELETE, DO, REPLACE, LOAD, HANDLER, CALL, // Data manipulation statements
 		CREATE, ALTER, DROP, TRUNCATE, RENAME  // Data definition statements
 	}
@@ -69,6 +69,13 @@ public class Oracle extends Database {
 	}
 
 	@Override
+	protected ResultSet query(PreparedStatement s, StatementEnum statement)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public boolean createTable(String query) {
 		return false;
 	}
@@ -81,11 +88,6 @@ public class Oracle extends Database {
 	@Override
 	public boolean wipeTable(String table) {
 		return false;
-	}
-
-	@Override
-	public ResultSet query(PreparedStatement ps) throws SQLException {
-		return null;
 	}
 
 	@Override
