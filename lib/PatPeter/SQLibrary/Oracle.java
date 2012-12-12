@@ -31,7 +31,7 @@ public class Oracle extends Database {
 		this.database = database;
 		this.username = username;
 		this.password = password;
-		this.driver = Driver.Oracle;
+		this.driver = DBMS.Oracle;
 	}
 
 	@Override

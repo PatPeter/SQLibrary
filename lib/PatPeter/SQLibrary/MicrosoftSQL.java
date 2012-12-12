@@ -168,7 +168,7 @@ public class MicrosoftSQL extends Database {
 		this.database = database;
 		this.username = username;
 		this.password = password;
-		this.driver = Driver.MicrosoftSQL;
+		this.driver = DBMS.MicrosoftSQL;
 	}
 	
 	public MicrosoftSQL(Logger log,
@@ -184,7 +184,7 @@ public class MicrosoftSQL extends Database {
 		this.database = database;
 		this.username = username;
 		this.password = password;
-		this.driver = Driver.MicrosoftSQL;
+		this.driver = DBMS.MicrosoftSQL;
 	}
 
 	@Override

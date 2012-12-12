@@ -1,19 +1,3 @@
-/************************************************************************
- * This file is part of SQLibrary.									
- *																		
- * SQLibrary is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by	
- * the Free Software Foundation, either version 3 of the License, or		
- * (at your option) any later version.									
- *																		
- * SQLibrary is distributed in the hope that it will be useful,	
- * but WITHOUT ANY WARRANTY; without even the implied warranty of		
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the			
- * GNU General Public License for more details.							
- *																		
- * You should have received a copy of the GNU General Public License
- * along with SQLibrary.  If not, see <http://www.gnu.org/licenses/>.
- ************************************************************************/
 package lib.PatPeter.SQLibrary.Factory;
 
 import java.util.EnumMap;
@@ -22,61 +6,43 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import lib.PatPeter.SQLibrary.DBMS;
 
 /**
  * @author Balor (aka Antoine Aflalo)
- * 
  */
 public class DatabaseConfig {
-	private final Map<Parameter, String> config = new EnumMap<Parameter, String>(Parameter.class);
-	private DatabaseType type;
-	private Logger log;
-
-	public enum DatabaseType {
-		MYSQL,
-		SQLITE,
-		MICROSOFTSQL,
-		ORACLE,
-		POSTGRESQL,
-		H2,
-		ALL;
-	}
-
 	public enum Parameter {
-		HOSTNAME(DatabaseType.MYSQL),
-		USER(DatabaseType.MYSQL),
-		PASSWORD(DatabaseType.MYSQL),
-		PORT_NUMBER(DatabaseType.MYSQL),
-		DATABASE(DatabaseType.MYSQL),
-		DB_PREFIX(DatabaseType.ALL),
-		DB_LOCATION(DatabaseType.SQLITE),
-		DB_NAME(DatabaseType.SQLITE);
-		private Set<DatabaseType> dbTypes = new HashSet<DatabaseType>();
-		private static Map<DatabaseType, Integer> count;
-
-		/**
-		 * 
-		 */
-		private Parameter(DatabaseType... type) {
+		PREFIX(DBMS.Other),
+		HOSTNAME(DBMS.MySQL, DBMS.MicrosoftSQL, DBMS.Oracle, DBMS.PostgreSQL),
+		USERNAME(DBMS.MySQL, DBMS.MicrosoftSQL, DBMS.Oracle, DBMS.PostgreSQL),
+		PASSWORD(DBMS.MySQL, DBMS.MicrosoftSQL, DBMS.Oracle, DBMS.PostgreSQL),
+		PORTNMBR(DBMS.MySQL, DBMS.MicrosoftSQL, DBMS.Oracle, DBMS.PostgreSQL),
+		DATABASE(DBMS.MySQL, DBMS.MicrosoftSQL, DBMS.Oracle, DBMS.PostgreSQL),
+		LOCATION(DBMS.SQLite, DBMS.H2),
+		FILENAME(DBMS.SQLite, DBMS.H2);
+		private Set<DBMS> dbTypes = new HashSet<DBMS>();
+		private static Map<DBMS, Integer> count;
+		
+		private Parameter(DBMS... type) {
 			for (int i = 0; i < type.length; i++) {
 				dbTypes.add(type[i]);
 				updateCount(type[i]);
 			}
-
 		}
-
-		public boolean validParam(DatabaseType toCheck) {
-			if (dbTypes.contains(DatabaseType.ALL))
+		
+		public boolean validParam(DBMS toCheck) {
+			if (dbTypes.contains(DBMS.Other))
 				return true;
 			if (dbTypes.contains(toCheck))
 				return true;
 			return false;
 
 		}
-
-		private static void updateCount(DatabaseType type) {
+		
+		private static void updateCount(DBMS type) {
 			if (count == null)
-				count = new EnumMap<DatabaseType, Integer>(DatabaseType.class);
+				count = new EnumMap<DBMS, Integer>(DBMS.class);
 			Integer nb = count.get(type);
 			if (nb == null)
 				nb = 1;
@@ -84,26 +50,28 @@ public class DatabaseConfig {
 				nb++;
 			count.put(type, nb);
 		}
-
-		public static int getCount(DatabaseType type) {
-			int nb = count.get(DatabaseType.ALL) + count.get(type);
+		
+		public static int getCount(DBMS type) {
+			int nb = count.get(DBMS.Other) + count.get(type);
 			return nb;
 		}
 	}
+	
+	private final Map<Parameter, String> config = new EnumMap<Parameter, String>(Parameter.class);
+	private DBMS type;
+	private Logger log;
 
 	/**
-	 * @param type
-	 *            the type to set
+	 * @param type the type to set
 	 */
-	public void setType(DatabaseType type) throws IllegalArgumentException {
-		if (type == DatabaseType.ALL)
-			throw new IllegalArgumentException("You can't set your database type to ALL");
+	public void setType(DBMS type) throws IllegalArgumentException {
+		if (type == DBMS.Other)
+			throw new IllegalArgumentException("You can't set your database type to Other");
 		this.type = type;
 	}
-
+	
 	/**
-	 * @param log
-	 *            the log to set
+	 * @param log the log to set
 	 */
 	public void setLog(Logger log) {
 		this.log = log;
@@ -112,7 +80,7 @@ public class DatabaseConfig {
 	/**
 	 * @return the type
 	 */
-	public DatabaseType getType() {
+	public DBMS getType() {
 		return type;
 	}
 
@@ -124,11 +92,11 @@ public class DatabaseConfig {
 	}
 
 	public DatabaseConfig setParameter(Parameter param, String value) throws NullPointerException,
-			InvalidConfiguration {
+			InvalidConfigurationException {
 		if (this.type == null)
 			throw new NullPointerException("You must set the type of the database first");
 		if (!param.validParam(type))
-			throw new InvalidConfiguration(param.toString()
+			throw new InvalidConfigurationException(param.toString()
 					+ " is invalid for a database type of : " + type.toString());
 		config.put(param, value);
 		return this;
@@ -139,9 +107,9 @@ public class DatabaseConfig {
 		return config.get(param);
 	}
 
-	public boolean isValid() throws InvalidConfiguration {
+	public boolean isValid() throws InvalidConfigurationException {
 		if (log == null)
-			throw new InvalidConfiguration("You need to set the logger.");
+			throw new InvalidConfigurationException("You need to set the logger.");
 		return config.size() == Parameter.getCount(type);
 	}
 }

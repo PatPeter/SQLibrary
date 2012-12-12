@@ -17,15 +17,15 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 
 /**
- * Inherited subclass for reading and writing to and from an SQLite file.
+ * Inherited subclass for reading and writing to and from an SQLite db.
  * 
  * Date Created: 2011-08-26 19:08
  * @author PatPeter
  */
 public class SQLite extends Database {
-	public String location;
-	public String name;
-	private File sqlFile;
+//	public String location;
+//	public String name;
+	private File db;
 	
 	private enum Statements implements StatementEnum {
 		/*
@@ -98,33 +98,33 @@ public class SQLite extends Database {
 		LINE_COMMENT("--"),
 		BLOCK_COMMENT("/*");
 		
-		private String value;
+		private String string;
 		
-		private Statements(String value) {
-			this.value = value;
+		private Statements(String string) {
+			this.string = string;
 		}
 		
 		public String toString() {
-			return value;
+			return string;
 		}
 	}
 	
-	public SQLite(Logger log, String prefix, String name, String location) {
+	public SQLite(Logger log, String prefix, String directory, String filename) throws SQLException {
 		super(log,prefix,"[SQLite] ");
-		this.name = name;
-		this.location = location;
-		File folder = new File(this.location);
-		if (this.name.contains("/") ||
-				this.name.contains("\\") ||
-				this.name.endsWith(".db")) {
-			this.writeError("The database name cannot contain: /, \\, or .db", true);
-		}
-		if (!folder.exists()) {
-			folder.mkdir();
-		}
 		
-		sqlFile = new File(folder.getAbsolutePath() + File.separator + name + ".db");
-		this.driver = Driver.SQLite;
+		if (directory == null || directory.length() == 0)
+			throw new SQLException("Directory cannot be null or empty.");
+		if (filename == null || filename.length() == 0)
+			throw new SQLException("Filename cannot be null or empty.");
+		if (filename.contains("/") || filename.contains("\\") || filename.endsWith(".db"))
+			throw new SQLException("The database filename cannot contain: /, \\, or .db.");
+		
+		File folder = new File(directory);
+		if (!folder.exists())
+			folder.mkdir();
+		
+		db = new File(folder.getAbsolutePath() + File.separator + filename + ".db");
+		this.driver = DBMS.SQLite;
 	}
 	
 	protected boolean initialize() {
@@ -141,7 +141,7 @@ public class SQLite extends Database {
 	public boolean open() {
 		if (initialize()) {
 			try {
-				this.connection = DriverManager.getConnection("jdbc:sqlite:" + sqlFile.getAbsolutePath());
+				this.connection = DriverManager.getConnection("jdbc:sqlite:" + db.getAbsolutePath());
 			} catch (SQLException e) {
 				this.writeError("Could not establish an SQLite connection, SQLException: " + e.getMessage(), true);
 				return false;

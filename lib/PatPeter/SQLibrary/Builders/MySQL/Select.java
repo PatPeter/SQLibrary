@@ -1,10 +1,11 @@
-package lib.PatPeter.SQLibrary.Builders;
+package lib.PatPeter.SQLibrary.Builders.MySQL;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import lib.PatPeter.SQLibrary.Database;
+import lib.PatPeter.SQLibrary.Builders.DatabaseException;
 
 /**
  * SELECT query builder.

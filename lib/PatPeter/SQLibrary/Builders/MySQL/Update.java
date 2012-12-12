@@ -1,4 +1,4 @@
-package lib.PatPeter.SQLibrary.Builders;
+package lib.PatPeter.SQLibrary.Builders.MySQL;
 
 /**
  * 

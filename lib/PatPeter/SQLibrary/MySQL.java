@@ -64,14 +64,14 @@ public class MySQL extends Database {
 		HELP("HELP"), 
 		USE("USE");
 		
-		private String value;
+		private String string;
 		
-		private Statements(String value) {
-			this.value = value;
+		private Statements(String string) {
+			this.string = string;
 		}
 		
 		public String toString() {
-			return value;
+			return string;
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class MySQL extends Database {
 		this.database = database;
 		this.username = username;
 		this.password = password;
-		this.driver = Driver.MySQL;
+		this.driver = DBMS.MySQL;
 	}
 	
 	public MySQL(Logger log,
@@ -100,7 +100,7 @@ public class MySQL extends Database {
 		this.database = database;
 		this.username = username;
 		this.password = password;
-		this.driver = Driver.MySQL;
+		this.driver = DBMS.MySQL;
 	}
 	
 	@Override
