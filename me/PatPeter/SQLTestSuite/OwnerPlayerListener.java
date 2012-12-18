@@ -28,15 +28,15 @@ public class OwnerPlayerListener implements Listener {
 		if (plugin.commandUsers.get(player.getName().toLowerCase()) == 2) { // INFO MODE
 			String query = "SELECT * FROM blocks WHERE x = " + block.getX() + " AND y = " + block.getY() + " AND z = " + block.getZ() + ";";
 			ResultSet result = null;
-			
-			if (plugin.MySQL) {
-				try {
+
+			try {
+				if (plugin.mySQL) {
 					result = plugin.mysql.query(query);
-				} catch (SQLException e) {
-					e.printStackTrace();
+				} else {
+					result = plugin.sqlite.query(query);
 				}
-			} else {
-				result = plugin.sqlite.query(query);
+			} catch (SQLException e) {
+				this.plugin.log.severe(e.getMessage());
 			}
 			
 			try {
@@ -61,7 +61,7 @@ public class OwnerPlayerListener implements Listener {
 				if (!checkBlock(block)) return;
 				String query = "INSERT INTO blocks (owner, x, y, z) VALUES ('" + player.getName().toLowerCase() +"', " + block.getX() + ", " + block.getY() + ", " + block.getZ() + ");";
 				
-				if (plugin.MySQL) {
+				if (plugin.mySQL) {
 					this.plugin.mysql.query(query);
 					player.sendMessage(ChatColor.GREEN + "This block is now owned by alta189");
 				} else {
@@ -77,7 +77,7 @@ public class OwnerPlayerListener implements Listener {
 		String query = "SELECT * FROM blocks WHERE x = " + block.getX() + " AND y = " + block.getY() + " AND z = " + block.getZ() + ";";
 		ResultSet result = null;
 		
-		if (plugin.MySQL) {
+		if (plugin.mySQL) {
 			result = this.plugin.mysql.query(query);
 		} else {
 			result = this.plugin.sqlite.query(query);

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import lib.PatPeter.SQLibrary.Database;
-import lib.PatPeter.SQLibrary.Builders.DatabaseException;
+import lib.PatPeter.SQLibrary.DatabaseException;
 
 /**
  * SELECT query builder.
@@ -110,25 +110,15 @@ public class Select {
 	}
 	
 	public String toString() {
-		switch (db.driver) {
-			case MySQL:
-				return "SELECT " + (duplicates != null ? duplicates : "") + " " + (priority ? "HIGH_PRIORITY" : "") + " " + 
-						(small ? "SQL_SMALL_RESULT" : "") + " " + (big ? "SQL_BIG_RESULT" : "") + " " + 
-						(buffer ? "SQL_BUFFER_RESULT" : "") + " " + (cache ? "SQL_CACHE" : "SQL_NO_CACHE") + " " + 
-						(calc ? "SQL_CALC_FOUND_ROWS" : "") + " "
-						+ columns + " FROM " + tables;
-			case SQLite:
-				if (duplicates == Duplicates.DISTINCTROW)
-					duplicates = Duplicates.DISTINCT;
-				return "SELECT " + (duplicates != null ? duplicates : "") + " " +
-					columns + " FROM " + tables;
-			case H2:
-			case MicrosoftSQL:
-			case Oracle:
-			case PostgreSQL:
-			default:
-				return "";
-		}
+		String string = "SELECT " + (duplicates != null ? duplicates : "") + " ";
+		string += (priority ? "HIGH_PRIORITY" : "") + " ";
+		string += (small ? "SQL_SMALL_RESULT" : "") + " ";
+		string += (big ? "SQL_BIG_RESULT" : "") + " "; 
+		string += (buffer ? "SQL_BUFFER_RESULT" : "") + " ";
+		string += (cache ? "SQL_CACHE" : "SQL_NO_CACHE") + " "; 
+		string += (calc ? "SQL_CALC_FOUND_ROWS" : "") + " ";
+		string += columns + " FROM " + tables;
+		return string;
 	}
 	
 	public void setDuplicate(int index) {

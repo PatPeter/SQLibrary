@@ -1,13 +1,12 @@
-package lib.PatPeter.SQLibrary.Builders;
+package lib.PatPeter.SQLibrary;
 
 /**
- * DatabaseException
+ * RuntimeException for 
  * Created: 2012-03-21 21:51
  * 
- * @author Solin
- *
+ * @author PatPeter
  */
-public class DatabaseException extends Exception {
+public class DatabaseException extends RuntimeException {
 	private static final long serialVersionUID = 3063547825200154629L;
 	
 	public DatabaseException(String message) {

@@ -6,18 +6,19 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 
 /**
- * MySQL
  * Inherited subclass for making a connection to a MySQL server.
  * 
  * Date Created: 2011-08-26 19:08
  * @author PatPeter
  */
 public class MySQL extends Database {
-	private String hostname = "localhost";
-	private String portnmbr = "3306";
+	/*private String hostname = "localhost";
+	private int port = 3306;
 	private String username = "minecraft";
 	private String password = "";
-	private String database = "minecraft";
+	private String database = "minecraft";*/
+	
+	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
 	private enum Statements implements StatementEnum {
 		// Data manipulation statements
@@ -79,26 +80,68 @@ public class MySQL extends Database {
 				 String username,
 				 String password) {
 		super(log,prefix,"[MySQL] ");
-		this.database = database;
-		this.username = username;
-		this.password = password;
+		setHostname("localhost");
+		setPort(3306);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
 		this.driver = DBMS.MySQL;
 	}
 	
 	public MySQL(Logger log,
 				 String prefix,
 				 String hostname,
-				 String portnmbr,
+				 int port,
 				 String database,
 				 String username,
 				 String password) {
 		super(log,prefix,"[MySQL] ");
-		this.hostname = hostname;
-		this.portnmbr = portnmbr;
-		this.database = database;
-		this.username = username;
-		this.password = password;
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
 		this.driver = DBMS.MySQL;
+	}
+	
+	public String getHostname() {
+		return delegate.getHostname();
+	}
+	
+	private void setHostname(String hostname) {
+		delegate.setHostname(hostname);
+	}
+	
+	public int getPort() {
+		return delegate.getPort();
+	}
+	
+	private void setPort(int port) {
+		delegate.setPort(port);
+	}
+	
+	public String getUsername() {
+		return delegate.getUsername();
+	}
+	
+	private void setUsername(String username) {
+		delegate.setUsername(username);
+	}
+	
+	private String getPassword() {
+		return delegate.getPassword();
+	}
+	
+	private void setPassword(String password) {
+		delegate.setPassword(password);
+	}
+	
+	public String getDatabase() {
+		return delegate.getDatabase();
+	}
+	
+	private void setDatabase(String database) {
+		delegate.setDatabase(database);
 	}
 	
 	@Override
@@ -115,15 +158,15 @@ public class MySQL extends Database {
 	@Override
 	public boolean open() {
 		if (initialize()) {
-			String url = "jdbc:mysql://" + this.hostname + ":" + this.portnmbr + "/" + this.database/* + "?autoReconnect=true"*/;
+			String url = "jdbc:mysql://" + getHostname() + ":" + getPort() + "/" + getDatabase()/* + "?autoReconnect=true"*/;
 			try {
-				this.connection = DriverManager.getConnection(url, this.username, this.password);
-				connected = true;
+				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				this.connected = true;
+				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a MySQL connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
-			return true;
 		} else {
 			return false;
 		}
@@ -144,89 +187,6 @@ public class MySQL extends Database {
 	    }
 	}
 	
-	/*@Override
-	public ResultSet query(String query) throws SQLException {
-		Statement statement = this.connection.createStatement();
-		ResultSet result = statement.executeQuery("SELECT CURTIME()");
-	    
-	    switch (this.getStatement(query)) {
-		    case SELECT:
-		    case DO:
-		    case HANDLER:
-		    case DESCRIBE:
-		    case EXPLAIN:
-		    case HELP:
-			    result = statement.executeQuery(query);
-			    break;
-			
-		    case INSERT:
-		    case UPDATE:
-		    case DELETE:
-			
-		    case REPLACE:
-		    case LOAD:
-		    case CALL:
-		    
-		    case CREATE:
-		    case ALTER:
-		    case DROP:
-		    case TRUNCATE:
-		    case RENAME:
-		    
-		    case START:
-		    case COMMIT:
-		    case SAVEPOINT:
-		    case ROLLBACK:
-		    case RELEASE:
-		    case LOCK:
-		    case UNLOCK:
-		    
-		    case SET:
-		    case SHOW:
-		    	this.lastUpdate = statement.executeUpdate(query);
-		    	break;
-		    
-		    case USE:
-		    	this.writeError("Please create a new connection to use a different database.", false);
-		    	throw new SQLException("Please create a new connection to use a different database.");
-		    
-		    case PREPARE:
-		    case EXECUTE:
-		    case DEALLOCATE:
-		    	this.writeError("Please use the prepare() method to prepare a query.", false);
-		    	throw new SQLException("Please use the prepare() method to prepare a query.");
-		    
-		    default:
-		    	result = statement.executeQuery(query);
-	    }
-	    //result.close(); // This is here to remind you to close your ResultSets
-	    //statement.close(); // This closes automatically, don't worry about it
-    	return result;
-	}
-
-	@Override
-	protected ResultSet query(PreparedStatement ps, StatementEnum statement) throws SQLException {
-		switch ((Statements) statement) {
-		    case USE:
-		    	this.writeError("Please create a new connection to use a different database.", false);
-		    	throw new SQLException("Please create a new connection to use a different database.");
-		    
-		    case PREPARE:
-		    case EXECUTE:
-		    case DEALLOCATE:
-		    	this.writeError("Please use the prepare() method to prepare a query.", false);
-		    	throw new SQLException("Please use the prepare() method to prepare a query.");
-	    }
-		
-		if (ps.execute()) {
-	    	return ps.getResultSet();
-	    } else {
-	    	int uc = ps.getUpdateCount();
-	    	this.lastUpdate = uc;
-	    	return this.connection.createStatement().executeQuery("SELECT " + uc);
-	    }
-	}*/
-	
 	@Override
 	public Statements getStatement(String query) throws SQLException {
 		String[] statement = query.trim().split(" ", 2);
@@ -239,7 +199,6 @@ public class MySQL extends Database {
 	}
 	
 	@Deprecated
-	@Override
 	public boolean createTable(String query) {
 		Statement statement = null;
 		if (query == null || query.equals("")) {
@@ -258,9 +217,8 @@ public class MySQL extends Database {
 	    return true;
 	}
 	
-	@Deprecated
 	@Override
-	public boolean checkTable(String table) {
+	public boolean tableExists(String table) {
 	    Statement statement;
 		try {
 			statement = connection.createStatement();
@@ -270,35 +228,18 @@ public class MySQL extends Database {
 		}
 		try {
 			statement.executeQuery("SELECT * FROM " + table);
-			return true;
+			return true; // Result can never be null, bad logic from earlier versions.
 		} catch (SQLException e) {
-			// Query failed, table does not exist.
-			return false;
+			return false; // Query failed, table does not exist.
 		}
-		
-		// Result can never be null, bad logic from earlier versions.
-		/*try {
-		    if (result != null) {
-		    	result.close();
-		    	statement.close();
-		    	return true;
-		    } else {
-		    	statement.close();
-		    	return false;
-		    }
-		} catch (SQLException e) {
-			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
-			return false;
-		}*/
 	}
 	
-	@Deprecated
 	@Override
-	public boolean wipeTable(String table) {
+	public boolean truncate(String table) {
 		Statement statement = null;
 		String query = null;
 		try {
-			if (!this.checkTable(table)) {
+			if (!this.tableExists(table)) {
 				this.writeError("Table \"" + table + "\" does not exist.", true);
 				return false;
 			}
@@ -309,10 +250,8 @@ public class MySQL extends Database {
 		    
 		    return true;
 		} catch (SQLException e) {
-			//if (!e.toString().contains("not return ResultSet"))
 			this.writeError("Could not wipe table, SQLException: " + e.getMessage(), true);
 			return false;
 		}
-		//return false;
 	}
 }

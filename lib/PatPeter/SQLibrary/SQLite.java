@@ -108,15 +108,15 @@ public class SQLite extends Database {
 		}
 	}
 	
-	public SQLite(Logger log, String prefix, String directory, String filename) throws SQLException {
+	public SQLite(Logger log, String prefix, String directory, String filename) {
 		super(log,prefix,"[SQLite] ");
 		
 		if (directory == null || directory.length() == 0)
-			throw new SQLException("Directory cannot be null or empty.");
+			throw new DatabaseException("Directory cannot be null or empty.");
 		if (filename == null || filename.length() == 0)
-			throw new SQLException("Filename cannot be null or empty.");
+			throw new DatabaseException("Filename cannot be null or empty.");
 		if (filename.contains("/") || filename.contains("\\") || filename.endsWith(".db"))
-			throw new SQLException("The database filename cannot contain: /, \\, or .db.");
+			throw new DatabaseException("The database filename cannot contain: /, \\, or .db.");
 		
 		File folder = new File(directory);
 		if (!folder.exists())
@@ -141,12 +141,12 @@ public class SQLite extends Database {
 		if (initialize()) {
 			try {
 				this.connection = DriverManager.getConnection("jdbc:sqlite:" + db.getAbsolutePath());
-				connected = true;
+				this.connected = true;
+				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an SQLite connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
-			return true;
 		} else {
 			return false;
 		}
@@ -154,100 +154,6 @@ public class SQLite extends Database {
 	
 	@Override
 	protected void queryValidation(StatementEnum statement) throws SQLException { }
-	
-	/*@Override
-	public ResultSet query(String query) {
-		try {
-			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT date('now')");
-			
-			switch (this.getStatement(query)) {
-			    case SELECT:
-			    case EXPLAIN:
-				    result = statement.executeQuery(query);
-				    break;
-				
-			    case INSERT:
-			    case UPDATE:
-			    case DELETE:
-			    case REPLACE:
-			    
-			    case CREATE:
-			    case ALTER:
-			    case DROP:
-			    	
-			    case ANALYZE:
-			    case ATTACH:
-			    case BEGIN:
-			    case DETACH:
-			    case END:
-			    case INDEXED:
-			    case PRAGMA:
-			    case REINDEX:
-			    case RELEASE:
-			    case SAVEPOINT:
-			    case VACUUM:
-			    	this.lastUpdate = statement.executeUpdate(query);
-			    	break;
-			    	
-			    default:
-			    	result = statement.executeQuery(query);
-			}
-			statement.close();
-			
-			return result;
-		} catch (SQLException e) {
-			if (e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked")) {
-				return retry(query);
-			} else {
-				this.writeError("Query failed: " + e.getMessage(), false);
-			}
-			
-		}
-		return null;
-	}
-	
-	@Override
-	public ResultSet query(PreparedStatement ps, StatementEnum statement) throws SQLException {
-		ResultSet result = this.connection.createStatement().executeQuery("SELECT date('now')");
-		
-		switch ((Statements) statement) {
-		    case SELECT:
-		    case EXPLAIN:
-			    result = ps.executeQuery();
-			    break;
-			
-		    case INSERT:
-		    case UPDATE:
-		    case DELETE:
-		    case REPLACE:
-		    
-		    case CREATE:
-		    case ALTER:
-		    case DROP:
-		    	
-		    case ANALYZE:
-		    case ATTACH:
-		    case BEGIN:
-		    case DETACH:
-		    case END:
-		    case INDEXED:
-		    case PRAGMA:
-		    case REINDEX:
-		    case RELEASE:
-		    case SAVEPOINT:
-		    case VACUUM:
-		    	this.lastUpdate = ps.executeUpdate();
-		    	break;
-		    	
-		    default:
-		    	result = ps.executeQuery();
-		}
-		//result.close(); // This is here to remind you to close your ResultSets
-		//statement.close(); // This closes automatically, don't worry about it
-		
-		return result;
-	}*/
 	
 	/**
 	 * 
@@ -263,11 +169,7 @@ public class SQLite extends Database {
 		}
 	}
 	
-	/**
-	 * 
-	 */
 	@Deprecated
-	@Override
 	public boolean createTable(String query) {
 		Statement statement = null;
 		try {
@@ -289,9 +191,8 @@ public class SQLite extends Database {
 	/**
 	 * 
 	 */
-	@Deprecated
 	@Override
-	public boolean checkTable(String table) {
+	public boolean tableExists(String table) {
 		DatabaseMetaData md;
 		try {
 			md = this.connection.getMetaData();
@@ -299,37 +200,20 @@ public class SQLite extends Database {
 			this.writeError("Could not fetch metadata for table \"" + table + "\", SQLException: " + e.getMessage(), true);
 			return false;
 		}
-		//ResultSet tables;
 		try {
-			//tables = md.getTables(null, null, table, null);
 			md.getTables(null, null, table, null);
 			return true;
 		} catch (SQLException e) {
-			//this.writeError("Could not check the table \"" + table + "\" using metadata, SQLException: " + e.getMessage(), true);
 			return false;
 		}
-		// Table can exist without having a row.
-		/*try {
-			if (tables.next()) {
-				tables.close();
-				return true;
-			} else {
-				tables.close();
-				return false;
-			}
-		} catch (SQLException e) {
-			this.writeError("Could not get the first row of table \"" + table + "\" to check that it exists, SQLException: " + e.getMessage(), true);
-			return false;
-		}*/
 	}
 	
-	@Deprecated
 	@Override
-	public boolean wipeTable(String table) {
+	public boolean truncate(String table) {
 		Statement statement = null;
 		String query = null;
 		try {
-			if (!this.checkTable(table)) {
+			if (!this.tableExists(table)) {
 				this.writeError("Table \"" + table + "\" does not exist.", true);
 				return false;
 			}
@@ -347,8 +231,6 @@ public class SQLite extends Database {
 	}
 	
 	/**
-	 * <b>retry</b><br>
-	 * <br>
 	 * Retries a statement and returns a ResultSet.
 	 * <br>
 	 * <br>

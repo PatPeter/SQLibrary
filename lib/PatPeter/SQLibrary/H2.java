@@ -5,6 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+/**
+ * Child class for the H2 database.
+ * 
+ * @author PatPeter
+ */
 public class H2 extends Database {
 	private File db;
 	
@@ -55,15 +60,15 @@ public class H2 extends Database {
 		}
 	}
 	
-	public H2(Logger log, String prefix, String directory, String filename) throws SQLException {
+	public H2(Logger log, String prefix, String directory, String filename) {
 		super(log, prefix, "[H2] ");
 		
 		if (directory == null || directory.length() == 0)
-			throw new SQLException("Directory cannot be null or empty.");
+			throw new DatabaseException("Directory cannot be null or empty.");
 		if (filename == null || filename.length() == 0)
-			throw new SQLException("Filename cannot be null or empty.");
+			throw new DatabaseException("Filename cannot be null or empty.");
 		if (filename.contains("/") || filename.contains("\\") || filename.endsWith(".db"))
-			throw new SQLException("The database filename cannot contain: /, \\, or .db.");
+			throw new DatabaseException("The database filename cannot contain: /, \\, or .db.");
 		
 		File folder = new File(directory);
 		if (!folder.exists())
@@ -89,27 +94,19 @@ public class H2 extends Database {
 		if (initialize()) {
 			try {
 				this.connection = DriverManager.getConnection("jdbc:h2:file:" + db.getAbsolutePath());
+				this.connected = true;
+				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an H2 connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
-			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	protected void queryValidation(StatementEnum statement) throws SQLException { }
-	
-	/*@Override
-	public ResultSet query(String query) throws SQLException {
-		
-	}
-
 	@Override
-	protected ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException {
-		
-	}*/
+	protected void queryValidation(StatementEnum statement) throws SQLException { }
 	
 	@Override
 	public StatementEnum getStatement(String query) throws SQLException {
@@ -124,20 +121,12 @@ public class H2 extends Database {
 	
 	@Deprecated
 	@Override
-	public boolean createTable(String query) {
+	public boolean tableExists(String table) {
 		return false;
 	}
 	
-	@Deprecated
 	@Override
-	public boolean checkTable(String table) {
+	public boolean truncate(String table) {
 		return false;
 	}
-	
-	@Deprecated
-	@Override
-	public boolean wipeTable(String table) {
-		return false;
-	}
-
 }

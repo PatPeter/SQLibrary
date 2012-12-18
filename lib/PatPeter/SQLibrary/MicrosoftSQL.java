@@ -6,12 +6,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
+/**
+ * Child class for the Microsoft SQL database.
+ * 
+ * @author PatPeter
+ */
 public class MicrosoftSQL extends Database {
-	private String hostname = "localhost";
+	/*private String hostname = "localhost";
 	private String portnmbr = "1433";
 	private String username = "minecraft";
 	private String password = "";
-	private String database = "minecraft";
+	private String database = "minecraft";*/
+	
+	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
 	// http://msdn.microsoft.com/en-us/library/ms131699.aspx
 	protected enum Statements implements StatementEnum {
@@ -399,30 +406,72 @@ public class MicrosoftSQL extends Database {
 						String prefix,
 				 		String database,
 				 		String username,
-						String password) {
+						String password) throws SQLException {
 		super(log,prefix,"[MicrosoftSQL] ");
-		this.database = database;
-		this.username = username;
-		this.password = password;
+		setHostname("localhost");
+		setPort(1433);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
 		this.driver = DBMS.MicrosoftSQL;
 	}
 	
 	public MicrosoftSQL(Logger log,
 				 		String prefix,
 						String hostname,
-						String portnmbr,
+						int port,
 						String database,
 						String username,
-						String password) {
+						String password) throws SQLException {
 		super(log,prefix,"[MicrosoftSQL] ");
-		this.hostname = hostname;
-		this.portnmbr = portnmbr;
-		this.database = database;
-		this.username = username;
-		this.password = password;
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
 		this.driver = DBMS.MicrosoftSQL;
 	}
 
+	public String getHostname() {
+		return delegate.getHostname();
+	}
+	
+	private void setHostname(String hostname) {
+		delegate.setHostname(hostname);
+	}
+	
+	public int getPort() {
+		return delegate.getPort();
+	}
+	
+	private void setPort(int port) {
+		delegate.setPort(port);
+	}
+	
+	public String getUsername() {
+		return delegate.getUsername();
+	}
+	
+	private void setUsername(String username) {
+		delegate.setUsername(username);
+	}
+	
+	private String getPassword() {
+		return delegate.getPassword();
+	}
+	
+	private void setPassword(String password) {
+		delegate.setPassword(password);
+	}
+	
+	public String getDatabase() {
+		return delegate.getDatabase();
+	}
+	
+	private void setDatabase(String database) {
+		delegate.setDatabase(database);
+	}
+	
 	@Override
 	public boolean initialize() {
 		try {
@@ -437,69 +486,21 @@ public class MicrosoftSQL extends Database {
 	@Override
 	public boolean open() {
 		if (initialize()) {
-			String url = "jdbc:sqlserver://" + this.hostname + ":" + this.portnmbr + ";databaseName=" + this.database + ";user=" + this.username + ";password=" + this.password;
+			String url = "jdbc:sqlserver://" + getHostname() + ":" + getPort() + ";databaseName=" + getDatabase() + ";user=" + getUsername() + ";password=" + getPassword();
 			try {
-				this.connection = DriverManager.getConnection(url, this.username, this.password);
+				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				this.connected = true;
+				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a Microsoft SQL connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
-			return true;
 		} else {
 			return false;
 		}
 	}
 	
 	protected void queryValidation(StatementEnum statement) throws SQLException { }
-	
-	/*@Override
-	public ResultSet query(String query) throws SQLException {
-	    Statement statement = this.connection.createStatement();
-	    ResultSet  result = statement.executeQuery("SELECT CURTIME()");
-	    
-	    switch (this.getStatement(query)) {
-		    case SELECT:
-		    case DO:
-		    case HELP:
-			    result = statement.executeQuery(query);
-			    break;
-			
-		    case INSERT:
-		    case UPDATE:
-		    case DELETE:
-			
-		    case REPLACE:
-		    case LOAD:
-		    case CALL:
-		    
-		    case CREATE:
-		    case ALTER:
-		    case DROP:
-		    case RENAME:
-		    
-		    case ROLLBACK:
-		    case RELEASE:
-		    	
-		    case SET:
-		    case SHOW:
-		    	this.lastUpdate = statement.executeUpdate(query);
-		    	break;
-
-		    case USE:
-		    	this.writeError("Please create a new connection to use a different database.", false);
-		    	throw new SQLException("Please create a new connection to use a different database.");
-		    
-		    default:
-		    	result = statement.executeQuery(query);
-	    }
-	    statement.close();
-    	return result;
-	}
-
-	@Override
-	protected ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException {
-		
-	}*/
 
 	@Override
 	public Statements getStatement(String query) throws SQLException {
@@ -512,9 +513,8 @@ public class MicrosoftSQL extends Database {
 		}
 	}
 	
-	@Deprecated
 	@Override
-	public boolean checkTable(String table) {
+	public boolean tableExists(String table) {
 		try {
 		    Statement statement = connection.createStatement();
 		    ResultSet result = statement.executeQuery("SELECT TOP 10 * FROM " + table);
@@ -529,15 +529,8 @@ public class MicrosoftSQL extends Database {
 		}
 	}
 	
-	@Deprecated
 	@Override
-	public boolean createTable(String query) {
-		return false;
-	}
-	
-	@Deprecated
-	@Override
-	public boolean wipeTable(String table) {
+	public boolean truncate(String table) {
 		return false;
 	}
 }

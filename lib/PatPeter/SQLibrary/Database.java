@@ -16,55 +16,85 @@ import java.util.logging.Logger;
  * @author PatPeter
  */
 public abstract class Database {
+	/**
+	 * Logger to log errors to.
+	 */
 	protected Logger log;
+	/**
+	 * Plugin prefix to display during errors.
+	 */
 	protected final String PREFIX;
+	/**
+	 * Database prefix to display after the plugin prefix.
+	 */
 	protected final String DATABASE_PREFIX;
+	
+	/**
+	 * The driver of the Database as an enum.
+	 */
+	protected DBMS driver;
+	/**
+	 * Whether the Database is connected or not.
+	 */
 	protected boolean connected;
+	/**
+	 * The Database Connection.
+	 */
 	protected Connection connection;
+	
+	/**
+	 * Statement registration for PreparedStatement query validation.
+	 */
 	protected Map<PreparedStatement, StatementEnum> preparedStatements = new HashMap<PreparedStatement, StatementEnum>();
+	/**
+	 * Holder for the last update count by a query.
+	 */
+	protected int lastUpdate;
 	
-	public DBMS driver;
-	public int lastUpdate;
-	
-	public Database(Logger log, String prefix, String dp) {
+	/**
+	 * Constructor used in child class super().
+	 * 
+	 * @param log the Logger used by the plugin.
+	 * @param prefix the prefix of the plugin.
+	 * @param dp the prefix of the database.
+	 */
+	public Database(Logger log, String prefix, String dp) throws DatabaseException {
+		if (log == null)
+			throw new DatabaseException("Logger cannot be null.");
+		if (prefix == null || prefix.length() == 0)
+			throw new DatabaseException("Plugin prefix cannot be null or empty.");
+		
 		this.log = log;
 		this.PREFIX = prefix;
-		this.DATABASE_PREFIX = dp;
+		this.DATABASE_PREFIX = dp; // Set from child class, can never be null or empty
 		this.connected = false;
-		this.connection = null;
 	}
 	
 	/**
-	 * <b>writeInfo</b><br>
-	 * <br>
 	 * &nbsp;&nbsp;Writes information to the console.
 	 * <br>
 	 * <br>
 	 * @param message the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html">String</a>
 	 * of content to write to the console.
 	 */
-	protected String prefix(String message) {
+	protected final String prefix(String message) {
 		return this.PREFIX + this.DATABASE_PREFIX + message;
 	}
 	
 	/**
-	 * <b>writeInfo</b><br>
-	 * <br>
 	 * &nbsp;&nbsp;Writes information to the console.
 	 * <br>
 	 * <br>
 	 * @param toWrite the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html">String</a>
 	 * of content to write to the console.
 	 */
-	protected void writeInfo(String toWrite) {
+	protected final void writeInfo(String toWrite) {
 		if (toWrite != null) {
 			this.log.info(prefix(toWrite));
 		}
 	}
 	
 	/**
-	 * <b>writeError</b><br>
-	 * <br>
 	 * &nbsp;&nbsp;Writes either errors or warnings to the console.
 	 * <br>
 	 * <br>
@@ -72,7 +102,7 @@ public abstract class Database {
 	 * written to the console.
 	 * @param severe whether console output should appear as an error or warning.
 	 */
-	protected void writeError(String toWrite, boolean severe) {
+	protected final void writeError(String toWrite, boolean severe) {
 		if (toWrite != null) {
 			if (severe) {
 				this.log.severe(prefix(toWrite));
@@ -83,8 +113,6 @@ public abstract class Database {
 	}
 	
 	/**
-	 * <b>initialize</b><br>
-	 * <br>
 	 * &nbsp;&nbsp;Used to check whether the class for the SQL engine is installed.
 	 * <br>
 	 * <br>
@@ -92,8 +120,15 @@ public abstract class Database {
 	protected abstract boolean initialize();
 	
 	/**
-	 * <b>open</b><br>
-	 * <br>
+	 * &nbsp;&nbsp;Get the DBMS enum value of the Database.
+	 * 
+	 * @return the DBMS enum value.
+	 */
+	public final DBMS getDBMS() {
+		return this.driver;
+	}
+	
+	/**
 	 * &nbsp;&nbsp;Opens a connection with the database.
 	 * <br>
 	 * <br>
@@ -102,13 +137,12 @@ public abstract class Database {
 	public abstract boolean open();
 	
 	/**
-	 * <b>close</b><br>
-	 * <br>
 	 * &nbsp;&nbsp;Closes a connection with the database.
 	 * <br>
 	 * <br>
 	 */
-	public boolean close() {
+	public final boolean close() {
+		this.connected = false;
 		if (connection != null) {
 			try {
 				connection.close();
@@ -124,8 +158,15 @@ public abstract class Database {
 	}
 	
 	/**
-	 * <b>getConnection</b><br>
-	 * <br>
+	 * &nbsp;&nbsp;Specifies whether the Database object is connected or not.
+	 * 
+	 * @return a boolean specifying connection.
+	 */
+	public final boolean isConnected() {
+		return this.connected;
+	}
+	
+	/**
 	 * &nbsp;&nbsp;Gets the connection variable 
 	 * <br>
 	 * <br>
@@ -136,9 +177,7 @@ public abstract class Database {
 	}
 	
 	/**
-	 * <b>checkConnection</b><br>
-	 * <br>
-	 * Checks the connection between Java and the database engine.
+	 * &nbsp;&nbsp;Checks the connection between Java and the database engine.
 	 * <br>
 	 * <br>
 	 * @return the status of the connection, true for up, false for down.
@@ -150,14 +189,24 @@ public abstract class Database {
 	}
 	
 	/**
-	 * 
-	 * 
-	 * @throws SQLException
+	 * &nbsp;&nbsp;Gets the last update count from the last execution.
+	 * <br>
+	 * <br>
+	 * @return the last update count.
+	 */
+	public final int getLastUpdateCount() {
+		return this.lastUpdate;
+	}
+	
+	/**
+	 * &nbsp;&nbsp;Validates a query before execution.
+	 * <br>
+	 * <br>
+	 * @throws SQLException if the query is invalid.
 	 */
 	protected abstract void queryValidation(StatementEnum statement) throws SQLException;
 	
 	/**
-	 * <b>query</b><br>
 	 * &nbsp;&nbsp;Sends a query to the SQL database.
 	 * <br>
 	 * <br>
@@ -177,12 +226,12 @@ public abstract class Database {
 	}
 	
 	/**
+	 * &nbsp;&nbsp;Executes a query given a PreparedStatement and StatementEnum.
 	 * 
-	 * 
-	 * @param ps
-	 * @param statement
-	 * @return
-	 * @throws SQLException
+	 * @param ps the PreparedStatement to execute.
+	 * @param statement the enum to use for validation.
+	 * @return the ResultSet generated by the query, otherwise a ResultSet containing the update count of the query.
+	 * @throws SQLException if any part of the statement execution fails.
 	 */
 	protected final ResultSet query(PreparedStatement ps, StatementEnum statement) throws SQLException {
 		queryValidation(statement);
@@ -196,11 +245,11 @@ public abstract class Database {
 	}
 	
 	/**
+	 * Executes a query given a PreparedStatement.
 	 * 
-	 * 
-	 * @param ps
-	 * @return
-	 * @throws SQLException
+	 * @param ps the PreparedStatement to execute.
+	 * @return a ResultSet, if any, from executing the PreparedStatement, otherwise a ResultSet of the update count.
+	 * @throws SQLException if any part of the statement execution fails.
 	 */
 	public final ResultSet query(PreparedStatement ps) throws SQLException {
 		ResultSet output = query(ps, preparedStatements.get(ps));
@@ -209,7 +258,6 @@ public abstract class Database {
 	}
 	
 	/**
-	 * <b>prepare</b><br>
 	 * &nbsp;&nbsp;Prepares to send a query to the database.
 	 * <br>
 	 * <br>
@@ -224,29 +272,13 @@ public abstract class Database {
 	}
 	
 	/**
-	 * <b>getStatement</b><br>
-	 * &nbsp;&nbsp;Determines the name of the statement and converts it into an enum.
+	 * &nbsp;&nbsp;Determines the statement and converts it into an enum.
 	 * <br>
 	 * <br>
 	 */
 	public abstract StatementEnum getStatement(String query) throws SQLException;
 	
 	/**
-	 * <b>createTable</b><br>
-	 * <br>
-	 * &nbsp;&nbsp;Creates a table in the database based on a specified query.
-	 * <br>
-	 * <br>
-	 * @param query the SQL query for creating a table.
-	 * @return the success of the method.
-	 * @throws SQLException 
-	 */
-	@Deprecated
-	public abstract boolean createTable(String query);
-	
-	/**
-	 * <b>checkTable</b><br>
-	 * <br>
 	 * &nbsp;&nbsp;Checks a table in a database based on the table's name.
 	 * <br>
 	 * <br>
@@ -254,18 +286,14 @@ public abstract class Database {
 	 * @return success of the method.
 	 * @throws SQLException 
 	 */
-	@Deprecated
-	public abstract boolean checkTable(String table);
+	public abstract boolean tableExists(String table);
 	
 	/**
-	 * <b>wipeTable</b><br>
-	 * <br>
-	 * &nbsp;&nbsp;Wipes a table given its name.
+	 * &nbsp;&nbsp;Truncates (empties) a table given its name.
 	 * <br>
 	 * <br>
 	 * @param table name of the table to wipe.
 	 * @return success of the method.
 	 */
-	@Deprecated
-	public abstract boolean wipeTable(String table);
+	public abstract boolean truncate(String table);
 }

@@ -4,12 +4,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+/**
+ * Child class for the Oracle database.
+ * 
+ * @author PatPeter
+ */
 public class Oracle extends Database {
-	private String hostname = "localhost";
+	/*private String hostname = "localhost";
 	private String portnmbr = "1521";
 	private String username = "minecraft";
 	private String password = "";
-	private String database = "minecraft";
+	private String database = "minecraft";*/
+	
+	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
 	// http://docs.oracle.com/html/A95915_01/sqcmd.htm
 	protected enum Statements implements StatementEnum {
@@ -48,24 +55,79 @@ public class Oracle extends Database {
 	
 	public Oracle(Logger log,
 				  String prefix,
-				  String hostname,
-				  String portnmbr,
+				  int port,
 				  String database,
 				  String username,
-				  String password) {
+				  String password) throws SQLException {
 		super(log, prefix, "[Oracle] ");
-		this.hostname = hostname;
-		this.portnmbr = portnmbr;
-		this.database = database;
-		this.username = username;
-		this.password = password;
+		setHostname("localhost");
+		setPort(1521);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.Oracle;
+	}
+	
+	public Oracle(Logger log,
+				  String prefix,
+				  String hostname,
+				  int port,
+				  String database,
+				  String username,
+				  String password) throws SQLException {
+		super(log, prefix, "[Oracle] ");
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
 		this.driver = DBMS.Oracle;
 	}
 
+	public String getHostname() {
+		return delegate.getHostname();
+	}
+	
+	private void setHostname(String hostname) {
+		delegate.setHostname(hostname);
+	}
+	
+	public int getPort() {
+		return delegate.getPort();
+	}
+	
+	private void setPort(int port) {
+		delegate.setPort(port);
+	}
+	
+	public String getUsername() {
+		return delegate.getUsername();
+	}
+	
+	private void setUsername(String username) {
+		delegate.setUsername(username);
+	}
+	
+	private String getPassword() {
+		return delegate.getPassword();
+	}
+	
+	private void setPassword(String password) {
+		delegate.setPassword(password);
+	}
+	
+	public String getDatabase() {
+		return delegate.getDatabase();
+	}
+	
+	private void setDatabase(String database) {
+		delegate.setDatabase(database);
+	}
+	
 	@Override
 	public boolean initialize() {
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Class.forName("oracle.jdbc.driver.OracleDriver"); // com.jdbc.OracleDriver ?
 			return true;
 	    } catch (ClassNotFoundException e) {
 	    	this.writeError("Oracle driver class missing: " + e.getMessage() + ".", true);
@@ -77,30 +139,21 @@ public class Oracle extends Database {
 	public boolean open() {
 		if (initialize()) {
 			String url = "";
-			url = "jdbc:oracle:thin:@" + this.hostname + ":" + this.portnmbr + ":" + this.database;
+			url = "jdbc:oracle:thin:@" + getHostname() + ":" + getPort() + ":" + getDatabase();
 			try {
-				this.connection = DriverManager.getConnection(url, this.username, this.password);
+				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				this.connected = true;
+				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an Oracle connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
-			return true;
 		} else {
 			return false;
 		}
 	}
 	
 	protected void queryValidation(StatementEnum statement) throws SQLException { }
-	
-	/*@Override
-	public ResultSet query(String query) throws SQLException {
-		
-	}
-	
-	@Override
-	protected ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException {
-		
-	}*/
 
 	@Override
 	public Statements getStatement(String query) throws SQLException {
@@ -113,21 +166,13 @@ public class Oracle extends Database {
 		}
 	}
 	
-	@Deprecated
 	@Override
-	public boolean createTable(String query) {
+	public boolean tableExists(String table) {
 		return false;
 	}
 	
-	@Deprecated
 	@Override
-	public boolean checkTable(String table) {
-		return false;
-	}
-	
-	@Deprecated
-	@Override
-	public boolean wipeTable(String table) {
+	public boolean truncate(String table) {
 		return false;
 	}
 	

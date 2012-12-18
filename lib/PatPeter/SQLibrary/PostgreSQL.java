@@ -4,12 +4,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+/**
+ * Child class for the PostgreSQL database.
+ * 
+ * @author PatPeter
+ */
 public class PostgreSQL extends Database {
-	private String hostname = "localhost";
+	/*private String hostname = "localhost";
 	private String portnmbr = "1433";
 	private String username = "minecraft";
 	private String password = "";
-	private String database = "minecraft";
+	private String database = "minecraft";*/
+	
+	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
 	// http://www.postgresql.org/docs/7.3/static/sql-commands.html
 	protected enum Statements implements StatementEnum {
@@ -70,26 +77,68 @@ public class PostgreSQL extends Database {
 					  String username,
 					  String password) {
 		super(log,prefix,"[PostgreSQL] ");
-		this.database = database;
-		this.username = username;
-		this.password = password;
+		setHostname("localhost");
+		setPort(1433);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
 		this.driver = DBMS.PostgreSQL;
 	}
 	
 	public PostgreSQL(Logger log,
 					  String prefix,
 					  String hostname,
-					  String portnmbr,
+					  int port,
 					  String database,
 					  String username,
 					  String password) {
 		super(log,prefix,"[PostgreSQL] ");
-		this.hostname = hostname;
-		this.portnmbr = portnmbr;
-		this.database = database;
-		this.username = username;
-		this.password = password;
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
 		this.driver = DBMS.PostgreSQL;
+	}
+
+	public String getHostname() {
+		return delegate.getHostname();
+	}
+	
+	private void setHostname(String hostname) {
+		delegate.setHostname(hostname);
+	}
+	
+	public int getPort() {
+		return delegate.getPort();
+	}
+	
+	private void setPort(int port) {
+		delegate.setPort(port);
+	}
+	
+	public String getUsername() {
+		return delegate.getUsername();
+	}
+	
+	private void setUsername(String username) {
+		delegate.setUsername(username);
+	}
+	
+	private String getPassword() {
+		return delegate.getPassword();
+	}
+	
+	private void setPassword(String password) {
+		delegate.setPassword(password);
+	}
+	
+	public String getDatabase() {
+		return delegate.getDatabase();
+	}
+	
+	private void setDatabase(String database) {
+		delegate.setDatabase(database);
 	}
 
 	@Override
@@ -107,14 +156,15 @@ public class PostgreSQL extends Database {
 	public boolean open() {
 		if (initialize()) {
 			String url = "";
-			url = "jdbc:postgresql://" + this.hostname + ":" + this.portnmbr + "/" + this.database/* + "?autoReconnect=true"*/;
+			url = "jdbc:postgresql://" + getHostname() + ":" + getPort() + "/" + getDatabase()/* + "?autoReconnect=true"*/;
 			try {
-				this.connection = DriverManager.getConnection(url, this.username, this.password);
+				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				this.connected = true;
+				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a PostgreSQL connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
-			return true;
 		} else {
 			return false;
 		}
@@ -130,45 +180,6 @@ public class PostgreSQL extends Database {
 		    	throw new SQLException("Please use the prepare() method to prepare a query.");
 	    }
 	}
-	
-	/*@Override
-	public ResultSet query(String query) throws SQLException {
-	    switch (this.getStatement(query)) {
-		    case PREPARE:
-		    case EXECUTE:
-		    case DEALLOCATE:
-		    	this.writeError("Please use the prepare() method to prepare a query.", false);
-		    	throw new SQLException("Please use the prepare() method to prepare a query.");
-	    }
-	    
-		Statement statement = this.connection.createStatement();
-		if (statement.execute(query)) {
-	    	return statement.getResultSet();
-	    } else {
-	    	int uc = statement.getUpdateCount();
-	    	this.lastUpdate = uc;
-	    	return this.getConnection().createStatement().executeQuery("SELECT " + uc);
-	    }
-	}
-
-	@Override
-	protected ResultSet query(PreparedStatement ps, StatementEnum statement) throws SQLException {
-		switch ((Statements) statement) {
-		    case PREPARE:
-		    case EXECUTE:
-		    case DEALLOCATE:
-		    	this.writeError("Please use the prepare() method to prepare a query.", false);
-		    	throw new SQLException("Please use the prepare() method to prepare a query.");
-	    }
-	    
-		if (ps.execute()) {
-	    	return ps.getResultSet();
-	    } else {
-	    	int uc = ps.getUpdateCount();
-	    	this.lastUpdate = uc;
-	    	return this.connection.createStatement().executeQuery("SELECT " + uc);
-	    }
-	}*/
 
 	@Override
 	public Statements getStatement(String query) throws SQLException {
@@ -181,21 +192,13 @@ public class PostgreSQL extends Database {
 		}
 	}
 	
-	@Deprecated
 	@Override
-	public boolean createTable(String query) {
+	public boolean tableExists(String table) {
 		return false;
 	}
 	
-	@Deprecated
 	@Override
-	public boolean checkTable(String table) {
-		return false;
-	}
-	
-	@Deprecated
-	@Override
-	public boolean wipeTable(String table) {
+	public boolean truncate(String table) {
 		return false;
 	}
 }

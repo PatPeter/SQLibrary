@@ -28,9 +28,9 @@ public class OwnerCore extends JavaPlugin {
 	public HashMap<String, Integer> commandUsers = new HashMap<String, Integer>(); //Stores info about people using commands
 	
 	// Settings Variables \\
-	public boolean MySQL = false;
+	public boolean mySQL = false;
 	public String dbHost = null;
-	public String dbPort = null;
+	public int dbPort = 0;
 	public String dbUser = null;
 	public String dbPass = null;
 	public String dbDatabase = null;
@@ -45,7 +45,7 @@ public class OwnerCore extends JavaPlugin {
 		
 		// Declare the settings handler
 		this.opl = new OwnerPlayerListener(this);
-		settings = new SettingsHandler("Settings.properties", pFolder.getPath() + File.separator + "MySQL.properties");
+		settings = new SettingsHandler("Settings.properties", pFolder.getPath() + File.separator + "mySQL.properties");
 		
 		// load the settings handler
 		try {
@@ -56,8 +56,8 @@ public class OwnerCore extends JavaPlugin {
 		}
 		
 		// get variables from settings handler\\
-		if (settings.file.exists() && settings.isValidProperty("MySQL")) {
-			this.MySQL = this.settings.getPropertyBoolean("MySQL");
+		if (settings.file.exists() && settings.isValidProperty("mySQL")) {
+			this.mySQL = this.settings.getPropertyBoolean("mySQL");
 			if (this.settings.isValidProperty("host"))
 				this.dbHost = this.settings.getPropertyString("host");
 			
@@ -70,48 +70,48 @@ public class OwnerCore extends JavaPlugin {
 			if (this.settings.isValidProperty("database"))
 				this.dbDatabase = this.settings.getPropertyString("database");
 		} else {
-			this.log.warning(this.logPrefix + "Check MySQL.properties");
+			this.log.warning(this.logPrefix + "Check mySQL.properties");
 		}
 		
 		// Check Settings \\
-		if (this.MySQL) {
+		if (this.mySQL) {
 			if (this.dbHost.equals(null)) {
-				this.MySQL = false;
-				this.log.severe(this.logPrefix + "MySQL is on, but host is not defined, defaulting to SQLite");
+				this.mySQL = false;
+				this.log.severe(this.logPrefix + "mySQL is on, but host is not defined, defaulting to SQLite");
 			}
 			if (this.dbUser.equals(null)) {
-				this.MySQL = false;
-				this.log.severe(this.logPrefix + "MySQL is on, but username is not defined, defaulting to SQLite");
+				this.mySQL = false;
+				this.log.severe(this.logPrefix + "mySQL is on, but username is not defined, defaulting to SQLite");
 			}
 			if (this.dbPass.equals(null)) {
-				this.MySQL = false;
-				this.log.severe(this.logPrefix + "MySQL is on, but password is not defined, defaulting to SQLite");
+				this.mySQL = false;
+				this.log.severe(this.logPrefix + "mySQL is on, but password is not defined, defaulting to SQLite");
 			}
 			if (this.dbDatabase.equals(null)) {
-				this.MySQL = false;
-				this.log.severe(this.logPrefix + "MySQL is on, but database is not defined, defaulting to SQLite");
+				this.mySQL = false;
+				this.log.severe(this.logPrefix + "mySQL is on, but database is not defined, defaulting to SQLite");
 			}
 		}
 		
-		// Enabled SQL/MySQL
-		if (this.MySQL) {
-			// Declare MySQL Handler
+		// Enabled SQL/mySQL
+		if (this.mySQL) {
+			// Declare mySQL Handler
 			this.mysql = new MySQL(this.log, this.logPrefix, this.dbHost, this.dbPort, this.dbDatabase, this.dbUser, this.dbPass);
 			
-			this.log.info(this.logPrefix + "MySQL Initializing");
-			// Initialize MySQL Handler
+			this.log.info(this.logPrefix + "mySQL Initializing");
+			// Initialize mySQL Handler
 			this.mysql.open();
 			
 			if (this.mysql.checkConnection()) { // Check if the Connection was successful
-				this.log.info(this.logPrefix + "MySQL connection successful");
-				if (!this.mysql.checkTable("blocks")) { // Check if the table exists in the database if not create it
+				this.log.info(this.logPrefix + "mySQL connection successful");
+				if (!this.mysql.tableExists("blocks")) { // Check if the table exists in the database if not create it
 					this.log.info(this.logPrefix + "Creating table blocks");
 					String query = "CREATE TABLE blocks (id INT, owner VARCHAR(255), x INT, y INT, z INT);";
 					this.mysql.createTable(query);
 				}
 			} else {
-				this.log.severe(this.logPrefix + "MySQL connection failed");
-				this.MySQL = false;
+				this.log.severe(this.logPrefix + "mySQL connection failed");
+				this.mySQL = false;
 			}
 		} else {
 			this.log.info(this.logPrefix + "SQLite Initializing");
@@ -123,7 +123,7 @@ public class OwnerCore extends JavaPlugin {
 			this.sqlite.open();
 			
 			// Check if the table exists, if it doesn't create it
-			if (!this.sqlite.checkTable("blocks")) {
+			if (!this.sqlite.tableExists("blocks")) {
 				this.log.info(this.logPrefix + "Creating table blocks");
 				String query = "CREATE TABLE blocks (id INT AUTO_INCREMENT PRIMARY_KEY, owner VARCHAR(255), x INT, y INT, z INT);";
 				this.sqlite.createTable(query); // Use SQLite.createTable(query) to create tables 

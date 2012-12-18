@@ -1,7 +1,5 @@
 package lib.PatPeter.SQLibrary.Factory;
 
-import java.sql.SQLException;
-
 import lib.PatPeter.SQLibrary.Database;
 import lib.PatPeter.SQLibrary.MySQL;
 import lib.PatPeter.SQLibrary.SQLite;
@@ -16,24 +14,20 @@ public class DatabaseFactory {
 			throw new InvalidConfigurationException(
 				"The configuration is invalid, you don't have enought parameters for that DB : "
 					+ config.getType());
-		try {
-			switch (config.getType()) {
-				case MySQL:
-					return new MySQL(config.getLog(), config.getParameter(Parameter.PREFIX),
-						config.getParameter(Parameter.HOSTNAME),
-						config.getParameter(Parameter.PORTNMBR),
-						config.getParameter(Parameter.DATABASE),
-						config.getParameter(Parameter.USERNAME),
-						config.getParameter(Parameter.PASSWORD));
-				case SQLite:
-					return new SQLite(config.getLog(), config.getParameter(Parameter.PREFIX),
-						config.getParameter(Parameter.FILENAME),
-						config.getParameter(Parameter.LOCATION));
-				default:
-					return null;
-			}
-		} catch (SQLException e) {
-			throw new InvalidConfigurationException(e);
+		switch (config.getType()) {
+			case MySQL:
+				return new MySQL(config.getLog(), config.getParameter(Parameter.PREFIX),
+					config.getParameter(Parameter.HOSTNAME),
+					Integer.parseInt(config.getParameter(Parameter.PORTNMBR)),
+					config.getParameter(Parameter.DATABASE),
+					config.getParameter(Parameter.USERNAME),
+					config.getParameter(Parameter.PASSWORD));
+			case SQLite:
+				return new SQLite(config.getLog(), config.getParameter(Parameter.PREFIX),
+					config.getParameter(Parameter.FILENAME),
+					config.getParameter(Parameter.LOCATION));
+			default:
+				return null;
 		}
 	}
 }
