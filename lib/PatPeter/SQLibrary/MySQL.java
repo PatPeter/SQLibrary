@@ -1,8 +1,6 @@
 package lib.PatPeter.SQLibrary;
 
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
@@ -120,6 +118,7 @@ public class MySQL extends Database {
 			String url = "jdbc:mysql://" + this.hostname + ":" + this.portnmbr + "/" + this.database/* + "?autoReconnect=true"*/;
 			try {
 				this.connection = DriverManager.getConnection(url, this.username, this.password);
+				connected = true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a MySQL connection, SQLException: " + e.getMessage(), true);
 				return false;
@@ -131,12 +130,24 @@ public class MySQL extends Database {
 	}
 	
 	@Override
+	protected void queryValidation(StatementEnum statement) throws SQLException {
+		switch ((Statements) statement) {
+		    case USE:
+		    	this.writeError("Please create a new connection to use a different database.", false);
+		    	throw new SQLException("Please create a new connection to use a different database.");
+		    
+		    case PREPARE:
+		    case EXECUTE:
+		    case DEALLOCATE:
+		    	this.writeError("Please use the prepare() method to prepare a query.", false);
+		    	throw new SQLException("Please use the prepare() method to prepare a query.");
+	    }
+	}
+	
+	/*@Override
 	public ResultSet query(String query) throws SQLException {
-		Statement statement = null;
-		ResultSet result = null;
-		
-	    statement = this.connection.createStatement();
-	    result = statement.executeQuery("SELECT CURTIME()");
+		Statement statement = this.connection.createStatement();
+		ResultSet result = statement.executeQuery("SELECT CURTIME()");
 	    
 	    switch (this.getStatement(query)) {
 		    case SELECT:
@@ -194,46 +205,8 @@ public class MySQL extends Database {
 	}
 
 	@Override
-	protected ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException {
-		ResultSet result = this.connection.createStatement().executeQuery("SELECT CURTIME()");
-	    
+	protected ResultSet query(PreparedStatement ps, StatementEnum statement) throws SQLException {
 		switch ((Statements) statement) {
-		    case SELECT:
-		    case DO:
-		    case HANDLER:
-		    case DESCRIBE:
-		    case EXPLAIN:
-		    case HELP:
-			    result = s.executeQuery();
-			    break;
-			
-		    case INSERT:
-		    case UPDATE:
-		    case DELETE:
-			
-		    case REPLACE:
-		    case LOAD:
-		    case CALL:
-		    
-		    case CREATE:
-		    case ALTER:
-		    case DROP:
-		    case TRUNCATE:
-		    case RENAME:
-		    
-		    case START:
-		    case COMMIT:
-		    case SAVEPOINT:
-		    case ROLLBACK:
-		    case RELEASE:
-		    case LOCK:
-		    case UNLOCK:
-		    
-		    case SET:
-		    case SHOW:
-		    	this.lastUpdate = s.executeUpdate();
-		    	break;
-		    
 		    case USE:
 		    	this.writeError("Please create a new connection to use a different database.", false);
 		    	throw new SQLException("Please create a new connection to use a different database.");
@@ -243,15 +216,19 @@ public class MySQL extends Database {
 		    case DEALLOCATE:
 		    	this.writeError("Please use the prepare() method to prepare a query.", false);
 		    	throw new SQLException("Please use the prepare() method to prepare a query.");
-		    
-		    default:
-		    	result = s.executeQuery();
 	    }
-		return result;
-	}
+		
+		if (ps.execute()) {
+	    	return ps.getResultSet();
+	    } else {
+	    	int uc = ps.getUpdateCount();
+	    	this.lastUpdate = uc;
+	    	return this.connection.createStatement().executeQuery("SELECT " + uc);
+	    }
+	}*/
 	
 	@Override
-	protected Statements getStatement(String query) throws SQLException {
+	public Statements getStatement(String query) throws SQLException {
 		String[] statement = query.trim().split(" ", 2);
 		try {
 			Statements converted = Statements.valueOf(statement[0].toUpperCase());

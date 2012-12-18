@@ -2,8 +2,6 @@ package lib.PatPeter.SQLibrary;
 
 import java.io.File;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -13,15 +11,38 @@ public class H2 extends Database {
 	// http://www.h2database.com/html/grammar.html
 	private enum Statements implements StatementEnum {
 		// Data Manipulation
-		SELECT("SELECT"), INSERT("INSERT"), UPDATE("UPDATE"), DELETE("DELETE"), BACKUP("BACKUP"), CALL("CALL"),
-		EXPLAIN("EXPLAIN"), MERGE("MERGE"), RUNSCRIPT("RUNSCRIPT"), SCRIPT("SCRIPT"), SHOW("SHOW"),
+		SELECT("SELECT"), 
+		INSERT("INSERT"), 
+		UPDATE("UPDATE"), 
+		DELETE("DELETE"), 
+		BACKUP("BACKUP"), 
+		CALL("CALL"),
+		EXPLAIN("EXPLAIN"), 
+		MERGE("MERGE"), 
+		RUNSCRIPT("RUNSCRIPT"), 
+		SCRIPT("SCRIPT"), 
+		SHOW("SHOW"),
 		
 		// Data Definition
-		ALTER("ALTER"), CONSTRAINT("CONSTRAINT"), ANALYZE("ANALYZE"), COMMENT("COMMENT"), CREATE("CREATE"), DROP("DROP"), TRUNCATE("TRUNCATE"),
+		ALTER("ALTER"), 
+		CONSTRAINT("CONSTRAINT"), 
+		ANALYZE("ANALYZE"), 
+		COMMENT("COMMENT"), 
+		CREATE("CREATE"), 
+		DROP("DROP"), 
+		TRUNCATE("TRUNCATE"),
 		
 		// Other
-		CHECKPOINT("CHECKPOINT"), COMMIT("COMMIT"), GRANT("GRANT"), HELP("HELP"), PREPARE("PREPARE"),
-		REVOKE("REVOKE"), ROLLBACK("ROLLBACK"), SAVEPOINT("SAVEPOINT"), SET("SET"), SHUTDOWN("SHUTDOWN");
+		CHECKPOINT("CHECKPOINT"), 
+		COMMIT("COMMIT"), 
+		GRANT("GRANT"), 
+		HELP("HELP"), 
+		PREPARE("PREPARE"),
+		REVOKE("REVOKE"), 
+		ROLLBACK("ROLLBACK"), 
+		SAVEPOINT("SAVEPOINT"), 
+		SET("SET"), 
+		SHUTDOWN("SHUTDOWN");
 		
 		private String string;
 		
@@ -77,21 +98,21 @@ public class H2 extends Database {
 			return false;
 		}
 	}
-
-	@Override
+	
+	protected void queryValidation(StatementEnum statement) throws SQLException { }
+	
+	/*@Override
 	public ResultSet query(String query) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override
 	protected ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+		
+	}*/
+	
 	@Override
-	protected StatementEnum getStatement(String query) throws SQLException {
+	public StatementEnum getStatement(String query) throws SQLException {
 		String[] statement = query.trim().split(" ", 2);
 		try {
 			Statements converted = Statements.valueOf(statement[0].toUpperCase());
@@ -100,22 +121,22 @@ public class H2 extends Database {
 			throw new SQLException("Unknown statement: \"" + statement[0] + "\".");
 		}
 	}
-
+	
+	@Deprecated
 	@Override
 	public boolean createTable(String query) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
+	@Deprecated
 	@Override
 	public boolean checkTable(String table) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
+	@Deprecated
 	@Override
 	public boolean wipeTable(String table) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

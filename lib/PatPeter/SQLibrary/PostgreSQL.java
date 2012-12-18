@@ -1,8 +1,6 @@
 package lib.PatPeter.SQLibrary;
 
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -15,44 +13,44 @@ public class PostgreSQL extends Database {
 	
 	// http://www.postgresql.org/docs/7.3/static/sql-commands.html
 	protected enum Statements implements StatementEnum {
-		ABORT("ABORT"),
-		ALERT("ALERT"),
-		ANALYZE("ANALYZE"),
-		BEGIN("BEGIN"),
+		ABORT("ABORT"), 
+		ALERT("ALERT"), 
+		ANALYZE("ANALYZE"), 
+		BEGIN("BEGIN"), 
 		CHECKPOINT("CHECKPOINT"),
-		CLOSE("CLOSE"),
-		CLUSTER("CLUSTER"),
-		COMMENT("COMMENT"),
-		COMMIT("COMMIT"),
+		CLOSE("CLOSE"), 
+		CLUSTER("CLUSTER"), 
+		COMMENT("COMMENT"), 
+		COMMIT("COMMIT"), 
 		COPY("COPY"),
-		CREATE("CREATE"),
-		DEALLOCATE("DEALLOCATE"),
-		DECLARE("DECLARE"),
-		DELETE("DELETE"),
+		CREATE("CREATE"), 
+		DEALLOCATE("DEALLOCATE"), 
+		DECLARE("DECLARE"), 
+		DELETE("DELETE"), 
 		DROP("DROP"),
-		END("END"),
-		EXECUTE("EXECUTE"),
-		EXPLAIN("EXPLAIN"),
-		FETCH("FETCH"),
+		END("END"), 
+		EXECUTE("EXECUTE"), 
+		EXPLAIN("EXPLAIN"), 
+		FETCH("FETCH"), 
 		GRANT("GRANT"),
-		INSERT("INSERT"),
-		LISTEN("LISTEN"),
-		LOAD("LOAD"),
-		LOCK("LOCK"),
+		INSERT("INSERT"), 
+		LISTEN("LISTEN"), 
+		LOAD("LOAD"), 
+		LOCK("LOCK"), 
 		MOVE("MOVE"),
-		NOTIFY("NOTIFY"),
-		PREPARE("PREPARE"),
-		REINDEX("REINDEX"),
-		RESET("RESET"),
+		NOTIFY("NOTIFY"), 
+		PREPARE("PREPARE"), 
+		REINDEX("REINDEX"), 
+		RESET("RESET"), 
 		REVOKE("REVOKE"),
-		ROLLBACK("ROLLBACK"),
-		SELECT("SELECT"),
-		SET("SET"),
-		SHOW("SHOW"),
+		ROLLBACK("ROLLBACK"), 
+		SELECT("SELECT"), 
+		SET("SET"), 
+		SHOW("SHOW"), 
 		START("START"),
-		TRUNCATE("TRUNCATE"),
-		UNLISTEN("UNLISTEN"),
-		UPDATE("UPDATE"),
+		TRUNCATE("TRUNCATE"), 
+		UNLISTEN("UNLISTEN"), 
+		UPDATE("UPDATE"), 
 		VACUUM("VACUUM");
 		
 		private String string;
@@ -67,10 +65,10 @@ public class PostgreSQL extends Database {
 	}
 	
 	public PostgreSQL(Logger log,
-				 String prefix,
-				 String database,
-				 String username,
-				 String password) {
+					  String prefix,
+					  String database,
+					  String username,
+					  String password) {
 		super(log,prefix,"[PostgreSQL] ");
 		this.database = database;
 		this.username = username;
@@ -79,12 +77,12 @@ public class PostgreSQL extends Database {
 	}
 	
 	public PostgreSQL(Logger log,
-				 String prefix,
-				 String hostname,
-				 String portnmbr,
-				 String database,
-				 String username,
-				 String password) {
+					  String prefix,
+					  String hostname,
+					  String portnmbr,
+					  String database,
+					  String username,
+					  String password) {
 		super(log,prefix,"[PostgreSQL] ");
 		this.hostname = hostname;
 		this.portnmbr = portnmbr;
@@ -118,24 +116,62 @@ public class PostgreSQL extends Database {
 			}
 			return true;
 		} else {
-			//throw new SQLException("Cannot open a PostgreSQL connection. The driver class is missing.");
 			return false;
 		}
 	}
 	
 	@Override
+	protected void queryValidation(StatementEnum statement) throws SQLException {
+	    switch ((Statements) statement) {
+		    case PREPARE:
+		    case EXECUTE:
+		    case DEALLOCATE:
+		    	this.writeError("Please use the prepare() method to prepare a query.", false);
+		    	throw new SQLException("Please use the prepare() method to prepare a query.");
+	    }
+	}
+	
+	/*@Override
 	public ResultSet query(String query) throws SQLException {
-		return null;
+	    switch (this.getStatement(query)) {
+		    case PREPARE:
+		    case EXECUTE:
+		    case DEALLOCATE:
+		    	this.writeError("Please use the prepare() method to prepare a query.", false);
+		    	throw new SQLException("Please use the prepare() method to prepare a query.");
+	    }
+	    
+		Statement statement = this.connection.createStatement();
+		if (statement.execute(query)) {
+	    	return statement.getResultSet();
+	    } else {
+	    	int uc = statement.getUpdateCount();
+	    	this.lastUpdate = uc;
+	    	return this.getConnection().createStatement().executeQuery("SELECT " + uc);
+	    }
 	}
 
 	@Override
-	protected ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	protected ResultSet query(PreparedStatement ps, StatementEnum statement) throws SQLException {
+		switch ((Statements) statement) {
+		    case PREPARE:
+		    case EXECUTE:
+		    case DEALLOCATE:
+		    	this.writeError("Please use the prepare() method to prepare a query.", false);
+		    	throw new SQLException("Please use the prepare() method to prepare a query.");
+	    }
+	    
+		if (ps.execute()) {
+	    	return ps.getResultSet();
+	    } else {
+	    	int uc = ps.getUpdateCount();
+	    	this.lastUpdate = uc;
+	    	return this.connection.createStatement().executeQuery("SELECT " + uc);
+	    }
+	}*/
 
 	@Override
-	protected Statements getStatement(String query) throws SQLException {
+	public Statements getStatement(String query) throws SQLException {
 		String[] statement = query.trim().split(" ", 2);
 		try {
 			Statements converted = Statements.valueOf(statement[0].toUpperCase());

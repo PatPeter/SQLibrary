@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -149,6 +150,13 @@ public abstract class Database {
 	}
 	
 	/**
+	 * 
+	 * 
+	 * @throws SQLException
+	 */
+	protected abstract void queryValidation(StatementEnum statement) throws SQLException;
+	
+	/**
 	 * <b>query</b><br>
 	 * &nbsp;&nbsp;Sends a query to the SQL database.
 	 * <br>
@@ -156,9 +164,36 @@ public abstract class Database {
 	 * @param query the SQL query to send to the database.
 	 * @return the table of results from the query.
 	 */
-	public abstract ResultSet query(String query) throws SQLException;
+	public final ResultSet query(String query) throws SQLException {
+		queryValidation(this.getStatement(query));
+		Statement statement = this.getConnection().createStatement();
+	    if (statement.execute(query)) {
+	    	return statement.getResultSet();
+	    } else {
+	    	int uc = statement.getUpdateCount();
+	    	this.lastUpdate = uc;
+	    	return this.getConnection().createStatement().executeQuery("SELECT " + uc);
+	    }
+	}
 	
-	protected abstract ResultSet query(PreparedStatement s, StatementEnum statement) throws SQLException;
+	/**
+	 * 
+	 * 
+	 * @param ps
+	 * @param statement
+	 * @return
+	 * @throws SQLException
+	 */
+	protected final ResultSet query(PreparedStatement ps, StatementEnum statement) throws SQLException {
+		queryValidation(statement);
+	    if (ps.execute()) {
+	    	return ps.getResultSet();
+	    } else {
+	    	int uc = ps.getUpdateCount();
+	    	this.lastUpdate = uc;
+	    	return this.connection.createStatement().executeQuery("SELECT " + uc);
+	    }
+	}
 	
 	/**
 	 * 
@@ -194,7 +229,7 @@ public abstract class Database {
 	 * <br>
 	 * <br>
 	 */
-	protected abstract StatementEnum getStatement(String query) throws SQLException;
+	public abstract StatementEnum getStatement(String query) throws SQLException;
 	
 	/**
 	 * <b>createTable</b><br>

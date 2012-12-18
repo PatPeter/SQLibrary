@@ -10,7 +10,6 @@ import java.sql.DatabaseMetaData;
  * Both
  */
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,8 +17,8 @@ import java.util.logging.Logger;
 
 /**
  * Inherited subclass for reading and writing to and from an SQLite db.
- * 
  * Date Created: 2011-08-26 19:08
+ * 
  * @author PatPeter
  */
 public class SQLite extends Database {
@@ -142,6 +141,7 @@ public class SQLite extends Database {
 		if (initialize()) {
 			try {
 				this.connection = DriverManager.getConnection("jdbc:sqlite:" + db.getAbsolutePath());
+				connected = true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an SQLite connection, SQLException: " + e.getMessage(), true);
 				return false;
@@ -153,13 +153,13 @@ public class SQLite extends Database {
 	}
 	
 	@Override
+	protected void queryValidation(StatementEnum statement) throws SQLException { }
+	
+	/*@Override
 	public ResultSet query(String query) {
-		Statement statement = null;
-		ResultSet result = null;
-		
 		try {
-			statement = connection.createStatement();
-			result = statement.executeQuery("SELECT date('now')");
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery("SELECT date('now')");
 			
 			switch (this.getStatement(query)) {
 			    case SELECT:
@@ -193,8 +193,7 @@ public class SQLite extends Database {
 			    default:
 			    	result = statement.executeQuery(query);
 			}
-			//result.close(); // This is here to remind you to close your ResultSets
-			//statement.close(); // This closes automatically, don't worry about it
+			statement.close();
 			
 			return result;
 		} catch (SQLException e) {
@@ -248,10 +247,13 @@ public class SQLite extends Database {
 		//statement.close(); // This closes automatically, don't worry about it
 		
 		return result;
-	}
+	}*/
 	
+	/**
+	 * 
+	 */
 	@Override
-	protected Statements getStatement(String query) throws SQLException {
+	public Statements getStatement(String query) throws SQLException {
 		String[] statement = query.trim().split(" ", 2);
 		try {
 			Statements converted = Statements.valueOf(statement[0].toUpperCase());
@@ -261,6 +263,9 @@ public class SQLite extends Database {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	@Deprecated
 	@Override
 	public boolean createTable(String query) {
@@ -281,10 +286,13 @@ public class SQLite extends Database {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	@Deprecated
 	@Override
 	public boolean checkTable(String table) {
-		DatabaseMetaData md = null;
+		DatabaseMetaData md;
 		try {
 			md = this.connection.getMetaData();
 		} catch (SQLException e) {
@@ -338,7 +346,7 @@ public class SQLite extends Database {
 		}
 	}
 	
-	/*
+	/**
 	 * <b>retry</b><br>
 	 * <br>
 	 * Retries a statement and returns a ResultSet.
@@ -347,14 +355,10 @@ public class SQLite extends Database {
 	 * @param query The SQL query to retry.
 	 * @return The SQL query result.
 	 */
+	@Deprecated
 	public ResultSet retry(String query) {
-		Statement statement = null;
-		ResultSet result = null;
-		
 		try {
-			statement = connection.createStatement();
-			result = statement.executeQuery(query);
-			return result;
+			return this.getConnection().createStatement().executeQuery(query);
 		} catch (SQLException e) {
 			if (e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked")) {
 				this.writeError("Please close your previous ResultSet to run the query: \n\t" + query, false);
@@ -362,7 +366,6 @@ public class SQLite extends Database {
 				this.writeError("SQLException in retry(): " + e.getMessage(), false);
 			}
 		}
-		
 		return null;
 	}
 }
