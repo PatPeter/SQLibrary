@@ -22,8 +22,6 @@ import java.util.logging.Logger;
  * @author PatPeter
  */
 public class SQLite extends Database {
-//	public String location;
-//	public String name;
 	private File db;
 	
 	private enum Statements implements StatementEnum {
@@ -155,9 +153,6 @@ public class SQLite extends Database {
 	@Override
 	protected void queryValidation(StatementEnum statement) throws SQLException { }
 	
-	/**
-	 * 
-	 */
 	@Override
 	public Statements getStatement(String query) throws SQLException {
 		String[] statement = query.trim().split(" ", 2);
@@ -188,9 +183,6 @@ public class SQLite extends Database {
 		}
 	}
 	
-	/**
-	 * 
-	 */
 	@Override
 	public boolean tableExists(String table) {
 		DatabaseMetaData md;

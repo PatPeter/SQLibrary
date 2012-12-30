@@ -1,4 +1,6 @@
-package lib.PatPeter.SQLibrary;
+package lib.PatPeter.SQLibrary.Delegates;
+
+import lib.PatPeter.SQLibrary.DatabaseException;
 
 /**
  * Implementation of HostnameDatabase.

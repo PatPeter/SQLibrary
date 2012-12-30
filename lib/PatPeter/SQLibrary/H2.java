@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 /**
  * Child class for the H2 database.
+ * Date Created: 
  * 
  * @author PatPeter
  */
@@ -106,7 +107,7 @@ public class H2 extends Database {
 	}
 	
 	@Override
-	protected void queryValidation(StatementEnum statement) throws SQLException { }
+	protected void queryValidation(StatementEnum statement) throws SQLException {}
 	
 	@Override
 	public StatementEnum getStatement(String query) throws SQLException {
@@ -119,14 +120,13 @@ public class H2 extends Database {
 		}
 	}
 	
-	@Deprecated
 	@Override
 	public boolean tableExists(String table) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean truncate(String table) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 }

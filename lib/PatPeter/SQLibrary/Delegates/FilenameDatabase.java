@@ -1,4 +1,4 @@
-package lib.PatPeter.SQLibrary;
+package lib.PatPeter.SQLibrary.Delegates;
 
 import java.io.File;
 

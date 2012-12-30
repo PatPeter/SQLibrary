@@ -1,4 +1,4 @@
-package lib.PatPeter.SQLibrary;
+package lib.PatPeter.SQLibrary.Delegates;
 
 /**
  * Interface for DBMS that use host-port-username-password constructors.

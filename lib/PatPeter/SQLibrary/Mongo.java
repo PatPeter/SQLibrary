@@ -7,39 +7,39 @@ import java.util.logging.Logger;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
-public class Firebird extends Database {
+public class Mongo extends Database {
 private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
 	public enum Statements implements StatementEnum {}
 	
-	public Firebird(Logger log,
-					String prefix,
-					String database,
-					String username,
-					String password) {
-		super(log,prefix,"[Firebird] ");
+	public Mongo(Logger log,
+				 String prefix,
+				 String database,
+				 String username,
+				 String password) {
+		super(log,prefix,"[MaxDB] ");
 		setHostname("localhost");
-		setPort(3050);
+		setPort(27017);
 		setDatabase(database);
 		setUsername(username);
 		setPassword(password);
-		this.driver = DBMS.Firebird;
+		this.driver = DBMS.MaxDB;
 	}
 	
-	public Firebird(Logger log,
-					String prefix,
-					String hostname,
-					int port,
-					String database,
-					String username,
-					String password) {
-		super(log,prefix,"[Firebird] ");
+	public Mongo(Logger log,
+				 String prefix,
+				 String hostname,
+				 int port,
+				 String database,
+				 String username,
+				 String password) {
+		super(log,prefix,"[MaxDB] ");
 		setHostname(hostname);
 		setPort(port);
 		setDatabase(database);
 		setUsername(username);
 		setPassword(password);
-		this.driver = DBMS.Firebird;
+		this.driver = DBMS.MaxDB;
 	}
 	
 	public String getHostname() {
@@ -85,10 +85,10 @@ private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	@Override
 	protected boolean initialize() {
 		try {
-			Class.forName("org.firebirdsql.jdbc.FBDriver");
+			Class.forName("com.mongodb.jdbc.MongoDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("Firebird driver class missing: " + e.getMessage() + ".", true);
+	    	this.writeError("Mongo driver class missing: " + e.getMessage() + ".", true);
 	    	return false;
 	    }
 	}
@@ -96,13 +96,13 @@ private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	@Override
 	public boolean open() {
 		if (initialize()) {
-			String url = "jdbc:firebirdsql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
+			String url = "mongodb://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				this.connected = true;
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a Firebird connection, SQLException: " + e.getMessage(), true);
+				this.writeError("Could not establish a Mongo connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
 		} else {

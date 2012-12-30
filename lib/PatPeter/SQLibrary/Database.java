@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 /**
  * Abstract superclass for all subclass database files.
- * 
  * Date Created: 2011-08-26 19:08
+ * 
  * @author PatPeter
  */
 public abstract class Database {
@@ -277,6 +277,21 @@ public abstract class Database {
 	 * <br>
 	 */
 	public abstract StatementEnum getStatement(String query) throws SQLException;
+	
+	@Deprecated
+	public boolean createTable() {
+		return false;
+	}
+	
+	@Deprecated
+	public boolean checkTable(String table) {
+		return tableExists(table);
+	}
+	
+	@Deprecated
+	public boolean wipeTable(String table) {
+		return truncate(table);
+	}
 	
 	/**
 	 * &nbsp;&nbsp;Checks a table in a database based on the table's name.

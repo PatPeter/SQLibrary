@@ -7,5 +7,20 @@ package lib.PatPeter.SQLibrary;
  * @author PatPeter
  */
 public enum DBMS {
-	Other, MySQL, SQLite, H2, MicrosoftSQL, Oracle, PostgreSQL;
+	Other, 
+	Firebird, 
+	FrontBase, 
+	DB2, 
+	H2, 
+	Informix, 
+	Ingres, 
+	MaxDB, 
+	MicrosoftSQL, 
+	Mongo, 
+	mSQL, 
+	MySQL, 
+	Oracle, 
+	Ovrimos,
+	PostgreSQL, 
+	SQLite;
 }

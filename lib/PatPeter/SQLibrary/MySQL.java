@@ -5,10 +5,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+
 /**
  * Inherited subclass for making a connection to a MySQL server.
- * 
  * Date Created: 2011-08-26 19:08
+ * 
  * @author PatPeter
  */
 public class MySQL extends Database {
@@ -20,7 +23,7 @@ public class MySQL extends Database {
 	
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
-	private enum Statements implements StatementEnum {
+	public enum Statements implements StatementEnum {
 		// Data manipulation statements
 		SELECT("SELECT"), 
 		INSERT("INSERT"), 

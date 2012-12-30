@@ -4,6 +4,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+
 /**
  * Child class for the PostgreSQL database.
  * 
@@ -194,11 +197,11 @@ public class PostgreSQL extends Database {
 	
 	@Override
 	public boolean tableExists(String table) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean truncate(String table) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 }

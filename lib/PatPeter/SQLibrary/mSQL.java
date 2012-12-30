@@ -7,41 +7,41 @@ import java.util.logging.Logger;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
-public class Firebird extends Database {
-private HostnameDatabase delegate = new HostnameDatabaseImpl();
+public class mSQL extends Database {
+	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
-	public enum Statements implements StatementEnum {}
+	protected enum Statements implements StatementEnum {}
 	
-	public Firebird(Logger log,
-					String prefix,
-					String database,
-					String username,
-					String password) {
-		super(log,prefix,"[Firebird] ");
+	public mSQL(Logger log,
+				String prefix,
+				String database,
+				String username,
+				String password) {
+		super(log,prefix,"[mSQL] ");
 		setHostname("localhost");
-		setPort(3050);
+		setPort(1114);
 		setDatabase(database);
 		setUsername(username);
 		setPassword(password);
-		this.driver = DBMS.Firebird;
+		this.driver = DBMS.mSQL;
 	}
 	
-	public Firebird(Logger log,
-					String prefix,
-					String hostname,
-					int port,
-					String database,
-					String username,
-					String password) {
-		super(log,prefix,"[Firebird] ");
+	public mSQL(Logger log,
+				String prefix,
+				String hostname,
+				int port,
+				String database,
+				String username,
+				String password) {
+		super(log,prefix,"[mSQL] ");
 		setHostname(hostname);
 		setPort(port);
 		setDatabase(database);
 		setUsername(username);
 		setPassword(password);
-		this.driver = DBMS.Firebird;
+		this.driver = DBMS.mSQL;
 	}
-	
+
 	public String getHostname() {
 		return delegate.getHostname();
 	}
@@ -83,38 +83,39 @@ private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	}
 
 	@Override
-	protected boolean initialize() {
+	public boolean initialize() {
 		try {
-			Class.forName("org.firebirdsql.jdbc.FBDriver");
+			Class.forName("com.imaginary.sql.msql.MsqlDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("Firebird driver class missing: " + e.getMessage() + ".", true);
+	    	this.writeError("mSQL driver class missing: " + e.getMessage() + ".", true);
 	    	return false;
 	    }
 	}
-
+	
 	@Override
 	public boolean open() {
 		if (initialize()) {
-			String url = "jdbc:firebirdsql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
+			String url = "";
+			url = "jdbc:msql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				this.connected = true;
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a Firebird connection, SQLException: " + e.getMessage(), true);
+				this.writeError("Could not establish a mSQL connection, SQLException: " + e.getMessage(), true);
 				return false;
 			}
 		} else {
 			return false;
 		}
 	}
-
+	
 	@Override
 	protected void queryValidation(StatementEnum statement) throws SQLException {}
 
 	@Override
-	public StatementEnum getStatement(String query) throws SQLException {
+	public Statements getStatement(String query) throws SQLException {
 		String[] statement = query.trim().split(" ", 2);
 		try {
 			Statements converted = Statements.valueOf(statement[0].toUpperCase());
@@ -123,12 +124,12 @@ private HostnameDatabase delegate = new HostnameDatabaseImpl();
 			throw new SQLException("Unknown statement: \"" + statement[0] + "\".");
 		}
 	}
-
+	
 	@Override
 	public boolean tableExists(String table) {
 		throw new UnsupportedOperationException();
 	}
-
+	
 	@Override
 	public boolean truncate(String table) {
 		throw new UnsupportedOperationException();

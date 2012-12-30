@@ -4,6 +4,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+
 /**
  * Child class for the Oracle database.
  * 
@@ -153,7 +156,7 @@ public class Oracle extends Database {
 		}
 	}
 	
-	protected void queryValidation(StatementEnum statement) throws SQLException { }
+	protected void queryValidation(StatementEnum statement) throws SQLException {}
 
 	@Override
 	public Statements getStatement(String query) throws SQLException {
@@ -168,12 +171,12 @@ public class Oracle extends Database {
 	
 	@Override
 	public boolean tableExists(String table) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean truncate(String table) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 	
 }

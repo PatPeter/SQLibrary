@@ -17,31 +17,38 @@ public class Select {
 	private Database db;
 	
 	protected enum Duplicates {
-		ALL("ALL"), DISTINCT("DISTINCT"), DISTINCTROW("DISTINCTROW");
+		ALL(0), DISTINCT(1), DISTINCTROW(2);
+		private String[] strings = {"ALL", "DISTINCT", "DISTINCTROW"};
+		private int id;
 		
-		private String value;
-		
-		private Duplicates(String value) {
-			this.value = value;
+		private Duplicates(int id) {
+			this.id = id;
 		}
 		
 		public String toString() {
-			return this.value;
+			return this.strings[id];
 		}
+	}
+	
+	protected enum Cache {
+		SQL_CACHE,
+		SQL_NO_CACHE;
 	}
 	
 	public List<String> columns = new ArrayList<String>();
 	public List<String> tables = new ArrayList<String>();
 	
 	public Duplicates duplicates = null;
+	public Cache cache = null;
 	
 	// MySQL
 	public boolean priority = false;
 	public boolean join = false;
+	
 	public boolean small = false;
 	public boolean big = false;
 	public boolean buffer = false;
-	public boolean cache = false;
+	
 	public boolean calc = false;
 	
 	public Select(Database db, String columns, String tables) throws DatabaseException {
@@ -115,7 +122,7 @@ public class Select {
 		string += (small ? "SQL_SMALL_RESULT" : "") + " ";
 		string += (big ? "SQL_BIG_RESULT" : "") + " "; 
 		string += (buffer ? "SQL_BUFFER_RESULT" : "") + " ";
-		string += (cache ? "SQL_CACHE" : "SQL_NO_CACHE") + " "; 
+		string += (cache == null ? cache : "") + " "; 
 		string += (calc ? "SQL_CALC_FOUND_ROWS" : "") + " ";
 		string += columns + " FROM " + tables;
 		return string;

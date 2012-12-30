@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+
 /**
  * Child class for the Microsoft SQL database.
  * 
@@ -44,7 +47,7 @@ public class MicrosoftSQL extends Database {
 		__PACK_SENT("@@PACK_SENT"), 
 		__PACKET_ERRORS("@@PACKET_ERRORS"),
 		__PROCID("@@PROCID"), 
-		__REMSERVER("@@REMSERVER"),
+		__REMSERVER("@@REMSERVER"), 
 		__ROWCOUNT("@@ROWCOUNT"), 
 		__SERVERNAME("@@SERVERNAME"), 
 		__SERVICENAME("@@SERVICENAME"),
@@ -500,7 +503,7 @@ public class MicrosoftSQL extends Database {
 		}
 	}
 	
-	protected void queryValidation(StatementEnum statement) throws SQLException { }
+	protected void queryValidation(StatementEnum statement) throws SQLException {}
 
 	@Override
 	public Statements getStatement(String query) throws SQLException {
@@ -531,6 +534,6 @@ public class MicrosoftSQL extends Database {
 	
 	@Override
 	public boolean truncate(String table) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 }
