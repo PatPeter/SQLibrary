@@ -1,14 +1,8 @@
 package lib.PatPeter.SQLibrary;
 
-/*
- * SQLite
- */
 import java.io.File;
 import java.sql.DatabaseMetaData;
 
-/*
- * Both
- */
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;

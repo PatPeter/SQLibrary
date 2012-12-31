@@ -3,8 +3,8 @@ package lib.PatPeter.SQLibrary.Delegates;
 import lib.PatPeter.SQLibrary.DatabaseException;
 
 /**
- * Implementation of HostnameDatabase.
- * Date Created: 2012-12-18 04:45
+ * Implementation of databases using hostnames, usernames, etc.<br>
+ * Date Created: 2012-12-18 04:45.
  * 
  * @author PatPeter
  */

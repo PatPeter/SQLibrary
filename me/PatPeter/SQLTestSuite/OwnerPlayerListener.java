@@ -10,6 +10,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.Listener;
 
+/**
+ * Player Listener for the deprecated plugin example.<br>
+ * Date Created: 2011-05-28 13:56.
+ * 
+ * @author alta189 (Stephen Williams)
+ */
 public class OwnerPlayerListener implements Listener {
 	private OwnerCore plugin;
 	

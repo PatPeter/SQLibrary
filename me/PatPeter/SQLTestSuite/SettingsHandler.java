@@ -9,6 +9,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+/**
+ * Handler for the settings file.<br>
+ * Date Created: 2011-08-27 03:42.
+ * 
+ * @author alta189 (Stephen Williams)
+ */
 public class SettingsHandler {
 	public File file;
 	public String name;

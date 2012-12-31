@@ -1,8 +1,8 @@
 package lib.PatPeter.SQLibrary.Delegates;
 
 /**
- * Interface for DBMS that use host-port-username-password constructors.
- * Date Created: 2012-12-18 04:45
+ * Interface for DBMS that use host-port-username-password constructors.<br>
+ * Date Created: 2012-12-18 04:45.
  * 
  * @author PatPeter
  */

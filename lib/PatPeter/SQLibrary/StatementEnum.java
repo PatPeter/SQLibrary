@@ -1,9 +1,9 @@
 package lib.PatPeter.SQLibrary;
 
 /**
- * Enumeration for Statement implementation in Database drivers.
- * Date Created: 2012-10-11 03:30
+ * Enumeration for Statement implementation in Database drivers.<br>
+ * Date Created: 2012-10-11 03:30.
  * 
- * @author PatPeter
+ * @author Nicholas Solin, a.k.a. PatPeter
  */
-public interface StatementEnum { }
+public interface StatementEnum {}

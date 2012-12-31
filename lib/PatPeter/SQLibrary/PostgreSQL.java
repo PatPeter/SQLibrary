@@ -14,12 +14,6 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class PostgreSQL extends Database {
-	/*private String hostname = "localhost";
-	private String portnmbr = "1433";
-	private String username = "minecraft";
-	private String password = "";
-	private String database = "minecraft";*/
-	
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
 	/**
@@ -162,7 +156,7 @@ public class PostgreSQL extends Database {
 	public boolean open() {
 		if (initialize()) {
 			String url = "";
-			url = "jdbc:postgresql://" + getHostname() + ":" + getPort() + "/" + getDatabase()/* + "?autoReconnect=true"*/;
+			url = "jdbc:postgresql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				this.connected = true;

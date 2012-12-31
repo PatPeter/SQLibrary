@@ -5,10 +5,10 @@ import java.io.File;
 import lib.PatPeter.SQLibrary.DatabaseException;
 
 /**
+ * Implementation of databases that handle a single file.<br>
+ * Date Created: 2012-12-18 04:45.
  * 
- * Date Created: 2012-12-18 04:45
- * 
- * @author PatPeter
+ * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class FilenameDatabaseImpl implements FilenameDatabase {
 	private File file;

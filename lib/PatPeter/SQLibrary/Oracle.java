@@ -14,15 +14,11 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class Oracle extends Database {
-	/*private String hostname = "localhost";
-	private String portnmbr = "1521";
-	private String username = "minecraft";
-	private String password = "";
-	private String database = "minecraft";*/
-	
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
-	// http://docs.oracle.com/html/A95915_01/sqcmd.htm
+	/**
+	 *  http://docs.oracle.com/html/A95915_01/sqcmd.htm
+	 */
 	protected enum Statements implements StatementEnum {
 		ALTER("ALTER"), 
 		CREATE("CREATE"), 

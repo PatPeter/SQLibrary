@@ -6,6 +6,9 @@ import lib.PatPeter.SQLibrary.SQLite;
 import lib.PatPeter.SQLibrary.Factory.DatabaseConfig.Parameter;
 
 /**
+ * Factory for Database objects.<br>
+ * Date Created: 2012-03-11 15:07.
+ * 
  * @author Balor (aka Antoine Aflalo)
  */
 public class DatabaseFactory {

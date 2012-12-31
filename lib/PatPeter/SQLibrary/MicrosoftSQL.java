@@ -15,16 +15,12 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * 
  * @author PatPeter
  */
-public class MicrosoftSQL extends Database {
-	/*private String hostname = "localhost";
-	private String portnmbr = "1433";
-	private String username = "minecraft";
-	private String password = "";
-	private String database = "minecraft";*/
-	
+public class MicrosoftSQL extends Database {	
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
-	// http://msdn.microsoft.com/en-us/library/ms131699.aspx
+	/**
+	 * http://msdn.microsoft.com/en-us/library/ms131699.aspx
+	 */
 	protected enum Statements implements StatementEnum {
 		_PARTITION("$PARTITION"),
 		__CONNECTIONS("@@CONNECTIONS"), 

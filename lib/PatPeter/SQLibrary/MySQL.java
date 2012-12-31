@@ -15,12 +15,6 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * @author PatPeter
  */
 public class MySQL extends Database {
-	/*private String hostname = "localhost";
-	private int port = 3306;
-	private String username = "minecraft";
-	private String password = "";
-	private String database = "minecraft";*/
-	
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
 	public enum Statements implements StatementEnum {
@@ -161,7 +155,7 @@ public class MySQL extends Database {
 	@Override
 	public boolean open() {
 		if (initialize()) {
-			String url = "jdbc:mysql://" + getHostname() + ":" + getPort() + "/" + getDatabase()/* + "?autoReconnect=true"*/;
+			String url = "jdbc:mysql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				this.connected = true;
