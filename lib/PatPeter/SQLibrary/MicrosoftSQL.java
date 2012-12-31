@@ -10,7 +10,8 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
 /**
- * Child class for the Microsoft SQL database.
+ * Child class for the Microsoft SQL database.<br>
+ * Date Created: 2011-09-03 17:18.
  * 
  * @author PatPeter
  */
@@ -517,7 +518,7 @@ public class MicrosoftSQL extends Database {
 	}
 	
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		try {
 		    Statement statement = connection.createStatement();
 		    ResultSet result = statement.executeQuery("SELECT TOP 10 * FROM " + table);

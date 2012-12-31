@@ -8,9 +8,10 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
 /**
- * Child class for the Oracle database.
+ * Child class for the Oracle database.<br>
+ * Date Created: 2011-08-27 17:03.
  * 
- * @author PatPeter
+ * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class Oracle extends Database {
 	/*private String hostname = "localhost";
@@ -170,7 +171,7 @@ public class Oracle extends Database {
 	}
 	
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		throw new UnsupportedOperationException();
 	}
 	

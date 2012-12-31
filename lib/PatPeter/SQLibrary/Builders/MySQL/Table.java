@@ -3,13 +3,15 @@ package lib.PatPeter.SQLibrary.Builders.MySQL;
 import java.sql.SQLException;
 
 import lib.PatPeter.SQLibrary.Database;
+import lib.PatPeter.SQLibrary.Builders.Builder;
 
 /**
- * CREATE TABLE query builder.
- * Date Created: 2012-08-18 13:08
- * @author PatPeter
+ * CREATE TABLE query builder.<br>
+ * Date Created: 2012-08-18 13:08.
+ * 
+ * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class Table {
+public class Table implements Builder {
 	private Database db;
 	public boolean temporary = false;
 	public boolean exists = true;
@@ -35,6 +37,7 @@ public class Table {
 		return true;
 	}
 	
+	@Deprecated
 	public boolean wipe() throws SQLException {
 		return this.truncate();
 	}

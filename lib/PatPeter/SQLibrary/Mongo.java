@@ -7,8 +7,14 @@ import java.util.logging.Logger;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
+/**
+ * Child class for the Mongo database.<br>
+ * Date Created: 2012-12-29 01:00.
+ * 
+ * @author Nicholas Solin, a.k.a. PatPeter
+ */
 public class Mongo extends Database {
-private HostnameDatabase delegate = new HostnameDatabaseImpl();
+	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
 	public enum Statements implements StatementEnum {}
 	
@@ -125,7 +131,7 @@ private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	}
 
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		throw new UnsupportedOperationException();
 	}
 

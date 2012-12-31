@@ -7,6 +7,12 @@ import java.util.logging.Logger;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
+/**
+ * Child class for the Ovrimos database.<br>
+ * Date Created: 2012-12-29 01:00.
+ * 
+ * @author Nicholas Solin, a.k.a. PatPeter
+ */
 public class Ovrimos extends Database {
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
@@ -114,7 +120,7 @@ public class Ovrimos extends Database {
 	}
 	
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		throw new UnsupportedOperationException();
 	}
 	

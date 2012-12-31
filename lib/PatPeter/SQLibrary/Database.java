@@ -9,11 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import lib.PatPeter.SQLibrary.Builders.Builder;
+
 /**
- * Abstract superclass for all subclass database files.
- * Date Created: 2011-08-26 19:08
+ * Abstract superclass for all subclass database files.<br>
+ * Date Created: 2011-08-26 19:08.
  * 
- * @author PatPeter
+ * @author Nicholas Solin, a.k.a. PatPeter
  */
 public abstract class Database {
 	/**
@@ -71,10 +73,9 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Writes information to the console.
-	 * <br>
-	 * <br>
-	 * @param message the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html">String</a>
+	 * Writes information to the console.
+	 * 
+	 * @param message the {@link java.lang.String}.
 	 * of content to write to the console.
 	 */
 	protected final String prefix(String message) {
@@ -82,27 +83,25 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Writes information to the console.
-	 * <br>
-	 * <br>
-	 * @param toWrite the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html">String</a>
+	 * Writes information to the console.
+	 * 
+	 * @param toWrite the {@link java.lang.String#String()}.
 	 * of content to write to the console.
 	 */
-	protected final void writeInfo(String toWrite) {
+	public final void writeInfo(String toWrite) {
 		if (toWrite != null) {
 			this.log.info(prefix(toWrite));
 		}
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Writes either errors or warnings to the console.
-	 * <br>
-	 * <br>
-	 * @param toWrite the <a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html">String</a>
+	 * Writes either errors or warnings to the console.
+	 * 
+	 * @param toWrite the {@link java.lang.String}.
 	 * written to the console.
 	 * @param severe whether console output should appear as an error or warning.
 	 */
-	protected final void writeError(String toWrite, boolean severe) {
+	public final void writeError(String toWrite, boolean severe) {
 		if (toWrite != null) {
 			if (severe) {
 				this.log.severe(prefix(toWrite));
@@ -113,14 +112,12 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Used to check whether the class for the SQL engine is installed.
-	 * <br>
-	 * <br>
+	 * Used to check whether the class for the SQL engine is installed.
 	 */
 	protected abstract boolean initialize();
 	
 	/**
-	 * &nbsp;&nbsp;Get the DBMS enum value of the Database.
+	 * Get the DBMS enum value of the Database.
 	 * 
 	 * @return the DBMS enum value.
 	 */
@@ -129,17 +126,14 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Opens a connection with the database.
-	 * <br>
-	 * <br>
+	 * Opens a connection with the database.
+	 * 
 	 * @return the success of the method.
 	 */
 	public abstract boolean open();
 	
 	/**
-	 * &nbsp;&nbsp;Closes a connection with the database.
-	 * <br>
-	 * <br>
+	 * Closes a connection with the database.
 	 */
 	public final boolean close() {
 		this.connected = false;
@@ -158,7 +152,7 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Specifies whether the Database object is connected or not.
+	 * Specifies whether the Database object is connected or not.
 	 * 
 	 * @return a boolean specifying connection.
 	 */
@@ -167,19 +161,17 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Gets the connection variable 
-	 * <br>
-	 * <br>
-	 * @return the <a href="http://download.oracle.com/javase/6/docs/api/java/sql/Connection.html">Connection</a> variable.
+	 * Gets the connection variable 
+	 * 
+	 * @return the {@link java.sql.Connection} variable.
 	 */
 	public final Connection getConnection() {
 		return this.connection;
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Checks the connection between Java and the database engine.
-	 * <br>
-	 * <br>
+	 * Checks the connection between Java and the database engine.
+	 * 
 	 * @return the status of the connection, true for up, false for down.
 	 */
 	public final boolean checkConnection() {
@@ -189,9 +181,8 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Gets the last update count from the last execution.
-	 * <br>
-	 * <br>
+	 * Gets the last update count from the last execution.
+	 * 
 	 * @return the last update count.
 	 */
 	public final int getLastUpdateCount() {
@@ -199,9 +190,8 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Validates a query before execution.
-	 * <br>
-	 * <br>
+	 * Validates a query before execution.
+	 * 
 	 * @throws SQLException if the query is invalid.
 	 */
 	protected abstract void queryValidation(StatementEnum statement) throws SQLException;
@@ -245,7 +235,7 @@ public abstract class Database {
 	}
 	
 	/**
-	 * Executes a query given a PreparedStatement.
+	 * Executes a query given a {@link PreparedStatement}.
 	 * 
 	 * @param ps the PreparedStatement to execute.
 	 * @return a ResultSet, if any, from executing the PreparedStatement, otherwise a ResultSet of the update count.
@@ -258,9 +248,8 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Prepares to send a query to the database.
-	 * <br>
-	 * <br>
+	 * Prepares to send a query to the database.
+	 * 
 	 * @param query the SQL query to prepare to send to the database.
 	 * @return the prepared statement.
 	 */
@@ -272,41 +261,65 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Determines the statement and converts it into an enum.
-	 * <br>
-	 * <br>
+	 * Method for executing builders.
+	 * 
+	 * @param builder the Builder.
+	 * @return the ResultSet from the query or null if none was sent.
+	 * @throws SQLException if any error occurs during the query.
+	 */
+	public final ResultSet query(Builder builder) throws SQLException {
+		return query(builder.toString());
+	}
+	
+	/**
+	 * Determines the statement and converts it into an enum.
 	 */
 	public abstract StatementEnum getStatement(String query) throws SQLException;
 	
+	/**
+	 * Deprecated method that can now be substituted with {@link Database#query(String)} or the CREATE TABLE {@link Database#query(Builder)}.
+	 * 
+	 * @return always false.
+	 */
 	@Deprecated
 	public boolean createTable() {
 		return false;
 	}
 	
+	/**
+	 * Deprecated method retained as an alias to {@link Database#isTable(String)}.
+	 * 
+	 * @param table the table to check.
+	 * @return true if table exists, false if table does not exist.
+	 */
 	@Deprecated
 	public boolean checkTable(String table) {
-		return tableExists(table);
+		return isTable(table);
 	}
 	
+	/**
+	 * Deprecated method retained as an alias to {@link Database#truncate(String)}.
+	 * 
+	 * @param table the table to wipe.
+	 * @return true if successful, false on failure.
+	 */
 	@Deprecated
 	public boolean wipeTable(String table) {
 		return truncate(table);
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Checks a table in a database based on the table's name.
-	 * <br>
-	 * <br>
+	 * Checks a table in a database based on the table's name.
+	 * 
 	 * @param table name of the table to check.
 	 * @return success of the method.
 	 * @throws SQLException 
 	 */
-	public abstract boolean tableExists(String table);
+	public abstract boolean isTable(String table);
 	
 	/**
-	 * &nbsp;&nbsp;Truncates (empties) a table given its name.
-	 * <br>
-	 * <br>
+	 * Truncates (empties) a table given its name.
+	 * 
 	 * @param table name of the table to wipe.
 	 * @return success of the method.
 	 */

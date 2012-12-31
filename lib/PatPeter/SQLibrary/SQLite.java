@@ -16,10 +16,10 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 
 /**
- * Inherited subclass for reading and writing to and from an SQLite db.
- * Date Created: 2011-08-26 19:08
+ * Child class for the SQLite database.<br>
+ * Date Created: 2011-08-26 19:08.
  * 
- * @author PatPeter
+ * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class SQLite extends Database {
 	private File db;
@@ -184,7 +184,7 @@ public class SQLite extends Database {
 	}
 	
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		DatabaseMetaData md;
 		try {
 			md = this.connection.getMetaData();
@@ -205,7 +205,7 @@ public class SQLite extends Database {
 		Statement statement = null;
 		String query = null;
 		try {
-			if (!this.tableExists(table)) {
+			if (!this.isTable(table)) {
 				this.writeError("Table \"" + table + "\" does not exist.", true);
 				return false;
 			}

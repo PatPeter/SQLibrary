@@ -7,6 +7,12 @@ import java.util.logging.Logger;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
+/**
+ * Child class for the Ingres database.<br>
+ * Date Created: 2012-12-18 06:20.
+ * 
+ * @author Nicholas Solin, a.k.a. PatPeter
+ */
 public class Ingres extends Database {
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
@@ -126,7 +132,7 @@ public class Ingres extends Database {
 	}
 	
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		throw new UnsupportedOperationException();
 	}
 	

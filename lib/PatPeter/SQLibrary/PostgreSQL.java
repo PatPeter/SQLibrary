@@ -8,9 +8,10 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
 /**
- * Child class for the PostgreSQL database.
+ * Child class for the PostgreSQL database.<br>
+ * Date Created: 2011-09-03 17:18.
  * 
- * @author PatPeter
+ * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class PostgreSQL extends Database {
 	/*private String hostname = "localhost";
@@ -21,7 +22,9 @@ public class PostgreSQL extends Database {
 	
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
-	// http://www.postgresql.org/docs/7.3/static/sql-commands.html
+	/**
+	 * http://www.postgresql.org/docs/7.3/static/sql-commands.html
+	 */
 	protected enum Statements implements StatementEnum {
 		ABORT("ABORT"), 
 		ALERT("ALERT"), 
@@ -196,7 +199,7 @@ public class PostgreSQL extends Database {
 	}
 	
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		throw new UnsupportedOperationException();
 	}
 	

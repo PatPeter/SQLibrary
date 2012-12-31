@@ -9,7 +9,7 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
 /**
- * Inherited subclass for making a connection to a MySQL server.
+ * Inherited subclass for making a connection to a MySQL server.<br>
  * Date Created: 2011-08-26 19:08
  * 
  * @author PatPeter
@@ -221,7 +221,7 @@ public class MySQL extends Database {
 	}
 	
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 	    Statement statement;
 		try {
 			statement = connection.createStatement();
@@ -242,7 +242,7 @@ public class MySQL extends Database {
 		Statement statement = null;
 		String query = null;
 		try {
-			if (!this.tableExists(table)) {
+			if (!this.isTable(table)) {
 				this.writeError("Table \"" + table + "\" does not exist.", true);
 				return false;
 			}

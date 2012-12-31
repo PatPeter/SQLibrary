@@ -6,10 +6,10 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
- * Child class for the H2 database.
- * Date Created: 
+ * Child class for the H2 database.<br>
+ * Date Created: 2011-09-03 17:16.
  * 
- * @author PatPeter
+ * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class H2 extends Database {
 	private File db;
@@ -121,7 +121,7 @@ public class H2 extends Database {
 	}
 	
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		throw new UnsupportedOperationException();
 	}
 	

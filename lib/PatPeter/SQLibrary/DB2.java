@@ -7,6 +7,12 @@ import java.util.logging.Logger;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
+/**
+ * Child class for the DB2 database.<br>
+ * Date Created: 2012-12-18 06:20.
+ * 
+ * @author Nicholas Solin, a.k.a. PatPeter
+ */
 public class DB2 extends Database {
 	private HostnameDatabase delegate = new HostnameDatabaseImpl();
 	
@@ -125,7 +131,7 @@ public class DB2 extends Database {
 	}
 
 	@Override
-	public boolean tableExists(String table) {
+	public boolean isTable(String table) {
 		throw new UnsupportedOperationException();
 	}
 

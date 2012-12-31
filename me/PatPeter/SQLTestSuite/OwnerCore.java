@@ -13,6 +13,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import lib.PatPeter.SQLibrary.*;
 
+/**
+ * Core class for deprecated JavaPlugin example.<br>
+ * Date Created: 2011-08-27 03:42.
+ * 
+ * @author alta189 (Stephen Williams)
+ */
 public class OwnerCore extends JavaPlugin {
 	public String logPrefix = "[OWNER] "; // Prefix to go in front of all log entries
 	public Logger log = 
@@ -104,7 +110,7 @@ public class OwnerCore extends JavaPlugin {
 			
 			if (this.mysql.checkConnection()) { // Check if the Connection was successful
 				this.log.info(this.logPrefix + "mySQL connection successful");
-				if (!this.mysql.tableExists("blocks")) { // Check if the table exists in the database if not create it
+				if (!this.mysql.isTable("blocks")) { // Check if the table exists in the database if not create it
 					this.log.info(this.logPrefix + "Creating table blocks");
 					String query = "CREATE TABLE blocks (id INT, owner VARCHAR(255), x INT, y INT, z INT);";
 					this.mysql.createTable(query);
@@ -123,7 +129,7 @@ public class OwnerCore extends JavaPlugin {
 			this.sqlite.open();
 			
 			// Check if the table exists, if it doesn't create it
-			if (!this.sqlite.tableExists("blocks")) {
+			if (!this.sqlite.isTable("blocks")) {
 				this.log.info(this.logPrefix + "Creating table blocks");
 				String query = "CREATE TABLE blocks (id INT AUTO_INCREMENT PRIMARY_KEY, owner VARCHAR(255), x INT, y INT, z INT);";
 				this.sqlite.createTable(query); // Use SQLite.createTable(query) to create tables 
