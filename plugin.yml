@@ -1,15 +1,6 @@
 name: SQLibrary
-version: 3.1
-description: A library for ease of connection between a plugin and any database engine.
-
+version: 4.0
+description: A facade similar to Vault that abstracts the coder from the JDBC and each database driver's implementation.
 author: PatPeter
-#authors: 
-#website: 
-
 main: lib.PatPeter.SQLibrary.SQLibrary
 database: false
-#depend: []
-
-#commands:
-
-#permissions:

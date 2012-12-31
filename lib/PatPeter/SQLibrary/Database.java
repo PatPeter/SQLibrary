@@ -51,7 +51,8 @@ public abstract class Database {
 	/**
 	 * Holder for the last update count by a query.
 	 */
-	protected int lastUpdate;
+	@Deprecated
+	public int lastUpdate;
 	
 	/**
 	 * Constructor used in child class super().
@@ -85,7 +86,7 @@ public abstract class Database {
 	/**
 	 * Writes information to the console.
 	 * 
-	 * @param toWrite the {@link java.lang.String#String()}.
+	 * @param toWrite the {@link java.lang.String}.
 	 * of content to write to the console.
 	 */
 	public final void writeInfo(String toWrite) {
@@ -197,9 +198,8 @@ public abstract class Database {
 	protected abstract void queryValidation(StatementEnum statement) throws SQLException;
 	
 	/**
-	 * &nbsp;&nbsp;Sends a query to the SQL database.
-	 * <br>
-	 * <br>
+	 * Sends a query to the SQL database.
+	 * 
 	 * @param query the SQL query to send to the database.
 	 * @return the table of results from the query.
 	 */
@@ -216,7 +216,7 @@ public abstract class Database {
 	}
 	
 	/**
-	 * &nbsp;&nbsp;Executes a query given a PreparedStatement and StatementEnum.
+	 * Executes a query given a PreparedStatement and StatementEnum.
 	 * 
 	 * @param ps the PreparedStatement to execute.
 	 * @param statement the enum to use for validation.
@@ -235,7 +235,7 @@ public abstract class Database {
 	}
 	
 	/**
-	 * Executes a query given a {@link PreparedStatement}.
+	 * Executes a query given a {@link java.sql.PreparedStatement}.
 	 * 
 	 * @param ps the PreparedStatement to execute.
 	 * @return a ResultSet, if any, from executing the PreparedStatement, otherwise a ResultSet of the update count.

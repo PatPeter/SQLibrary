@@ -1,3 +1,17 @@
+Version 4.0 (release)
+-Added support for 13 more DBMSs: Firebird, FrontBase, DB2, H2, Informix, Ingres, MaxDB, MicrosoftSQL, Mongo, mSQL, Oracle, Ovrimos, and PostgreSQL.
+-query() method optimization.
+-query() will no longer return null. Instead, it will return a ResultSet containing the number of changes by statements that do not return a ResultSet.
+-query() compatibility with PreparedStatements and Builders added.
+-Database and DatabaseConfig no longer use separate enumerations to represent the supported databases.
+-Encapsulation of StatementEnums for each Database.
+-Finished Statements enumeration for MySQL, SQLite, H2, MicrosoftSQL, PostgreSQL, and Oracle.
+-getStatement() is now public.
+-Added many null and empty String checks as (Runtime) DatabaseExceptions.
+-Deprecation and renaming of several methods.
+-Database objects now use delegates to provide get methods, but have remained immutable with private set methods.
+-Addition of a functional SELECT statement builder for MySQL.
+
 Version 3.5 (release)
 2012-09-09 17:30
 - Implemented initialize() and open() for every database driver except H2.
