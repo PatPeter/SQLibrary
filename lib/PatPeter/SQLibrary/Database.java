@@ -38,6 +38,7 @@ public abstract class Database {
 	/**
 	 * Whether the Database is connected or not.
 	 */
+	@Deprecated
 	protected boolean connected;
 	/**
 	 * The Database Connection.
@@ -51,8 +52,7 @@ public abstract class Database {
 	/**
 	 * Holder for the last update count by a query.
 	 */
-	@Deprecated
-	public int lastUpdate;
+	protected int lastUpdate;
 	
 	/**
 	 * Constructor used in child class super().
@@ -118,9 +118,18 @@ public abstract class Database {
 	protected abstract boolean initialize();
 	
 	/**
+	 * Alias to getDBMS().
+	 * 
+	 * @return the DBMS enum.
+	 */
+	public final DBMS getDriver() {
+		return getDBMS();
+	}
+	
+	/**
 	 * Get the DBMS enum value of the Database.
 	 * 
-	 * @return the DBMS enum value.
+	 * @return the DBMS enum.
 	 */
 	public final DBMS getDBMS() {
 		return this.driver;
@@ -157,6 +166,7 @@ public abstract class Database {
 	 * 
 	 * @return a boolean specifying connection.
 	 */
+	@Deprecated
 	public final boolean isConnected() {
 		return this.connected;
 	}
@@ -169,16 +179,38 @@ public abstract class Database {
 	public final Connection getConnection() {
 		return this.connection;
 	}
-	
+
 	/**
 	 * Checks the connection between Java and the database engine.
 	 * 
 	 * @return the status of the connection, true for up, false for down.
 	 */
-	public final boolean checkConnection() {
+	public final boolean isOpen() {
 		if (connection != null)
-			return true;
+			try {
+				if (connection.isValid(1))
+					return true;
+			} catch (SQLException e) {}
 		return false;
+	}
+	
+	public final boolean isOpen(int seconds) {
+		if (connection != null)
+			try {
+				if (connection.isValid(seconds))
+					return true;
+			} catch (SQLException e) {}
+		return false;
+	}
+	
+	/**
+	 * Renamed to isOpen() following algorithmic changes.
+	 * 
+	 * @return the result of isOpen();
+	 */
+	@Deprecated
+	public final boolean checkConnection() {
+		return isOpen();
 	}
 	
 	/**
