@@ -106,7 +106,6 @@ public class mSQL extends Database {
 			url = "jdbc:msql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a mSQL connection, SQLException: " + e.getMessage(), true);

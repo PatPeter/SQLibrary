@@ -105,7 +105,6 @@ public class Informix extends Database {
 			String url = "jdbc:informix-sqli://" + getHostname() + ":" + getPort() + ":informixserver=" + getDatabase() + ";";
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a Informix connection, SQLException: " + e.getMessage(), true);

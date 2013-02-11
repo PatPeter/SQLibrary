@@ -133,7 +133,6 @@ public class SQLite extends Database {
 		if (initialize()) {
 			try {
 				this.connection = DriverManager.getConnection("jdbc:sqlite:" + db.getAbsolutePath());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an SQLite connection, SQLException: " + e.getMessage(), true);
@@ -179,17 +178,19 @@ public class SQLite extends Database {
 	
 	@Override
 	public boolean isTable(String table) {
-		DatabaseMetaData md;
+		DatabaseMetaData md = null;
 		try {
 			md = this.connection.getMetaData();
+			ResultSet tables = md.getTables(null, null, table, null);
+			if (tables.next()) {
+				tables.close();
+				return true;
+			} else {
+				tables.close();
+				return false;
+			}
 		} catch (SQLException e) {
-			this.writeError("Could not fetch metadata for table \"" + table + "\", SQLException: " + e.getMessage(), true);
-			return false;
-		}
-		try {
-			md.getTables(null, null, table, null);
-			return true;
-		} catch (SQLException e) {
+			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
 			return false;
 		}
 	}

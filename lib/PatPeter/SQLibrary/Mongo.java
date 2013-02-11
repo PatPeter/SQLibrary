@@ -105,7 +105,6 @@ public class Mongo extends Database {
 			String url = "mongodb://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a Mongo connection, SQLException: " + e.getMessage(), true);

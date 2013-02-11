@@ -20,7 +20,6 @@ public enum DBMS {
 	mSQL, 
 	MySQL, 
 	Oracle, 
-	Ovrimos,
 	PostgreSQL, 
 	SQLite;
 }

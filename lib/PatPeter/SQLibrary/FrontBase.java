@@ -105,7 +105,6 @@ public class FrontBase extends Database {
 			String url = "jdbc:FrontBase://" + getHostname() + ":" + getPort() + "/" + getDatabase() + ";";
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a FrontBase connection, SQLException: " + e.getMessage(), true);

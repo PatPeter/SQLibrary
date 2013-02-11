@@ -1,0 +1,16 @@
+jars:
+    Firebird: http://www.firebirdsql.org/en/jdbc-driver/
+    FrontBase: http://www.frontbase.com/cgi-bin/WebObjects/FBWebSite
+    DB2: http://www-01.ibm.com/support/docview.wss?uid=swg21363866
+    H2: http://www.h2database.com/html/download.html
+    Informix: http://www14.software.ibm.com/webapp/download/search.jsp?go=y&rs=ifxjdbc
+    Ingres: http://esd.actian.com/product/drivers/JDBC/java
+    MaxDB: ftp://ftp.sap.com/pub/sapdb/bin/java/sapdbc.jar
+    MicrosoftSQL: http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=11774
+    Mongo: https://github.com/downloads/mongodb/mongo-java-driver/mongo-2.10.1.jar
+    mSQL: http://www.hughes.com.au/download/index.ehtml?prod_name=Mini+SQL+3&prod_ver=Mini+SQL+3.11
+    MySQL: http://dev.mysql.com/downloads/connector/j/
+    Oracle: http://download.oracle.com/otn/utilities_drivers/jdbc/11203/simplefan.jar
+    PostgreSQL: http://jdbc.postgresql.org/download/postgresql-9.2-1002.jdbc4.jar
+    SQLite: http://www.xerial.org/maven/repository/artifact/org/xerial/sqlite-jdbc/3.7.2/sqlite-jdbc-3.7.2.jar
+    H2: http://repo2.maven.org/maven2/com/h2database/h2/1.3.170/h2-1.3.170.jar

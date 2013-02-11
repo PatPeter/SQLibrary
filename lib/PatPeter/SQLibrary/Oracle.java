@@ -142,7 +142,6 @@ public class Oracle extends Database {
 			url = "jdbc:oracle:thin:@" + getHostname() + ":" + getPort() + ":" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an Oracle connection, SQLException: " + e.getMessage(), true);

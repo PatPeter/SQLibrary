@@ -105,7 +105,6 @@ public class DB2 extends Database {
 			String url = "jdbc:derby:net://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a DB2 connection, SQLException: " + e.getMessage(), true);

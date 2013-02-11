@@ -105,7 +105,6 @@ public class MaxDB extends Database {
 			String url = "jdbc:sapdb://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a MaxDB connection, SQLException: " + e.getMessage(), true);

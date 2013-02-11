@@ -158,7 +158,6 @@ public class MySQL extends Database {
 			String url = "jdbc:mysql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a MySQL connection, SQLException: " + e.getMessage(), true);

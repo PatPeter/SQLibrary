@@ -95,7 +95,6 @@ public class H2 extends Database {
 		if (initialize()) {
 			try {
 				this.connection = DriverManager.getConnection("jdbc:h2:file:" + db.getAbsolutePath());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an H2 connection, SQLException: " + e.getMessage(), true);

@@ -105,7 +105,6 @@ public class Firebird extends Database {
 			String url = "jdbc:firebirdsql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a Firebird connection, SQLException: " + e.getMessage(), true);

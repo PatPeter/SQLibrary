@@ -489,7 +489,6 @@ public class MicrosoftSQL extends Database {
 			String url = "jdbc:sqlserver://" + getHostname() + ":" + getPort() + ";databaseName=" + getDatabase() + ";user=" + getUsername() + ";password=" + getPassword();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a Microsoft SQL connection, SQLException: " + e.getMessage(), true);

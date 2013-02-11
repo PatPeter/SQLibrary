@@ -106,7 +106,6 @@ public class Ingres extends Database {
 			url = "jdbc:ingres://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a Ingres connection, SQLException: " + e.getMessage(), true);
