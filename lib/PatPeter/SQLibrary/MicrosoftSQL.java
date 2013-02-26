@@ -5,9 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
-
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the Microsoft SQL database.<br>
@@ -16,7 +15,7 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * @author PatPeter
  */
 public class MicrosoftSQL extends Database {	
-	private HostnameDatabase delegate = new HostnameDatabaseImpl();
+	private HostnameDatabase delegate = DatabaseFactory.hostname();
 	
 	/**
 	 * http://msdn.microsoft.com/en-us/library/ms131699.aspx

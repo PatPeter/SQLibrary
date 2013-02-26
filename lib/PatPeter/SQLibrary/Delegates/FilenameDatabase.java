@@ -9,7 +9,21 @@ import java.io.File;
  * @author Nicholas Solin, a.k.a. PatPeter
  */
 public interface FilenameDatabase {
+	String getDirectory();
+	
+	void setDirectory(String directory);
+	
+	String getFilename();
+	
+	void setFilename(String filename);
+	
+	String getExtension();
+	
+	void setExtension(String extension);
+	
 	File getFile();
 	
-	void setFile(File file);
+	void setFile(String directory, String filename);
+	
+	void setFile(String directory, String filename, String extension);
 }

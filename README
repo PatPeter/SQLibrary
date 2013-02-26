@@ -1,3 +1,11 @@
+Version 4.2 (release)
+2013-02-14 14:00
+- Readded MySQL(Logger, String, String, String, String, String String) as a deprecated constructor.
+- Fixed improper usage of database delegates and added usage of FilenameDatabase.
+- Expanded FilenameDatabase to support custom extensions, and subsequently SQLite and H2.
+- Deleted SQLTestSuite for being extremely outdated and no longer useful as an educational tool.
+- TimeClock will be the official SQLibrary example plugin when it is finished.
+
 Version 4.1 (release)
 - In 4.0, MySQL(Logger, String, String, String, String, String, String) was changed to MySQL(Logger, String, String, int, String, String, String).
 - In 4.0, SQLite(Logger logger, String name, String location) was changed to SQLite(Logger logger, String directory, String filename).

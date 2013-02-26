@@ -15,6 +15,8 @@ public class HostnameDatabaseImpl implements HostnameDatabase {
 	private String password = "";
 	private String database = "minecraft";
 	
+	public HostnameDatabaseImpl() {}
+	
 	@Override
 	public String getHostname() {
 		return hostname;
@@ -74,5 +76,4 @@ public class HostnameDatabaseImpl implements HostnameDatabase {
 			throw new DatabaseException("Database cannot be null or empty.");
 		this.database = database;
 	}
-
 }
