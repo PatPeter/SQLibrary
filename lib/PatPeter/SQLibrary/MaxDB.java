@@ -3,9 +3,8 @@ package lib.PatPeter.SQLibrary;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the MaxDB database.<br>
@@ -14,7 +13,7 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class MaxDB extends Database {
-	private HostnameDatabase delegate = new HostnameDatabaseImpl();
+	private HostnameDatabase delegate = DatabaseFactory.hostname();
 	
 	public enum Statements implements StatementEnum {}
 	
@@ -105,7 +104,6 @@ public class MaxDB extends Database {
 			String url = "jdbc:sapdb://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a MaxDB connection, SQLException: " + e.getMessage(), true);

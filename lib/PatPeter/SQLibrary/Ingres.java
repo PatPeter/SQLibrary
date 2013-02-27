@@ -3,9 +3,8 @@ package lib.PatPeter.SQLibrary;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the Ingres database.<br>
@@ -14,7 +13,7 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class Ingres extends Database {
-	private HostnameDatabase delegate = new HostnameDatabaseImpl();
+	private HostnameDatabase delegate = DatabaseFactory.hostname();
 	
 	protected enum Statements implements StatementEnum {}
 	
@@ -106,7 +105,6 @@ public class Ingres extends Database {
 			url = "jdbc:ingres://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a Ingres connection, SQLException: " + e.getMessage(), true);

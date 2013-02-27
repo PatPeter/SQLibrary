@@ -5,9 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
-
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the Microsoft SQL database.<br>
@@ -16,7 +15,7 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * @author PatPeter
  */
 public class MicrosoftSQL extends Database {	
-	private HostnameDatabase delegate = new HostnameDatabaseImpl();
+	private HostnameDatabase delegate = DatabaseFactory.hostname();
 	
 	/**
 	 * http://msdn.microsoft.com/en-us/library/ms131699.aspx
@@ -489,7 +488,6 @@ public class MicrosoftSQL extends Database {
 			String url = "jdbc:sqlserver://" + getHostname() + ":" + getPort() + ";databaseName=" + getDatabase() + ";user=" + getUsername() + ";password=" + getPassword();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a Microsoft SQL connection, SQLException: " + e.getMessage(), true);

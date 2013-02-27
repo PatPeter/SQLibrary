@@ -1,16 +1,38 @@
+Version 4.2 (release)
+2013-02-14 14:00
+- Readded MySQL(Logger, String, String, String, String, String String) as a deprecated constructor.
+- Fixed improper usage of database delegates and added usage of FilenameDatabase.
+- Expanded FilenameDatabase to support custom extensions, and subsequently SQLite and H2.
+- Deleted SQLTestSuite for being extremely outdated and no longer useful as an educational tool.
+- TimeClock will be the official SQLibrary example plugin when it is finished.
+
+Version 4.1 (release)
+- In 4.0, MySQL(Logger, String, String, String, String, String, String) was changed to MySQL(Logger, String, String, int, String, String, String).
+- In 4.0, SQLite(Logger logger, String name, String location) was changed to SQLite(Logger logger, String directory, String filename).
+- In 4.0, wipeTable() was changed to truncate().
+- In 4.0, checkTable() was changed to isTable().
+- In 4.0, createTable(), checkTable(), and wipeTable() were deprecated.
+- checkConnection() is no longer a pointless null check.
+- checkConnection() changed to isOpen() and isOpen(int timeout).
+- checkConnection() is now deprecated.
+- isTable() in SQLite restored to previous algorithm - was always returning true (https://github.com/PatPeter/SQLibrary/issues/4).
+- insert() added to Database that returns an ArrayList<Long> of generated keys (https://github.com/PatPeter/SQLibrary/issues/5).
+- Removed Ovrimos - no JDBC connector available.
+- Laid groundwork for downloading and installing JDBC connectors for all supported DBMS.
+
 Version 4.0 (release)
--Added support for 13 more DBMSs: Firebird, FrontBase, DB2, H2, Informix, Ingres, MaxDB, MicrosoftSQL, Mongo, mSQL, Oracle, Ovrimos, and PostgreSQL.
--query() method optimization.
--query() will no longer return null. Instead, it will return a ResultSet containing the number of changes by statements that do not return a ResultSet.
--query() compatibility with PreparedStatements and Builders added.
--Database and DatabaseConfig no longer use separate enumerations to represent the supported databases.
--Encapsulation of StatementEnums for each Database.
--Finished Statements enumeration for MySQL, SQLite, H2, MicrosoftSQL, PostgreSQL, and Oracle.
--getStatement() is now public.
--Added many null and empty String checks as (Runtime) DatabaseExceptions.
--Deprecation and renaming of several methods.
--Database objects now use delegates to provide get methods, but have remained immutable with private set methods.
--Addition of a functional SELECT statement builder for MySQL.
+- Added support for 13 more DBMSs: Firebird, FrontBase, DB2, H2, Informix, Ingres, MaxDB, MicrosoftSQL, Mongo, mSQL, Oracle, Ovrimos, and PostgreSQL.
+- query() method optimization.
+- query() will no longer return null. Instead, it will return a ResultSet containing the number of changes by statements that do not return a ResultSet.
+- query() compatibility with PreparedStatements and Builders added.
+- Database and DatabaseConfig no longer use separate enumerations to represent the supported databases.
+- Encapsulation of StatementEnums for each Database.
+- Finished Statements enumeration for MySQL, SQLite, H2, MicrosoftSQL, PostgreSQL, and Oracle.
+- getStatement() is now public.
+- Added many null and empty String checks as (Runtime) DatabaseExceptions.
+- Deprecation and renaming of several methods.
+- Database objects now use delegates to provide get methods, but have remained immutable with private set methods.
+- Addition of a functional SELECT statement builder for MySQL.
 
 Version 3.5 (release)
 2012-09-09 17:30
@@ -37,7 +59,7 @@ Version 3.1 (release)
 - 2012-09-09 15:30 - Released 3.1.
 
 Version 3.0.8 (alpha)
-- 2012-03-21 21:07 - Fixed IndexOutOfBoundsException in getStatement() (thanks robxu9).
+- 2012-03-21 21:07 - Fixed IndexOutOfBoundsException in getStatement() (https://github.com/PatPeter/SQLibrary/issues/2).
 - 2012-03-21 22:10 - Added DatabaseException to getStatement() and MySQL.
 - 2012-03-24 14:10 - Updated the Test Suite to 1.2 and added DatabaseException to SQLite.
 - 2012-07-26 19:20 - query() now throws DatabaseException so that plugins can know whether a query failed or not.
@@ -56,6 +78,7 @@ Version 3.0.7 (alpha)
 - 2012-03-17 14:00 - Released 3.0.7.
 
 Version 3.0.6 (alpha)
+- Added a Factory (https://github.com/PatPeter/SQLibrary/pull/1).
 - 2011-12-10 03:16 - Fixed "Too many connections" propagated from faulty Linux fix.
 - 2012-02-12 17:18 - Renamed DatabaseHandler.java to simply Database.java.
 - 2012-02-12 18:39 - Removed imports in Oracle.java until developed.

@@ -4,9 +4,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
-
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
+import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Inherited subclass for making a connection to a MySQL server.<br>
@@ -15,7 +14,7 @@ import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
  * @author PatPeter
  */
 public class MySQL extends Database {
-	private HostnameDatabase delegate = new HostnameDatabaseImpl();
+	private HostnameDatabase delegate = DatabaseFactory.hostname();
 	
 	public enum Statements implements StatementEnum {
 		// Data manipulation statements
@@ -79,6 +78,27 @@ public class MySQL extends Database {
 		super(log,prefix,"[MySQL] ");
 		setHostname("localhost");
 		setPort(3306);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.MySQL;
+	}
+	
+	@Deprecated
+	public MySQL(Logger log,
+				 String prefix,
+				 String hostname,
+				 String port,
+				 String database,
+				 String username,
+				 String password) {
+		super(log,prefix,"[MySQL] ");
+		setHostname(hostname);
+		try {
+			setPort(Integer.parseInt(port));
+		} catch (NumberFormatException e) {
+			throw new DatabaseException("Port must be a number.");
+		}
 		setDatabase(database);
 		setUsername(username);
 		setPassword(password);
@@ -158,7 +178,6 @@ public class MySQL extends Database {
 			String url = "jdbc:mysql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
-				this.connected = true;
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish a MySQL connection, SQLException: " + e.getMessage(), true);

@@ -3,6 +3,10 @@ package lib.PatPeter.SQLibrary.Factory;
 import lib.PatPeter.SQLibrary.Database;
 import lib.PatPeter.SQLibrary.MySQL;
 import lib.PatPeter.SQLibrary.SQLite;
+import lib.PatPeter.SQLibrary.Delegates.FilenameDatabase;
+import lib.PatPeter.SQLibrary.Delegates.FilenameDatabaseImpl;
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
+import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 import lib.PatPeter.SQLibrary.Factory.DatabaseConfig.Parameter;
 
 /**
@@ -27,10 +31,18 @@ public class DatabaseFactory {
 					config.getParameter(Parameter.PASSWORD));
 			case SQLite:
 				return new SQLite(config.getLog(), config.getParameter(Parameter.PREFIX),
-					config.getParameter(Parameter.FILENAME),
-					config.getParameter(Parameter.LOCATION));
+					config.getParameter(Parameter.LOCATION),
+					config.getParameter(Parameter.FILENAME));
 			default:
 				return null;
 		}
+	}
+	
+	public static HostnameDatabase hostname() {
+		return new HostnameDatabaseImpl();
+	}
+	
+	public static FilenameDatabase filename() {
+		return new FilenameDatabaseImpl();
 	}
 }

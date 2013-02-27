@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
+import lib.PatPeter.SQLibrary.Delegates.FilenameDatabase;
+import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
+
 /**
  * Child class for the SQLite database.<br>
  * Date Created: 2011-08-26 19:08.
@@ -16,7 +19,7 @@ import java.util.logging.Logger;
  * @author Nicholas Solin, a.k.a. PatPeter
  */
 public class SQLite extends Database {
-	private File db;
+	private FilenameDatabase delegate = DatabaseFactory.filename();
 	
 	private enum Statements implements StatementEnum {
 		/*
@@ -102,20 +105,26 @@ public class SQLite extends Database {
 	
 	public SQLite(Logger log, String prefix, String directory, String filename) {
 		super(log,prefix,"[SQLite] ");
-		
-		if (directory == null || directory.length() == 0)
-			throw new DatabaseException("Directory cannot be null or empty.");
-		if (filename == null || filename.length() == 0)
-			throw new DatabaseException("Filename cannot be null or empty.");
-		if (filename.contains("/") || filename.contains("\\") || filename.endsWith(".db"))
-			throw new DatabaseException("The database filename cannot contain: /, \\, or .db.");
-		
-		File folder = new File(directory);
-		if (!folder.exists())
-			folder.mkdir();
-		
-		db = new File(folder.getAbsolutePath() + File.separator + filename + ".db");
+		setFile(directory, filename);
 		this.driver = DBMS.SQLite;
+	}
+	
+	public SQLite(Logger log, String prefix, String directory, String filename, String extension) {
+		super(log, prefix, "[H2] ");
+		setFile(directory, filename, extension);
+		this.driver = DBMS.H2;
+	}
+	
+	private File getFile() {
+		return delegate.getFile();
+	}
+	
+	private void setFile(String directory, String filename) {
+		delegate.setFile(directory, filename);
+	}
+	
+	private void setFile(String directory, String filename, String extension) {
+		delegate.setFile(directory, filename, extension);
 	}
 	
 	protected boolean initialize() {
@@ -132,8 +141,7 @@ public class SQLite extends Database {
 	public boolean open() {
 		if (initialize()) {
 			try {
-				this.connection = DriverManager.getConnection("jdbc:sqlite:" + db.getAbsolutePath());
-				this.connected = true;
+				this.connection = DriverManager.getConnection("jdbc:sqlite:" + getFile().getAbsolutePath());
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an SQLite connection, SQLException: " + e.getMessage(), true);
@@ -179,17 +187,19 @@ public class SQLite extends Database {
 	
 	@Override
 	public boolean isTable(String table) {
-		DatabaseMetaData md;
+		DatabaseMetaData md = null;
 		try {
 			md = this.connection.getMetaData();
+			ResultSet tables = md.getTables(null, null, table, null);
+			if (tables.next()) {
+				tables.close();
+				return true;
+			} else {
+				tables.close();
+				return false;
+			}
 		} catch (SQLException e) {
-			this.writeError("Could not fetch metadata for table \"" + table + "\", SQLException: " + e.getMessage(), true);
-			return false;
-		}
-		try {
-			md.getTables(null, null, table, null);
-			return true;
-		} catch (SQLException e) {
+			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
 			return false;
 		}
 	}
