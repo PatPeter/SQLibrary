@@ -48,8 +48,8 @@ public class HostnameDatabaseImpl implements HostnameDatabase {
 
 	@Override
 	public void setUsername(String username) {
-		if (username == null || username.length() == 0)
-			throw new DatabaseException("Username cannot be null or empty.");
+		if (username == null)
+			throw new DatabaseException("Username cannot be null.");
 		this.username = username;
 	}
 
@@ -60,8 +60,8 @@ public class HostnameDatabaseImpl implements HostnameDatabase {
 
 	@Override
 	public void setPassword(String password) {
-		if (password == null || password.length() == 0)
-			throw new DatabaseException("Password cannot be null or empty.");
+		if (password == null)
+			throw new DatabaseException("Password cannot be null.");
 		this.password = password;
 	}
 

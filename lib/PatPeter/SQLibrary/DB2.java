@@ -18,6 +18,22 @@ public class DB2 extends Database {
 	public enum Statements implements StatementEnum {}
 	
 	public DB2(Logger log,
+				 String prefix,
+				 String hostname,
+				 int port,
+				 String database,
+				 String username,
+				 String password) {
+		super(log,prefix,"[DB2] ");
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.DB2;
+	}
+	
+	public DB2(Logger log,
 			   String prefix,
 			   String database,
 			   String username,
@@ -32,18 +48,27 @@ public class DB2 extends Database {
 	}
 	
 	public DB2(Logger log,
-				 String prefix,
-				 String hostname,
-				 int port,
-				 String database,
-				 String username,
-				 String password) {
+			   String prefix,
+			   String database,
+			   String username) {
 		super(log,prefix,"[DB2] ");
-		setHostname(hostname);
-		setPort(port);
+		setHostname("localhost");
+		setPort(523);
 		setDatabase(database);
 		setUsername(username);
-		setPassword(password);
+		setPassword("");
+		this.driver = DBMS.DB2;
+	}
+	
+	public DB2(Logger log,
+			   String prefix,
+			   String database) {
+		super(log,prefix,"[DB2] ");
+		setHostname("localhost");
+		setPort(523);
+		setDatabase(database);
+		setUsername("");
+		setPassword("");
 		this.driver = DBMS.DB2;
 	}
 	

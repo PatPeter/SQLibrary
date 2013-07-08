@@ -65,6 +65,11 @@ public class FilenameDatabaseImpl implements FilenameDatabase {
 	}
 	
 	@Override
+	public void setFile() {
+		file = null;
+	}
+	
+	@Override
 	public void setFile(String directory, String filename) throws DatabaseException {
 		setDirectory(directory);
 		setFilename(filename);

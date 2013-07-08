@@ -402,6 +402,22 @@ public class MicrosoftSQL extends Database {
 	}
 	
 	public MicrosoftSQL(Logger log,
+				 		String prefix,
+						String hostname,
+						int port,
+						String database,
+						String username,
+						String password) throws SQLException {
+		super(log,prefix,"[MicrosoftSQL] ");
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.MicrosoftSQL;
+	}
+	
+	public MicrosoftSQL(Logger log,
 						String prefix,
 				 		String database,
 				 		String username,
@@ -416,18 +432,27 @@ public class MicrosoftSQL extends Database {
 	}
 	
 	public MicrosoftSQL(Logger log,
-				 		String prefix,
-						String hostname,
-						int port,
-						String database,
-						String username,
-						String password) throws SQLException {
+						String prefix,
+				 		String database,
+				 		String username) throws SQLException {
 		super(log,prefix,"[MicrosoftSQL] ");
-		setHostname(hostname);
-		setPort(port);
+		setHostname("localhost");
+		setPort(1433);
 		setDatabase(database);
 		setUsername(username);
-		setPassword(password);
+		setPassword("");
+		this.driver = DBMS.MicrosoftSQL;
+	}
+	
+	public MicrosoftSQL(Logger log,
+						String prefix,
+				 		String database) throws SQLException {
+		super(log,prefix,"[MicrosoftSQL] ");
+		setHostname("localhost");
+		setPort(1433);
+		setDatabase(database);
+		setUsername("");
+		setPassword("");
 		this.driver = DBMS.MicrosoftSQL;
 	}
 

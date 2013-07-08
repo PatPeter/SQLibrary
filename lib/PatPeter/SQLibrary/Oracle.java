@@ -54,7 +54,22 @@ public class Oracle extends Database {
 	
 	public Oracle(Logger log,
 				  String prefix,
+				  String hostname,
 				  int port,
+				  String database,
+				  String username,
+				  String password) throws SQLException {
+		super(log, prefix, "[Oracle] ");
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.Oracle;
+	}
+	
+	public Oracle(Logger log,
+				  String prefix,
 				  String database,
 				  String username,
 				  String password) throws SQLException {
@@ -69,17 +84,26 @@ public class Oracle extends Database {
 	
 	public Oracle(Logger log,
 				  String prefix,
-				  String hostname,
-				  int port,
 				  String database,
-				  String username,
-				  String password) throws SQLException {
+				  String username) throws SQLException {
 		super(log, prefix, "[Oracle] ");
-		setHostname(hostname);
-		setPort(port);
+		setHostname("localhost");
+		setPort(1521);
 		setDatabase(database);
 		setUsername(username);
-		setPassword(password);
+		setPassword("");
+		this.driver = DBMS.Oracle;
+	}
+	
+	public Oracle(Logger log,
+				  String prefix,
+				  String database) throws SQLException {
+		super(log, prefix, "[Oracle] ");
+		setHostname("localhost");
+		setPort(1521);
+		setDatabase(database);
+		setUsername("");
+		setPassword("");
 		this.driver = DBMS.Oracle;
 	}
 

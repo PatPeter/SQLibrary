@@ -20,6 +20,22 @@ public class Firebird extends Database {
 	
 	public Firebird(Logger log,
 					String prefix,
+					String hostname,
+					int port,
+					String database,
+					String username,
+					String password) {
+		super(log,prefix,"[Firebird] ");
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.Firebird;
+	}
+	
+	public Firebird(Logger log,
+					String prefix,
 					String database,
 					String username,
 					String password) {
@@ -34,17 +50,26 @@ public class Firebird extends Database {
 	
 	public Firebird(Logger log,
 					String prefix,
-					String hostname,
-					int port,
 					String database,
-					String username,
-					String password) {
+					String username) {
 		super(log,prefix,"[Firebird] ");
-		setHostname(hostname);
-		setPort(port);
+		setHostname("localhost");
+		setPort(3050);
 		setDatabase(database);
 		setUsername(username);
-		setPassword(password);
+		setPassword("");
+		this.driver = DBMS.Firebird;
+	}
+	
+	public Firebird(Logger log,
+					String prefix,
+					String database) {
+		super(log,prefix,"[Firebird] ");
+		setHostname("localhost");
+		setPort(3050);
+		setDatabase(database);
+		setUsername("");
+		setPassword("");
 		this.driver = DBMS.Firebird;
 	}
 	

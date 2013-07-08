@@ -105,26 +105,30 @@ public class SQLite extends Database {
 	
 	public SQLite(Logger log, String prefix, String directory, String filename) {
 		super(log,prefix,"[SQLite] ");
-		setFile(directory, filename);
+		delegate.setFile(directory, filename);
 		this.driver = DBMS.SQLite;
 	}
 	
 	public SQLite(Logger log, String prefix, String directory, String filename, String extension) {
-		super(log, prefix, "[H2] ");
-		setFile(directory, filename, extension);
-		this.driver = DBMS.H2;
+		super(log, prefix, "[SQLite] ");
+		delegate.setFile(directory, filename, extension);
+		this.driver = DBMS.SQLite;
+	}
+	
+	/**
+	 * In-Memory SQLite Database
+	 * 
+	 * http://www.sqlite.org/inmemorydb.html
+	 * 
+	 */
+	public SQLite(Logger log, String prefix) {
+		super(log, prefix, "[SQLite] ");
+		delegate.setFile();
+		this.driver = DBMS.SQLite;
 	}
 	
 	private File getFile() {
 		return delegate.getFile();
-	}
-	
-	private void setFile(String directory, String filename) {
-		delegate.setFile(directory, filename);
-	}
-	
-	private void setFile(String directory, String filename, String extension) {
-		delegate.setFile(directory, filename, extension);
 	}
 	
 	protected boolean initialize() {
@@ -141,7 +145,7 @@ public class SQLite extends Database {
 	public boolean open() {
 		if (initialize()) {
 			try {
-				this.connection = DriverManager.getConnection("jdbc:sqlite:" + getFile().getAbsolutePath());
+				this.connection = DriverManager.getConnection("jdbc:sqlite:" + (getFile() == null ? ":memory:" : getFile().getAbsolutePath()));
 				return true;
 			} catch (SQLException e) {
 				this.writeError("Could not establish an SQLite connection, SQLException: " + e.getMessage(), true);

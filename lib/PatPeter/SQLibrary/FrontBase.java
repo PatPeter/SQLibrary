@@ -20,6 +20,22 @@ public class FrontBase extends Database {
 	
 	public FrontBase(Logger log,
 					 String prefix,
+					 String hostname,
+					 int port,
+					 String database,
+					 String username,
+					 String password) {
+		super(log,prefix,"[FrontBase] ");
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.FrontBase;
+	}
+	
+	public FrontBase(Logger log,
+					 String prefix,
 					 String database,
 					 String username,
 					 String password) {
@@ -34,17 +50,26 @@ public class FrontBase extends Database {
 	
 	public FrontBase(Logger log,
 					 String prefix,
-					 String hostname,
-					 int port,
 					 String database,
-					 String username,
-					 String password) {
+					 String username) {
 		super(log,prefix,"[FrontBase] ");
-		setHostname(hostname);
-		setPort(port);
+		setHostname("localhost");
+		setPort(20020);
 		setDatabase(database);
 		setUsername(username);
-		setPassword(password);
+		setPassword("");
+		this.driver = DBMS.FrontBase;
+	}
+	
+	public FrontBase(Logger log,
+					 String prefix,
+					 String database) {
+		super(log,prefix,"[FrontBase] ");
+		setHostname("localhost");
+		setPort(20020);
+		setDatabase(database);
+		setUsername("");
+		setPassword("");
 		this.driver = DBMS.FrontBase;
 	}
 	

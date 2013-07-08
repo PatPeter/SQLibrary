@@ -19,6 +19,22 @@ public class Mongo extends Database {
 	
 	public Mongo(Logger log,
 				 String prefix,
+				 String hostname,
+				 int port,
+				 String database,
+				 String username,
+				 String password) {
+		super(log,prefix,"[MaxDB] ");
+		setHostname(hostname);
+		setPort(port);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.MaxDB;
+	}
+	
+	public Mongo(Logger log,
+				 String prefix,
 				 String database,
 				 String username,
 				 String password) {
@@ -33,17 +49,26 @@ public class Mongo extends Database {
 	
 	public Mongo(Logger log,
 				 String prefix,
-				 String hostname,
-				 int port,
 				 String database,
-				 String username,
-				 String password) {
+				 String username) {
 		super(log,prefix,"[MaxDB] ");
-		setHostname(hostname);
-		setPort(port);
+		setHostname("localhost");
+		setPort(27017);
 		setDatabase(database);
 		setUsername(username);
-		setPassword(password);
+		setPassword("");
+		this.driver = DBMS.MaxDB;
+	}
+	
+	public Mongo(Logger log,
+				 String prefix,
+				 String database) {
+		super(log,prefix,"[MaxDB] ");
+		setHostname("localhost");
+		setPort(27017);
+		setDatabase(database);
+		setUsername("");
+		setPassword("");
 		this.driver = DBMS.MaxDB;
 	}
 	

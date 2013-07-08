@@ -305,6 +305,17 @@ public abstract class Database {
 		return keys;
 	}
 	
+	public ArrayList<Long> insert(PreparedStatement ps) throws SQLException {
+		lastUpdate = ps.executeUpdate();
+		preparedStatements.remove(ps);
+		
+		ArrayList<Long> keys = new ArrayList<Long>();
+		ResultSet key = ps.getGeneratedKeys();
+		if (key.next())
+			keys.add(key.getLong(1));
+		return keys;
+	}
+	
 	/**
 	 * Method for executing builders.
 	 * 

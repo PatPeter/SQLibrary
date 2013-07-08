@@ -70,20 +70,6 @@ public class MySQL extends Database {
 		}
 	}
 	
-	public MySQL(Logger log,
-				 String prefix,
-				 String database,
-				 String username,
-				 String password) {
-		super(log,prefix,"[MySQL] ");
-		setHostname("localhost");
-		setPort(3306);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.MySQL;
-	}
-	
 	@Deprecated
 	public MySQL(Logger log,
 				 String prefix,
@@ -118,6 +104,45 @@ public class MySQL extends Database {
 		setDatabase(database);
 		setUsername(username);
 		setPassword(password);
+		this.driver = DBMS.MySQL;
+	}
+	
+	public MySQL(Logger log,
+				 String prefix,
+				 String database,
+				 String username,
+				 String password) {
+		super(log,prefix,"[MySQL] ");
+		setHostname("localhost");
+		setPort(3306);
+		setDatabase(database);
+		setUsername(username);
+		setPassword(password);
+		this.driver = DBMS.MySQL;
+	}
+	
+	public MySQL(Logger log,
+				 String prefix,
+				 String database,
+				 String username) {
+		super(log,prefix,"[MySQL] ");
+		setHostname("localhost");
+		setPort(3306);
+		setDatabase(database);
+		setUsername(username);
+		setPassword("");
+		this.driver = DBMS.MySQL;
+	}
+	
+	public MySQL(Logger log,
+				 String prefix,
+				 String database) {
+		super(log,prefix,"[MySQL] ");
+		setHostname("localhost");
+		setPort(3306);
+		setDatabase(database);
+		setUsername("");
+		setPassword("");
 		this.driver = DBMS.MySQL;
 	}
 	

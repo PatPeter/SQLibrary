@@ -4,7 +4,7 @@
 
   <groupId>lib.PatPeter</groupId>
   <artifactId>SQLibrary</artifactId>
-  <version>4.0</version>
+  <version>4.2</version>
   <name>SQLibrary</name>
   <description>Library for multiple database engine support in Bukkit and CraftBukkit.</description>
 
@@ -35,6 +35,7 @@
       <resource>
         <directory>${basedir}</directory>
         <includes>
+          <include>**/config.yml</include>
           <include>**/plugin.yml</include>
         </includes>
       </resource>

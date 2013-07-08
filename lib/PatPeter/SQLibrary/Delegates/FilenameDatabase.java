@@ -23,7 +23,25 @@ public interface FilenameDatabase {
 	
 	File getFile();
 	
+	/**
+	 * Null assignment for special in-database values.
+	 */
+	void setFile();
+	
+	/**
+	 * Set the database file given the directory and filename.
+	 * 
+	 * @param directory the directory of the file.
+	 * @param filename the name of the database file.
+	 */
 	void setFile(String directory, String filename);
 	
+	/**
+	 * Set the database file given the directory, filename, and extension.
+	 * 
+	 * @param directory the directory of the file.
+	 * @param filename the name of the database file.
+	 * @param extension the extension of the database file.
+	 */
 	void setFile(String directory, String filename, String extension);
 }
