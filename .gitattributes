@@ -1,4 +1,2 @@
 .gitattributes text eol=crlf
-.gitignore text eol=crlf
 *.java text eol=crlf
-*.xml text eol=crlf

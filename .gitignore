@@ -1,2 +1,5 @@
 # maven
+/doc
 /target
+/versions
+*.jardesc

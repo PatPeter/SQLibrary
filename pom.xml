@@ -6,7 +6,7 @@
   <artifactId>SQLibrary</artifactId>
   <version>4.2</version>
   <name>SQLibrary</name>
-  <description>Library for multiple database engine support in Bukkit and CraftBukkit.</description>
+  <description>Database library for Bukkit with support for 13 databases, a factory, and a query builder.</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
