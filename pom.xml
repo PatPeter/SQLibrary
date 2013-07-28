@@ -30,25 +30,31 @@
 	</dependencies>
 
 	<build>
-		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>**/config.yml</include>
-					<include>**/plugin.yml</include>
-				</includes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<!-- Minimum Minecraft requirement -->
 					<source>1.7</source>
 					<target>1.7</target>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<executable>${env.JAVA_HOME_7}/bin/javac</executable>
+					<fork>true</fork>
+					<includes>
+						<include>**/*/*.class</include>
+						<include>config.yml</include>
+						<include>plugin.yml</include>
+					</includes>
+					<excludes>
+						<exclude>**/*/*.java</exclude>
+						<exclude>.gitattributes</exclude>
+						<exclude>.gitignore</exclude>
+					</excludes>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>

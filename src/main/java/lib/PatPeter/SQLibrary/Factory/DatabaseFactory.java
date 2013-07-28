@@ -7,7 +7,6 @@ import lib.PatPeter.SQLibrary.Delegates.FilenameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.FilenameDatabaseImpl;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
 import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
-import lib.PatPeter.SQLibrary.Factory.DatabaseConfig.Parameter;
 
 /**
  * Factory for Database objects.<br>
@@ -24,8 +23,8 @@ public class DatabaseFactory {
 		switch (config.getType()) {
 			case MySQL:
 				return new MySQL(config.getLog(), config.getParameter(Parameter.PREFIX),
-					config.getParameter(Parameter.HOSTNAME),
-					Integer.parseInt(config.getParameter(Parameter.PORTNMBR)),
+					config.getParameter(Parameter.HOST),
+					Integer.parseInt(config.getParameter(Parameter.PORT)),
 					config.getParameter(Parameter.DATABASE),
 					config.getParameter(Parameter.USERNAME),
 					config.getParameter(Parameter.PASSWORD));
