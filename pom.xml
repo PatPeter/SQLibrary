@@ -6,6 +6,7 @@
 	<artifactId>SQLibrary</artifactId>
 	<version>6.0</version>
 	<name>SQLibrary</name>
+	<url>http://dev.bukkit.org/bukkit-plugins/sqlibrary/</url>
 	<description>Database library for Bukkit with support for 13 databases, a factory, and a query builder.</description>
 
 	<properties>
@@ -33,11 +34,17 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
+				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>
 					<executable>${env.JAVA_HOME_7}/bin/javac</executable>
@@ -59,5 +66,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<url>http://dev.bukkit.org/bukkit-plugins/sqlibrary/</url>
 </project>
