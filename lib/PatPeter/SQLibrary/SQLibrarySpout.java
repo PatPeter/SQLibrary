@@ -14,4 +14,4 @@ public class SQLibrarySpout extends Plugin {
 	public void onDisable() {
 		SQLibrary.logger.log(Level.INFO, "SQLibrary stopped.");
 	}
-}
+} 
