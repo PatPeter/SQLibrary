@@ -17,6 +17,10 @@
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
+    <repository>
+    	<id>spout-repo</id>
+    	<url>http://nexus.spout.org/content/groups/public</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -26,6 +30,12 @@
       <version>1.4.7-R1.0</version>
       <type>jar</type>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.spout</groupId>
+    	<artifactId>spoutapi</artifactId>
+    	<version>dev-SNAPSHOT</version>
+    	<scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -37,6 +47,7 @@
         <includes>
           <include>**/config.yml</include>
           <include>**/plugin.yml</include>
+          <include>**/properties.yml</include>
         </includes>
       </resource>
     </resources>
@@ -54,3 +65,4 @@
     </plugins>
   </build>
 </project>
+ 
