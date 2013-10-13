@@ -1,7 +1,5 @@
-.gitattributes text eol=crlf
-.gitignore text eol=crlf
-.classpath text eol=crlf
-.project text eol=crlf
-*.java text eol=crlf
-*.prefs text eol=crlf
-*.xml text eol=crlf
+.classpath text eol=lf
+.project text eol=lf
+*.java text eol=lf
+*.prefs text eol=lf
+*.xml text eol=lf
