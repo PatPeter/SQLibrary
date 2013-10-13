@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<<<<<<< HEAD
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>lib.PatPeter.SQLibrary</groupId>
@@ -13,7 +12,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
+	
 	<repositories>
 		<repository>
 			<id>bukkit-repo</id>
@@ -21,7 +20,19 @@
 		</repository>
 		<repository>
 			<id>spout-repo</id>
-			<url>http://nexus.spout.org/content/groups/public</url>
+			<url>http://nexus.spout.org/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>sonatype-nexus-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
 		</repository>
 	</repositories>
 
@@ -33,12 +44,12 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>org.spout</groupId>
 			<artifactId>spoutapi</artifactId>
 			<version>dev-SNAPSHOT</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency>-->
 	</dependencies>
 
 	<build>
