@@ -76,16 +76,10 @@
 						<exclude>.gitignore</exclude>
 					</excludes>
 					<archive>
-						<!--<manifestFile>src/main/resources/MANIFEST.MF</manifestFile>-->
-						<!--<manifestSections>
-							<manifestSection>
-								<name>SQLibrary</name>-->
 						<manifestEntries>
 							<Built-By>PatPeter</Built-By>
 							<Build-Jdk>${java.version}</Build-Jdk>
 						</manifestEntries>
-							<!--</manifestSection>
-						</manifestSections>-->
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
 				</configuration>
