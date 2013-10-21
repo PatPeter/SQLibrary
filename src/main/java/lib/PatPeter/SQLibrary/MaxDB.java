@@ -3,8 +3,6 @@ package lib.PatPeter.SQLibrary;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the MaxDB database.<br>
@@ -12,9 +10,7 @@ import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
  * 
  * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class MaxDB extends Database {
-	private HostnameDatabase delegate = DatabaseFactory.hostname();
-	
+public class MaxDB extends HostnameDatabase {
 	public enum Statements implements StatementEnum {}
 	
 	public MaxDB(Logger log,
@@ -24,7 +20,7 @@ public class MaxDB extends Database {
 				 String database,
 				 String username,
 				 String password) {
-		super(log,prefix,"[MaxDB] ");
+		super(log, prefix, DBMS.MaxDB, hostname, port, database, username, password);
 		setHostname(hostname);
 		setPort(port);
 		setDatabase(database);
@@ -38,78 +34,20 @@ public class MaxDB extends Database {
 				 String database,
 				 String username,
 				 String password) {
-		super(log,prefix,"[MaxDB] ");
-		setHostname("localhost");
-		setPort(7210);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.MaxDB;
+		super(log, prefix, DBMS.MaxDB, "localhost", 7210, database, username, password);
 	}
 	
 	public MaxDB(Logger log,
 				 String prefix,
 				 String database,
 				 String username) {
-		super(log,prefix,"[MaxDB] ");
-		setHostname("localhost");
-		setPort(7210);
-		setDatabase(database);
-		setUsername(username);
-		setPassword("");
-		this.driver = DBMS.MaxDB;
+		super(log, prefix, DBMS.MaxDB, "localhost", 7210, database, username, "");
 	}
 	
 	public MaxDB(Logger log,
 				 String prefix,
 				 String database) {
-		super(log,prefix,"[MaxDB] ");
-		setHostname("localhost");
-		setPort(7210);
-		setDatabase(database);
-		setUsername("");
-		setPassword("");
-		this.driver = DBMS.MaxDB;
-	}
-	
-	public String getHostname() {
-		return delegate.getHostname();
-	}
-	
-	private void setHostname(String hostname) {
-		delegate.setHostname(hostname);
-	}
-	
-	public int getPort() {
-		return delegate.getPort();
-	}
-	
-	private void setPort(int port) {
-		delegate.setPort(port);
-	}
-	
-	public String getUsername() {
-		return delegate.getUsername();
-	}
-	
-	private void setUsername(String username) {
-		delegate.setUsername(username);
-	}
-	
-	private String getPassword() {
-		return delegate.getPassword();
-	}
-	
-	private void setPassword(String password) {
-		delegate.setPassword(password);
-	}
-	
-	public String getDatabase() {
-		return delegate.getDatabase();
-	}
-	
-	private void setDatabase(String database) {
-		delegate.setDatabase(database);
+		super(log, prefix, DBMS.MaxDB, "localhost", 7210, database, "", "");
 	}
 
 	@Override

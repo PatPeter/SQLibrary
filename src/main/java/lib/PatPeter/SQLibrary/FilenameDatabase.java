@@ -1,8 +1,8 @@
-package lib.PatPeter.SQLibrary.Delegates;
+package lib.PatPeter.SQLibrary;
 
 import java.io.File;
+import java.util.logging.Logger;
 
-import lib.PatPeter.SQLibrary.DatabaseException;
 
 /**
  * Implementation of databases that handle a single file.<br>
@@ -10,20 +10,45 @@ import lib.PatPeter.SQLibrary.DatabaseException;
  * 
  * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class FilenameDatabaseImpl implements FilenameDatabase {
+public abstract class FilenameDatabase extends Database {
 	private String directory;
 	private String filename;
 	private File file;
 	private String extension = ".db";
+
+	public FilenameDatabase(Logger log, 
+			String prefix, 
+			DBMS dbms) {
+		super(log, prefix, dbms);
+		setFile();
+	}
 	
-	public FilenameDatabaseImpl() {}
+	public FilenameDatabase(Logger log, 
+			String prefix, 
+			DBMS dbms,
+			String directory,
+			String filename) {
+		super(log, prefix, dbms);
+		setDirectory(directory);
+		setFilename(filename);
+	}
 	
-	@Override
+	public FilenameDatabase(Logger log, 
+			String prefix, 
+			DBMS dbms,
+			String directory,
+			String filename,
+			String extension) {
+		super(log, prefix, dbms);
+		setDirectory(directory);
+		setFilename(filename);
+		setExtension(extension);
+	}
+	
 	public String getDirectory() {
 		return directory;
 	}
 	
-	@Override
 	public void setDirectory(String directory) {
 		if (directory == null || directory.length() == 0)
 			throw new DatabaseException("Directory cannot be null or empty.");
@@ -31,12 +56,10 @@ public class FilenameDatabaseImpl implements FilenameDatabase {
 			this.directory = directory;
 	}
 	
-	@Override
 	public String getFilename() {
 		return filename;
 	}
 	
-	@Override
 	public void setFilename(String filename) {
 		if (filename == null || filename.length() == 0)
 			throw new DatabaseException("Filename cannot be null or empty.");
@@ -46,12 +69,10 @@ public class FilenameDatabaseImpl implements FilenameDatabase {
 			this.filename = filename;
 	}
 	
-	@Override
 	public String getExtension() {
 		return extension;
 	}
 	
-	@Override
 	public void setExtension(String extension) {
 		if (extension == null || extension.length() == 0)
 			throw new DatabaseException("Extension cannot be null or empty.");
@@ -59,17 +80,14 @@ public class FilenameDatabaseImpl implements FilenameDatabase {
 			throw new DatabaseException("Extension must begin with a period");
 	}
 	
-	@Override
 	public File getFile() {
 		return this.file;
 	}
 	
-	@Override
 	public void setFile() {
 		file = null;
 	}
 	
-	@Override
 	public void setFile(String directory, String filename) throws DatabaseException {
 		setDirectory(directory);
 		setFilename(filename);
@@ -81,7 +99,6 @@ public class FilenameDatabaseImpl implements FilenameDatabase {
 		file = new File(folder.getAbsolutePath() + File.separator + getFilename() + getExtension());
 	}
 	
-	@Override
 	public void setFile(String directory, String filename, String extension) throws DatabaseException {
 		setExtension(extension);
 		this.setFile(directory, filename);

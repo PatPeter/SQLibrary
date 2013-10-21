@@ -4,18 +4,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
-
 /**
  * Child class for the FrontBase database.<br>
  * Date Created: 2012-12-18 06:15.
  * 
  * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class FrontBase extends Database {
-	private HostnameDatabase delegate = DatabaseFactory.hostname();
-	
+public class FrontBase extends HostnameDatabase {
 	public enum Statements implements StatementEnum {}
 	
 	public FrontBase(Logger log,
@@ -25,13 +20,7 @@ public class FrontBase extends Database {
 					 String database,
 					 String username,
 					 String password) {
-		super(log,prefix,"[FrontBase] ");
-		setHostname(hostname);
-		setPort(port);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.FrontBase;
+		super(log, prefix, DBMS.FrontBase, hostname, port, database, username, password);
 	}
 	
 	public FrontBase(Logger log,
@@ -39,78 +28,20 @@ public class FrontBase extends Database {
 					 String database,
 					 String username,
 					 String password) {
-		super(log,prefix,"[FrontBase] ");
-		setHostname("localhost");
-		setPort(20020);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.FrontBase;
+		super(log, prefix, DBMS.FrontBase, "localhost", 20020, database, username, password);
 	}
 	
 	public FrontBase(Logger log,
 					 String prefix,
 					 String database,
 					 String username) {
-		super(log,prefix,"[FrontBase] ");
-		setHostname("localhost");
-		setPort(20020);
-		setDatabase(database);
-		setUsername(username);
-		setPassword("");
-		this.driver = DBMS.FrontBase;
+		super(log, prefix, DBMS.FrontBase, "localhost", 20020, database, username, "");
 	}
 	
 	public FrontBase(Logger log,
 					 String prefix,
 					 String database) {
-		super(log,prefix,"[FrontBase] ");
-		setHostname("localhost");
-		setPort(20020);
-		setDatabase(database);
-		setUsername("");
-		setPassword("");
-		this.driver = DBMS.FrontBase;
-	}
-	
-	public String getHostname() {
-		return delegate.getHostname();
-	}
-	
-	private void setHostname(String hostname) {
-		delegate.setHostname(hostname);
-	}
-	
-	public int getPort() {
-		return delegate.getPort();
-	}
-	
-	private void setPort(int port) {
-		delegate.setPort(port);
-	}
-	
-	public String getUsername() {
-		return delegate.getUsername();
-	}
-	
-	private void setUsername(String username) {
-		delegate.setUsername(username);
-	}
-	
-	private String getPassword() {
-		return delegate.getPassword();
-	}
-	
-	private void setPassword(String password) {
-		delegate.setPassword(password);
-	}
-	
-	public String getDatabase() {
-		return delegate.getDatabase();
-	}
-	
-	private void setDatabase(String database) {
-		delegate.setDatabase(database);
+		super(log, prefix, DBMS.FrontBase, "localhost", 20020, database, "", "");
 	}
 	
 	@Override

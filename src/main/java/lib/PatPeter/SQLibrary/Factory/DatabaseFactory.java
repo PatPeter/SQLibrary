@@ -3,10 +3,6 @@ package lib.PatPeter.SQLibrary.Factory;
 import lib.PatPeter.SQLibrary.Database;
 import lib.PatPeter.SQLibrary.MySQL;
 import lib.PatPeter.SQLibrary.SQLite;
-import lib.PatPeter.SQLibrary.Delegates.FilenameDatabase;
-import lib.PatPeter.SQLibrary.Delegates.FilenameDatabaseImpl;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabaseImpl;
 
 /**
  * Factory for Database objects.<br>
@@ -35,13 +31,5 @@ public class DatabaseFactory {
 			default:
 				return null;
 		}
-	}
-	
-	public static HostnameDatabase hostname() {
-		return new HostnameDatabaseImpl();
-	}
-	
-	public static FilenameDatabase filename() {
-		return new FilenameDatabaseImpl();
 	}
 }

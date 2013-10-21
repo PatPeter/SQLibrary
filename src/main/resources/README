@@ -1,3 +1,7 @@
+Version 6.1 (release)
+- Built on CB 1.6.2-R1.0.
+- Added support for Spout.
+
 Version 6.0 (alpha)
 - Use first development build for 1.6.1.
 - SQLibrary's major version now corresponds to Minecraft.
@@ -6,7 +10,7 @@ Version 6.0 (alpha)
 - Fixed shorthand Oracle constructor still containing a port parameter.
 - Fixed SQLite constructor identifying itself as H2 (https://github.com/PatPeter/SQLibrary/issues/12).
 - Added insert(PreparedStatement ps).
-- Released 6.0 - 2013-07-08.
+- Released 6.0 (2013-07-08).
 
 Version 4.2 (release)
 - Readded MySQL(Logger, String, String, String, String, String, String) as a deprecated constructor.
@@ -63,7 +67,7 @@ Version 3.1 (release)
 - All boolean methods return false on fail, all other methods throw exceptions so that plugin authors can check for errors.
 - Moved close(), getConnection(), checkConnection(), and prepare() into Database.java.
 - Actually implemented the prefix() method.
-- Released 3.1 - 2012-09-09.
+- Released 3.1 (2012-09-09).
 
 Version 3.0.8 (alpha)
 - Fixed IndexOutOfBoundsException in getStatement() (https://github.com/PatPeter/SQLibrary/issues/2).
@@ -82,7 +86,7 @@ Version 3.0.7 (alpha)
 - Added INSERT, UPDATE, and DELETE to query() switches.
 - Added the rest of standard statements to switches.
 - Added many more statements for MySQL and SQLite to Database.Statements.
-- Released 3.0.7 - 2012-03-17.
+- Released 3.0.7 (2012-03-17).
 
 Version 3.0.6 (alpha)
 - Added a Factory (https://github.com/PatPeter/SQLibrary/pull/1).
@@ -93,7 +97,7 @@ Version 3.0.6 (alpha)
 - Removed infinite loop in SQLite and the original retry().
 - Merged CHANGELOG with README.
 - Added SQLibrary.java on jertocvil's request.
-- Released 3.0.6 - 2012-03-11.
+- Released 3.0.6 (2012-03-11).
 
 Version 3.0.5.2 (alpha-fix)
 - Class only uses one connection to avoid "Too Many Connections".
@@ -112,7 +116,7 @@ Version 3.0.5 (alpha)
 - Fixed getStatement() by changing equals() to equalsIgnoreCase().
 - Fixed query() by having it return result instead of null.
 - Removed redundant exceptions from methods.
-- Released 3.0.5 - 2011-09-17.
+- Released 3.0.5 (2011-09-17).
 
 Version 3.0.4 (alpha)
 - Moved writeInfo and writeError into superclass.

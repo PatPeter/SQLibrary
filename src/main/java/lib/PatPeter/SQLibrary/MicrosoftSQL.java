@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the Microsoft SQL database.<br>
@@ -14,13 +12,11 @@ import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
  * 
  * @author PatPeter
  */
-public class MicrosoftSQL extends Database {	
-	private HostnameDatabase delegate = DatabaseFactory.hostname();
-	
+public class MicrosoftSQL extends HostnameDatabase {	
 	/**
 	 * http://msdn.microsoft.com/en-us/library/ms131699.aspx
 	 */
-	protected enum Statements implements StatementEnum {
+	public enum Statements implements StatementEnum {
 		_PARTITION("$PARTITION"),
 		__CONNECTIONS("@@CONNECTIONS"), 
 		__CPU_BUSY("@@CPU_BUSY"), 
@@ -408,13 +404,7 @@ public class MicrosoftSQL extends Database {
 						String database,
 						String username,
 						String password) throws SQLException {
-		super(log,prefix,"[MicrosoftSQL] ");
-		setHostname(hostname);
-		setPort(port);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.MicrosoftSQL;
+		super(log, prefix, DBMS.MicrosoftSQL, hostname, port, database, username, password);
 	}
 	
 	public MicrosoftSQL(Logger log,
@@ -422,78 +412,20 @@ public class MicrosoftSQL extends Database {
 				 		String database,
 				 		String username,
 						String password) throws SQLException {
-		super(log,prefix,"[MicrosoftSQL] ");
-		setHostname("localhost");
-		setPort(1433);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.MicrosoftSQL;
+		super(log, prefix, DBMS.MicrosoftSQL, "localhost", 1433, database, username, password);
 	}
 	
 	public MicrosoftSQL(Logger log,
 						String prefix,
 				 		String database,
 				 		String username) throws SQLException {
-		super(log,prefix,"[MicrosoftSQL] ");
-		setHostname("localhost");
-		setPort(1433);
-		setDatabase(database);
-		setUsername(username);
-		setPassword("");
-		this.driver = DBMS.MicrosoftSQL;
+		super(log, prefix, DBMS.MicrosoftSQL, "localhost", 1433, database, username, "");
 	}
 	
 	public MicrosoftSQL(Logger log,
 						String prefix,
 				 		String database) throws SQLException {
-		super(log,prefix,"[MicrosoftSQL] ");
-		setHostname("localhost");
-		setPort(1433);
-		setDatabase(database);
-		setUsername("");
-		setPassword("");
-		this.driver = DBMS.MicrosoftSQL;
-	}
-
-	public String getHostname() {
-		return delegate.getHostname();
-	}
-	
-	private void setHostname(String hostname) {
-		delegate.setHostname(hostname);
-	}
-	
-	public int getPort() {
-		return delegate.getPort();
-	}
-	
-	private void setPort(int port) {
-		delegate.setPort(port);
-	}
-	
-	public String getUsername() {
-		return delegate.getUsername();
-	}
-	
-	private void setUsername(String username) {
-		delegate.setUsername(username);
-	}
-	
-	private String getPassword() {
-		return delegate.getPassword();
-	}
-	
-	private void setPassword(String password) {
-		delegate.setPassword(password);
-	}
-	
-	public String getDatabase() {
-		return delegate.getDatabase();
-	}
-	
-	private void setDatabase(String database) {
-		delegate.setDatabase(database);
+		super(log, prefix, DBMS.MicrosoftSQL, "localhost", 1433, database, "", "");
 	}
 	
 	@Override

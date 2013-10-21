@@ -4,8 +4,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
+
+import javax.sql.DataSource;
 
 /**
  * Inherited subclass for making a connection to a MySQL server.<br>
@@ -13,9 +13,7 @@ import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
  * 
  * @author PatPeter
  */
-public class MySQL extends Database {
-	private HostnameDatabase delegate = DatabaseFactory.hostname();
-	
+public class MySQL extends HostnameDatabase {
 	public enum Statements implements StatementEnum {
 		// Data manipulation statements
 		SELECT("SELECT"), 
@@ -78,17 +76,7 @@ public class MySQL extends Database {
 				 String database,
 				 String username,
 				 String password) {
-		super(log,prefix,"[MySQL] ");
-		setHostname(hostname);
-		try {
-			setPort(Integer.parseInt(port));
-		} catch (NumberFormatException e) {
-			throw new DatabaseException("Port must be a number.");
-		}
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.MySQL;
+		super(log,prefix, DBMS.MySQL, hostname, Integer.parseInt(port), database, username, password);
 	}
 	
 	public MySQL(Logger log,
@@ -98,13 +86,7 @@ public class MySQL extends Database {
 				 String database,
 				 String username,
 				 String password) {
-		super(log,prefix,"[MySQL] ");
-		setHostname(hostname);
-		setPort(port);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.MySQL;
+		super(log, prefix, DBMS.MySQL, hostname, port, database, username, password);
 	}
 	
 	public MySQL(Logger log,
@@ -112,103 +94,49 @@ public class MySQL extends Database {
 				 String database,
 				 String username,
 				 String password) {
-		super(log,prefix,"[MySQL] ");
-		setHostname("localhost");
-		setPort(3306);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.MySQL;
+		super(log, prefix, DBMS.MySQL, "localhost", 3306, database, username, password);
 	}
 	
 	public MySQL(Logger log,
 				 String prefix,
 				 String database,
 				 String username) {
-		super(log,prefix,"[MySQL] ");
-		setHostname("localhost");
-		setPort(3306);
-		setDatabase(database);
-		setUsername(username);
-		setPassword("");
-		this.driver = DBMS.MySQL;
+		super(log, prefix, DBMS.MySQL, "localhost", 3306, database, username, "");
 	}
 	
 	public MySQL(Logger log,
 				 String prefix,
 				 String database) {
-		super(log,prefix,"[MySQL] ");
-		setHostname("localhost");
-		setPort(3306);
-		setDatabase(database);
-		setUsername("");
-		setPassword("");
-		this.driver = DBMS.MySQL;
-	}
-	
-	public String getHostname() {
-		return delegate.getHostname();
-	}
-	
-	private void setHostname(String hostname) {
-		delegate.setHostname(hostname);
-	}
-	
-	public int getPort() {
-		return delegate.getPort();
-	}
-	
-	private void setPort(int port) {
-		delegate.setPort(port);
-	}
-	
-	public String getUsername() {
-		return delegate.getUsername();
-	}
-	
-	private void setUsername(String username) {
-		delegate.setUsername(username);
-	}
-	
-	private String getPassword() {
-		return delegate.getPassword();
-	}
-	
-	private void setPassword(String password) {
-		delegate.setPassword(password);
-	}
-	
-	public String getDatabase() {
-		return delegate.getDatabase();
-	}
-	
-	private void setDatabase(String database) {
-		delegate.setDatabase(database);
+		super(log, prefix, DBMS.MySQL, "localhost", 3306, database, "", "");
 	}
 	
 	@Override
 	protected boolean initialize() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("MySQL driver class missing: " + e.getMessage() + ".", true);
+	    	this.warning("MySQL DataSource class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
 	
 	@Override
 	public boolean open() {
-		if (initialize()) {
+		try {
 			String url = "jdbc:mysql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
-			try {
+			if (initialize()) {
+				com.mysql.jdbc.jdbc2.optional.MysqlDataSource ds = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource();
+				
+				ds.setUrl(url);
+				this.connection = ds.getConnection(getUsername(), getPassword());
+				return true;
+			} else {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
-			} catch (SQLException e) {
-				this.writeError("Could not establish a MySQL connection, SQLException: " + e.getMessage(), true);
-				return false;
 			}
-		} else {
+		} catch (SQLException e) {
+			this.error("Could not establish a MySQL connection, SQLException: " + e.getMessage());
 			return false;
 		}
 	}
@@ -217,13 +145,13 @@ public class MySQL extends Database {
 	protected void queryValidation(StatementEnum statement) throws SQLException {
 		switch ((Statements) statement) {
 		    case USE:
-		    	this.writeError("Please create a new connection to use a different database.", false);
+		    	this.warning("Please create a new connection to use a different database.");
 		    	throw new SQLException("Please create a new connection to use a different database.");
 		    
 		    case PREPARE:
 		    case EXECUTE:
 		    case DEALLOCATE:
-		    	this.writeError("Please use the prepare() method to prepare a query.", false);
+		    	this.warning("Please use the prepare() method to prepare a query.");
 		    	throw new SQLException("Please use the prepare() method to prepare a query.");
 	    }
 	}

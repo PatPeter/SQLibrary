@@ -1,16 +1,11 @@
 package lib.PatPeter.SQLibrary;
 
-import java.io.File;
 import java.sql.DatabaseMetaData;
-
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
-
-import lib.PatPeter.SQLibrary.Delegates.FilenameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the SQLite database.<br>
@@ -18,9 +13,7 @@ import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
  * 
  * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class SQLite extends Database {
-	private FilenameDatabase delegate = DatabaseFactory.filename();
-	
+public class SQLite extends FilenameDatabase {
 	private enum Statements implements StatementEnum {
 		/*
 		 * Data manipulation statements
@@ -104,15 +97,11 @@ public class SQLite extends Database {
 	}
 	
 	public SQLite(Logger log, String prefix, String directory, String filename) {
-		super(log,prefix,"[SQLite] ");
-		delegate.setFile(directory, filename);
-		this.driver = DBMS.SQLite;
+		super(log, prefix, DBMS.SQLite, directory, filename);
 	}
 	
 	public SQLite(Logger log, String prefix, String directory, String filename, String extension) {
-		super(log, prefix, "[SQLite] ");
-		delegate.setFile(directory, filename, extension);
-		this.driver = DBMS.SQLite;
+		super(log, prefix, DBMS.SQLite, directory, filename, extension);
 	}
 	
 	/**
@@ -122,13 +111,7 @@ public class SQLite extends Database {
 	 * 
 	 */
 	public SQLite(Logger log, String prefix) {
-		super(log, prefix, "[SQLite] ");
-		delegate.setFile();
-		this.driver = DBMS.SQLite;
-	}
-	
-	private File getFile() {
-		return delegate.getFile();
+		super(log, prefix, DBMS.SQLite);
 	}
 	
 	protected boolean initialize() {

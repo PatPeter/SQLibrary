@@ -3,8 +3,6 @@ package lib.PatPeter.SQLibrary;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the mSQL database.<br>
@@ -12,9 +10,7 @@ import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
  * 
  * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class mSQL extends Database {
-	private HostnameDatabase delegate = DatabaseFactory.hostname();
-	
+public class mSQL extends HostnameDatabase {
 	protected enum Statements implements StatementEnum {}
 	
 	public mSQL(Logger log,
@@ -24,13 +20,7 @@ public class mSQL extends Database {
 				String database,
 				String username,
 				String password) {
-		super(log,prefix,"[mSQL] ");
-		setHostname(hostname);
-		setPort(port);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.mSQL;
+		super(log, prefix, DBMS.mSQL, hostname, port, database, username, password);
 	}
 	
 	public mSQL(Logger log,
@@ -38,80 +28,22 @@ public class mSQL extends Database {
 				String database,
 				String username,
 				String password) {
-		super(log,prefix,"[mSQL] ");
-		setHostname("localhost");
-		setPort(1114);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.mSQL;
+		super(log, prefix, DBMS.mSQL, "localhost", 1114, database, username, password);
 	}
 	
 	public mSQL(Logger log,
 				String prefix,
 				String database,
 				String username) {
-		super(log,prefix,"[mSQL] ");
-		setHostname("localhost");
-		setPort(1114);
-		setDatabase(database);
-		setUsername(username);
-		setPassword("");
-		this.driver = DBMS.mSQL;
+		super(log, prefix, DBMS.mSQL, "localhost", 1114, database, username, "");
 	}
 	
 	public mSQL(Logger log,
 				String prefix,
 				String database) {
-		super(log,prefix,"[mSQL] ");
-		setHostname("localhost");
-		setPort(1114);
-		setDatabase(database);
-		setUsername("");
-		setPassword("");
-		this.driver = DBMS.mSQL;
-	}
-
-	public String getHostname() {
-		return delegate.getHostname();
+		super(log, prefix, DBMS.mSQL, "localhost", 1114, database, "", "");
 	}
 	
-	private void setHostname(String hostname) {
-		delegate.setHostname(hostname);
-	}
-	
-	public int getPort() {
-		return delegate.getPort();
-	}
-	
-	private void setPort(int port) {
-		delegate.setPort(port);
-	}
-	
-	public String getUsername() {
-		return delegate.getUsername();
-	}
-	
-	private void setUsername(String username) {
-		delegate.setUsername(username);
-	}
-	
-	private String getPassword() {
-		return delegate.getPassword();
-	}
-	
-	private void setPassword(String password) {
-		delegate.setPassword(password);
-	}
-	
-	public String getDatabase() {
-		return delegate.getDatabase();
-	}
-	
-	private void setDatabase(String database) {
-		delegate.setDatabase(database);
-	}
-
 	@Override
 	public boolean initialize() {
 		try {

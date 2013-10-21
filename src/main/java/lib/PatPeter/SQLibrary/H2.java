@@ -1,11 +1,8 @@
 package lib.PatPeter.SQLibrary;
 
-import java.io.File;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-import lib.PatPeter.SQLibrary.Delegates.FilenameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the H2 database.<br>
@@ -13,9 +10,7 @@ import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
  * 
  * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class H2 extends Database {
-	private FilenameDatabase delegate = DatabaseFactory.filename();
-	
+public class H2 extends FilenameDatabase {
 	// http://www.h2database.com/html/grammar.html
 	private enum Statements implements StatementEnum {
 		// Data Manipulation
@@ -64,27 +59,11 @@ public class H2 extends Database {
 	}
 	
 	public H2(Logger log, String prefix, String directory, String filename) {
-		super(log, prefix, "[H2] ");
-		setFile(directory, filename);
-		this.driver = DBMS.H2;
+		super(log, prefix, DBMS.H2, directory, filename);
 	}
 	
 	public H2(Logger log, String prefix, String directory, String filename, String extension) {
-		super(log, prefix, "[H2] ");
-		setFile(directory, filename, extension);
-		this.driver = DBMS.H2;
-	}
-	
-	private File getFile() {
-		return delegate.getFile();
-	}
-	
-	private void setFile(String directory, String filename) {
-		delegate.setFile(directory, filename);
-	}
-	
-	private void setFile(String directory, String filename, String extension) {
-		delegate.setFile(directory, filename, extension);
+		super(log, prefix, DBMS.H2, directory, filename, extension);
 	}
 	
 	@Override

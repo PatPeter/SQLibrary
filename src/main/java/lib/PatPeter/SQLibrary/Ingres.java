@@ -3,8 +3,6 @@ package lib.PatPeter.SQLibrary;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the Ingres database.<br>
@@ -12,10 +10,8 @@ import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
  * 
  * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class Ingres extends Database {
-	private HostnameDatabase delegate = DatabaseFactory.hostname();
-	
-	protected enum Statements implements StatementEnum {}
+public class Ingres extends HostnameDatabase {
+	public enum Statements implements StatementEnum {}
 	
 	public Ingres(Logger log,
 				  String prefix,
@@ -24,13 +20,7 @@ public class Ingres extends Database {
 				  String database,
 				  String username,
 				  String password) {
-		super(log,prefix,"[Ingres] ");
-		setHostname(hostname);
-		setPort(port);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.Ingres;
+		super(log, prefix, DBMS.Ingres, hostname, port, database, username, password);
 	}
 	
 	public Ingres(Logger log,
@@ -38,80 +28,22 @@ public class Ingres extends Database {
 				  String database,
 				  String username,
 				  String password) {
-		super(log,prefix,"[Ingres] ");
-		setHostname("localhost");
-		setPort(21017);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.Ingres;
+		super(log, prefix, DBMS.Ingres, "localhost", 21017, database, username, password);
 	}
 	
 	public Ingres(Logger log,
 				  String prefix,
 				  String database,
 				  String username) {
-		super(log,prefix,"[Ingres] ");
-		setHostname("localhost");
-		setPort(21017);
-		setDatabase(database);
-		setUsername(username);
-		setPassword("");
-		this.driver = DBMS.Ingres;
+		super(log, prefix, DBMS.Ingres, "localhost", 21017, database, username, "");
 	}
 	
 	public Ingres(Logger log,
 				  String prefix,
 				  String database) {
-		super(log,prefix,"[Ingres] ");
-		setHostname("localhost");
-		setPort(21017);
-		setDatabase(database);
-		setUsername("");
-		setPassword("");
-		this.driver = DBMS.Ingres;
-	}
-
-	public String getHostname() {
-		return delegate.getHostname();
+		super(log, prefix, DBMS.Ingres, "localhost", 21017, database, "", "");
 	}
 	
-	private void setHostname(String hostname) {
-		delegate.setHostname(hostname);
-	}
-	
-	public int getPort() {
-		return delegate.getPort();
-	}
-	
-	private void setPort(int port) {
-		delegate.setPort(port);
-	}
-	
-	public String getUsername() {
-		return delegate.getUsername();
-	}
-	
-	private void setUsername(String username) {
-		delegate.setUsername(username);
-	}
-	
-	private String getPassword() {
-		return delegate.getPassword();
-	}
-	
-	private void setPassword(String password) {
-		delegate.setPassword(password);
-	}
-	
-	public String getDatabase() {
-		return delegate.getDatabase();
-	}
-	
-	private void setDatabase(String database) {
-		delegate.setDatabase(database);
-	}
-
 	@Override
 	public boolean initialize() {
 		try {

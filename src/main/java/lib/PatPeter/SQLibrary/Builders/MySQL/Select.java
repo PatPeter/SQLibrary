@@ -21,16 +21,16 @@ public class Select implements Builder {
 	private Database db;
 	
 	private enum Duplicates {
-		ALL(0), DISTINCT(1), DISTINCTROW(2);
-		private String[] strings = {"ALL", "DISTINCT", "DISTINCTROW"};
-		private int id;
+		ALL("ALL"), DISTINCT("DISTINCT"), DISTINCTROW("DISTINCTROW");
 		
-		private Duplicates(int id) {
-			this.id = id;
+		private String string;
+		
+		private Duplicates(String string) {
+			this.string = string;
 		}
 		
 		public String toString() {
-			return this.strings[id];
+			return string;
 		}
 		
 		public static Duplicates byID(int id) throws BuilderException {
@@ -356,53 +356,9 @@ public class Select implements Builder {
 	}
 	
 	public Select update(Boolean update) {
-		/*if (update == null) {
-			this.update = null;
-			return this;
-		}*/
 		this.update = update;
 		return this;
 	}
-	
-	/*private void setColumns(String columns) throws DatabaseException {
-		if (columns == null || columns.isEmpty())
-			throw new DatabaseException("String columns cannot be null or empty in SELECT query.");
-		
-		if (columns.contains(",")) {
-			String[] temp = columns.split(",");
-			
-			for (String t : temp)
-				if (t.split("`", -1).length - 1 == 2)
-					throw new DatabaseException("Invalid syntax in SELECT query. Two backticks must surround column " + t + ".");
-			
-			this.columns = Arrays.asList(temp);
-		} else {
-			if (columns.split("`", -1).length - 1 == 2)
-				throw new DatabaseException("Invalid syntax in SELECT query. Two backticks must surround column " + columns + ".");
-			
-			this.columns.set(0, columns);
-		}
-	}
-	
-	private void setTables(String tables) throws DatabaseException {
-		if (tables == null || tables.isEmpty())
-			throw new DatabaseException("String tables cannot be null or empty in SELECT query.");
-		
-		if (tables.contains(",")) {
-			String[] temp = tables.split(",");
-			
-			for (String t : temp)
-				if (t.split("`", -1).length - 1 == 2)
-					throw new DatabaseException("Invalid syntax in SELECT query. Two backticks must surround table " + t + ".");
-			
-			this.tables = Arrays.asList(temp);
-		} else {
-			if (tables.split("`", -1).length - 1 == 2)
-				throw new DatabaseException("Invalid syntax in SELECT query. Two backticks must surround table " + tables + ".");
-				
-			this.tables.set(0, tables);
-		}
-	}*/
 	
 	public String toString() {
 		if (columns.isEmpty())

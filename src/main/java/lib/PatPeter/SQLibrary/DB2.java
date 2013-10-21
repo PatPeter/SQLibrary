@@ -3,8 +3,6 @@ package lib.PatPeter.SQLibrary;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-import lib.PatPeter.SQLibrary.Delegates.HostnameDatabase;
-import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
 
 /**
  * Child class for the DB2 database.<br>
@@ -12,9 +10,7 @@ import lib.PatPeter.SQLibrary.Factory.DatabaseFactory;
  * 
  * @author Nicholas Solin, a.k.a. PatPeter
  */
-public class DB2 extends Database {
-	private HostnameDatabase delegate = DatabaseFactory.hostname();
-	
+public class DB2 extends HostnameDatabase {
 	public enum Statements implements StatementEnum {}
 	
 	public DB2(Logger log,
@@ -24,13 +20,7 @@ public class DB2 extends Database {
 				 String database,
 				 String username,
 				 String password) {
-		super(log,prefix,"[DB2] ");
-		setHostname(hostname);
-		setPort(port);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.DB2;
+		super(log, prefix, DBMS.DB2, hostname, port, database, username, password);
 	}
 	
 	public DB2(Logger log,
@@ -38,78 +28,20 @@ public class DB2 extends Database {
 			   String database,
 			   String username,
 			   String password) {
-		super(log,prefix,"[DB2] ");
-		setHostname("localhost");
-		setPort(523);
-		setDatabase(database);
-		setUsername(username);
-		setPassword(password);
-		this.driver = DBMS.DB2;
+		super(log,prefix, DBMS.DB2, "localhost", 523, database, username, password);
 	}
 	
 	public DB2(Logger log,
 			   String prefix,
 			   String database,
 			   String username) {
-		super(log,prefix,"[DB2] ");
-		setHostname("localhost");
-		setPort(523);
-		setDatabase(database);
-		setUsername(username);
-		setPassword("");
-		this.driver = DBMS.DB2;
+		super(log, prefix, DBMS.DB2, "localhost", 523, database, username, "");
 	}
 	
 	public DB2(Logger log,
 			   String prefix,
 			   String database) {
-		super(log,prefix,"[DB2] ");
-		setHostname("localhost");
-		setPort(523);
-		setDatabase(database);
-		setUsername("");
-		setPassword("");
-		this.driver = DBMS.DB2;
-	}
-	
-	public String getHostname() {
-		return delegate.getHostname();
-	}
-	
-	private void setHostname(String hostname) {
-		delegate.setHostname(hostname);
-	}
-	
-	public int getPort() {
-		return delegate.getPort();
-	}
-	
-	private void setPort(int port) {
-		delegate.setPort(port);
-	}
-	
-	public String getUsername() {
-		return delegate.getUsername();
-	}
-	
-	private void setUsername(String username) {
-		delegate.setUsername(username);
-	}
-	
-	private String getPassword() {
-		return delegate.getPassword();
-	}
-	
-	private void setPassword(String password) {
-		delegate.setPassword(password);
-	}
-	
-	public String getDatabase() {
-		return delegate.getDatabase();
-	}
-	
-	private void setDatabase(String database) {
-		delegate.setDatabase(database);
+		super(log, prefix, DBMS.DB2, "localhost", 523, database, "", "");
 	}
 
 	@Override

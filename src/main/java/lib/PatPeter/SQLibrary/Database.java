@@ -2,8 +2,8 @@ package lib.PatPeter.SQLibrary;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,11 +26,7 @@ public abstract class Database {
 	/**
 	 * Plugin prefix to display during errors.
 	 */
-	protected final String PREFIX;
-	/**
-	 * Database prefix to display after the plugin prefix.
-	 */
-	protected final String DATABASE_PREFIX;
+	protected final String prefix;
 	
 	/**
 	 * The driver of the Database as an enum.
@@ -57,15 +53,15 @@ public abstract class Database {
 	 * @param prefix the prefix of the plugin.
 	 * @param dp the prefix of the database.
 	 */
-	public Database(Logger log, String prefix, String dp) throws DatabaseException {
+	public Database(Logger log, String prefix, DBMS dbms) throws DatabaseException {
 		if (log == null)
 			throw new DatabaseException("Logger cannot be null.");
 		if (prefix == null || prefix.length() == 0)
 			throw new DatabaseException("Plugin prefix cannot be null or empty.");
 		
 		this.log = log;
-		this.PREFIX = prefix;
-		this.DATABASE_PREFIX = dp; // Set from child class, can never be null or empty
+		this.prefix = prefix;
+		this.driver = dbms;
 	}
 	
 	/**
@@ -75,7 +71,7 @@ public abstract class Database {
 	 * of content to write to the console.
 	 */
 	protected final String prefix(String message) {
-		return this.PREFIX + this.DATABASE_PREFIX + message;
+		return this.prefix + this.driver + message;
 	}
 	
 	/**
@@ -84,10 +80,9 @@ public abstract class Database {
 	 * @param toWrite the {@link java.lang.String}.
 	 * of content to write to the console.
 	 */
+	@Deprecated
 	public final void writeInfo(String toWrite) {
-		if (toWrite != null) {
-			this.log.info(prefix(toWrite));
-		}
+		info(toWrite);
 	}
 	
 	/**
@@ -97,13 +92,30 @@ public abstract class Database {
 	 * written to the console.
 	 * @param severe whether console output should appear as an error or warning.
 	 */
+	@Deprecated
 	public final void writeError(String toWrite, boolean severe) {
-		if (toWrite != null) {
-			if (severe) {
-				this.log.severe(prefix(toWrite));
-			} else {
-				this.log.warning(prefix(toWrite));
-			}
+		if (severe) {
+			error(toWrite);
+		} else {
+			warning(toWrite);
+		}
+	}
+	
+	public final void info(String info) {
+		if (info != null && !info.isEmpty()) {
+			this.log.info(prefix(info));
+		}
+	}
+	
+	public final void warning(String warning) {
+		if (warning != null && !warning.isEmpty()) {
+			this.log.warning(prefix(warning));
+		}
+	}
+	
+	public final void error(String error) {
+		if (error != null && !error.isEmpty()) {
+			this.log.severe(prefix(error));
 		}
 	}
 	
@@ -180,12 +192,7 @@ public abstract class Database {
 	 * @return the status of the connection, true for up, false for down.
 	 */
 	public final boolean isOpen() {
-		if (connection != null)
-			try {
-				if (connection.isValid(1))
-					return true;
-			} catch (SQLException e) {}
-		return false;
+		return isOpen(1);
 	}
 	
 	public final boolean isOpen(int seconds) {
