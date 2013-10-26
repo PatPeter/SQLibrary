@@ -10,11 +10,11 @@ public class SQLibrarySpout extends Plugin {
 	
 	@Override 
 	public void onEnable() {
-		SQLibrary.logger.log(Level.INFO, "SQLibrary loaded.");
+		logger.log(Level.INFO, "SQLibrary loaded.");
 	}
 	
 	@Override
 	public void onDisable() {
-		SQLibrary.logger.log(Level.INFO, "SQLibrary stopped.");
+		logger.log(Level.INFO, "SQLibrary stopped.");
 	}
 } 

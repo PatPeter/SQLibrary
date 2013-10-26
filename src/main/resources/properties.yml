@@ -2,5 +2,6 @@ name: SQLibrary
 version: 6.1
 description: Database library for Bukkit with support for 13 databases, a factory, and a query builder.
 author: PatPeter
+platform: server
 main: lib.PatPeter.SQLibrary.SQLibrarySpout
  
