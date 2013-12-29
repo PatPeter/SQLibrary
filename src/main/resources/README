@@ -1,6 +1,16 @@
+Version 7.0 (release)
+- Built on Bukkit 1.7.4-R0.2.
+- Removed bad design pattern and replaced with hierarchy (one of the original reasons for forking this library).
+- Renamed writeError() and writeInfo() to info(), warning(), and error(). Backwards compatibility retained.
+- Moved README to correct location for GitHub.
+- No connection pooling as was planned for this version.
+- The super secret surprise and one of the reasons SQLibrary must be a jar dependency, also not in this version.
+- Released 7.0 (2013-12-29).
+
 Version 6.1 (release)
-- Built on CB 1.6.2-R1.0.
+- Built on Bukkit 1.6.2-R1.0.
 - Added support for Spout.
+- Released 6.1 (2013-10-15).
 
 Version 6.0 (alpha)
 - Use first development build for 1.6.1.
