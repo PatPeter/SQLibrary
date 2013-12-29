@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-import javax.sql.DataSource;
-
 /**
  * Inherited subclass for making a connection to a MySQL server.<br>
  * Date Created: 2011-08-26 19:08
@@ -153,6 +151,7 @@ public class MySQL extends HostnameDatabase {
 		    case DEALLOCATE:
 		    	this.warning("Please use the prepare() method to prepare a query.");
 		    	throw new SQLException("Please use the prepare() method to prepare a query.");
+		    default:
 	    }
 	}
 	
@@ -192,7 +191,7 @@ public class MySQL extends HostnameDatabase {
 		try {
 			statement = connection.createStatement();
 		} catch (SQLException e) {
-			this.writeError("Could not create a statement in checkTable(), SQLException: " + e.getMessage(), true);
+			error("Could not create a statement in checkTable(), SQLException: " + e.getMessage());
 			return false;
 		}
 		try {
@@ -209,7 +208,7 @@ public class MySQL extends HostnameDatabase {
 		String query = null;
 		try {
 			if (!this.isTable(table)) {
-				this.writeError("Table \"" + table + "\" does not exist.", true);
+				error("Table \"" + table + "\" does not exist.");
 				return false;
 			}
 		    statement = this.connection.createStatement();
@@ -219,7 +218,7 @@ public class MySQL extends HostnameDatabase {
 		    
 		    return true;
 		} catch (SQLException e) {
-			this.writeError("Could not wipe table, SQLException: " + e.getMessage(), true);
+			error("Could not wipe table, SQLException: " + e.getMessage());
 			return false;
 		}
 	}

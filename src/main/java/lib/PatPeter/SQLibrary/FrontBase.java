@@ -50,7 +50,7 @@ public class FrontBase extends HostnameDatabase {
 			Class.forName("om.frontbase.jdbc.FBJDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("FrontBase driver class missing: " + e.getMessage() + ".", true);
+	    	error("FrontBase driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -60,10 +60,10 @@ public class FrontBase extends HostnameDatabase {
 		if (initialize()) {
 			String url = "jdbc:FrontBase://" + getHostname() + ":" + getPort() + "/" + getDatabase() + ";";
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a FrontBase connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a FrontBase connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

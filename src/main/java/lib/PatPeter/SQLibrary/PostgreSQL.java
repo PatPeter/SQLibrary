@@ -103,7 +103,7 @@ public class PostgreSQL extends HostnameDatabase {
 			Class.forName("org.postgresql.Driver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("PostgreSQL driver class missing: " + e.getMessage() + ".", true);
+	    	error("PostgreSQL driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -114,10 +114,10 @@ public class PostgreSQL extends HostnameDatabase {
 			String url = "";
 			url = "jdbc:postgresql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a PostgreSQL connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a PostgreSQL connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {
@@ -131,8 +131,9 @@ public class PostgreSQL extends HostnameDatabase {
 		    case PREPARE:
 		    case EXECUTE:
 		    case DEALLOCATE:
-		    	this.writeError("Please use the prepare() method to prepare a query.", false);
+		    	error("Please use the prepare() method to prepare a query.");
 		    	throw new SQLException("Please use the prepare() method to prepare a query.");
+	    	default:
 	    }
 	}
 

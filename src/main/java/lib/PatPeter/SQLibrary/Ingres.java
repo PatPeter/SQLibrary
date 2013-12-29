@@ -50,7 +50,7 @@ public class Ingres extends HostnameDatabase {
 			Class.forName("com.ingres.jdbc.IngresDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("Ingres driver class missing: " + e.getMessage() + ".", true);
+	    	error("Ingres driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -61,10 +61,10 @@ public class Ingres extends HostnameDatabase {
 			String url = "";
 			url = "jdbc:ingres://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a Ingres connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a Ingres connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

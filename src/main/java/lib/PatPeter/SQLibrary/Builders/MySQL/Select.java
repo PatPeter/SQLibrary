@@ -119,10 +119,10 @@ public class Select implements Builder {
 					this.columns.add(column);
 					//added++;
 				} else {
-					db.writeError("Column " + column + " in SELECT statement cannot have backticks.", false);
+					db.error("Column " + column + " in SELECT statement cannot have backticks.");
 				}
 			} else {
-				db.writeError("Column at position " + counter + " cannot be null or empty in SELECT statement.", false);
+				db.error("Column at position " + counter + " cannot be null or empty in SELECT statement.");
 			}
 			counter++;
 		}
@@ -142,10 +142,10 @@ public class Select implements Builder {
 					this.tables.add(table);
 					//added++;
 				} else {
-					db.writeError("Skipping table " + table + " in SELECT statement that has backticks.", false);
+					db.error("Skipping table " + table + " in SELECT statement that has backticks.");
 				}
 			} else {
-				db.writeError("Skipping table in SELECT statement at position " + counter + " for being null or empty.", false);
+				db.error("Skipping table in SELECT statement at position " + counter + " for being null or empty.");
 			}
 			counter++;
 		}
@@ -218,7 +218,7 @@ public class Select implements Builder {
 			if (!checkConditional(conditional))
 				return this;
 		} else {
-			db.writeError("Cannot add conditional " + conditional + " to the front of a WHERE statement.", false);
+			db.error("Cannot add conditional " + conditional + " to the front of a WHERE statement.");
 		}
 		if (!checkCondition(condition))
 			return this;
@@ -259,7 +259,7 @@ public class Select implements Builder {
 			if (!checkConditional(conditional))
 				return this;
 		} else {
-			db.writeError("Cannot add conditional " + conditional + " to the front of a HAVING statement.", false);
+			db.error("Cannot add conditional " + conditional + " to the front of a HAVING statement.");
 		}
 		if (!checkCondition(condition))
 			return this;
@@ -440,7 +440,7 @@ public class Select implements Builder {
 	@Deprecated
 	private boolean checkCondition(String condition) {
 		if (condition == null || condition.length() == 0) {
-			db.writeError("Skipping null or empty WHERE condition.", false);
+			db.error("Skipping null or empty WHERE condition.");
 			return false;
 		}
 		return true;
@@ -451,13 +451,13 @@ public class Select implements Builder {
 		for (String c : conditionals)
 			if (conditional.equals(c))
 				return true;
-	    db.writeError("Skipping unknown conditional " + conditional + ".", false);
+	    db.error("Skipping unknown conditional " + conditional + ".");
 	    return false;
 	}
 	
 	private boolean validString(String string, String error) {
 		if (string == null || string.length() == 0) {
-			db.writeError(error, false);
+			db.error(error);
 			return false;
 		}
 		return true;

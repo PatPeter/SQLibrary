@@ -72,7 +72,7 @@ public class H2 extends FilenameDatabase {
 			Class.forName("org.h2.Driver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("H2 driver class missing: " + e.getMessage() + ".", true);
+	    	error("H2 driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -81,10 +81,10 @@ public class H2 extends FilenameDatabase {
 	public boolean open() {
 		if (initialize()) {
 			try {
-				this.connection = DriverManager.getConnection("jdbc:h2:file:" + getFile().getAbsolutePath());
+				connection = DriverManager.getConnection("jdbc:h2:file:" + getFile().getAbsolutePath());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish an H2 connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish an H2 connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

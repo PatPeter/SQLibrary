@@ -50,7 +50,7 @@ public class mSQL extends HostnameDatabase {
 			Class.forName("com.imaginary.sql.msql.MsqlDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("mSQL driver class missing: " + e.getMessage() + ".", true);
+	    	error("mSQL driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -61,10 +61,10 @@ public class mSQL extends HostnameDatabase {
 			String url = "";
 			url = "jdbc:msql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a mSQL connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a mSQL connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

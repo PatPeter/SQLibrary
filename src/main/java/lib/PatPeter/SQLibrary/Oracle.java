@@ -85,7 +85,7 @@ public class Oracle extends HostnameDatabase {
 			Class.forName("oracle.jdbc.driver.OracleDriver"); // com.jdbc.OracleDriver ?
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("Oracle driver class missing: " + e.getMessage() + ".", true);
+	    	error("Oracle driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -96,10 +96,10 @@ public class Oracle extends HostnameDatabase {
 			String url = "";
 			url = "jdbc:oracle:thin:@" + getHostname() + ":" + getPort() + ":" + getDatabase();
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish an Oracle connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish an Oracle connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

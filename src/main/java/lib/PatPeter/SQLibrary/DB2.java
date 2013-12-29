@@ -50,7 +50,7 @@ public class DB2 extends HostnameDatabase {
 			Class.forName("com.ibm.db2.jcc.DB2Driver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("DB2 driver class missing: " + e.getMessage() + ".", true);
+	    	error("DB2 driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -60,10 +60,10 @@ public class DB2 extends HostnameDatabase {
 		if (initialize()) {
 			String url = "jdbc:derby:net://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a DB2 connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a DB2 connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

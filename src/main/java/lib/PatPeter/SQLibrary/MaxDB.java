@@ -56,7 +56,7 @@ public class MaxDB extends HostnameDatabase {
 			Class.forName("com.sap.dbtech.jdbc.DriverSapDB");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("MaxDB driver class missing: " + e.getMessage() + ".", true);
+	    	error("MaxDB driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -66,10 +66,10 @@ public class MaxDB extends HostnameDatabase {
 		if (initialize()) {
 			String url = "jdbc:sapdb://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a MaxDB connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a MaxDB connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

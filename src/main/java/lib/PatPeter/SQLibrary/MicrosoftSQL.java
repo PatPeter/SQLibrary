@@ -434,7 +434,7 @@ public class MicrosoftSQL extends HostnameDatabase {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("MicrosoftSQL driver class missing: " + e.getMessage() + ".", true);
+	    	error("MicrosoftSQL driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -447,7 +447,7 @@ public class MicrosoftSQL extends HostnameDatabase {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a Microsoft SQL connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a Microsoft SQL connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {
@@ -479,7 +479,7 @@ public class MicrosoftSQL extends HostnameDatabase {
 		    else
 		    	return false;
 		} catch (SQLException e) {
-			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
+			error("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage());
 			return false;
 		}
 	}

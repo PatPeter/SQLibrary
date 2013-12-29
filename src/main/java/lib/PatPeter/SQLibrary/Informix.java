@@ -50,7 +50,7 @@ public class Informix extends HostnameDatabase {
 			Class.forName("com.informix.jdbc.IfxDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("Informix driver class missing: " + e.getMessage() + ".", true);
+	    	error("Informix driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -60,10 +60,10 @@ public class Informix extends HostnameDatabase {
 		if (initialize()) {
 			String url = "jdbc:informix-sqli://" + getHostname() + ":" + getPort() + ":informixserver=" + getDatabase() + ";";
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a Informix connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a Informix connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

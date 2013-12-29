@@ -50,7 +50,7 @@ public class Firebird extends HostnameDatabase {
 			Class.forName("org.firebirdsql.jdbc.FBDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("Firebird driver class missing: " + e.getMessage() + ".", true);
+	    	error("Firebird driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -60,10 +60,10 @@ public class Firebird extends HostnameDatabase {
 		if (initialize()) {
 			String url = "jdbc:firebirdsql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			try {
-				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
+				connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a Firebird connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a Firebird connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {

@@ -119,7 +119,7 @@ public class SQLite extends FilenameDatabase {
 		  Class.forName("org.sqlite.JDBC");
 		  return true;
 		} catch (ClassNotFoundException e) {
-		  this.writeError("Class not found in initialize(): " + e, true);
+		  error("Class not found in initialize(): " + e);
 		  return false;
 		}
 	}
@@ -128,10 +128,10 @@ public class SQLite extends FilenameDatabase {
 	public boolean open() {
 		if (initialize()) {
 			try {
-				this.connection = DriverManager.getConnection("jdbc:sqlite:" + (getFile() == null ? ":memory:" : getFile().getAbsolutePath()));
+				connection = DriverManager.getConnection("jdbc:sqlite:" + (getFile() == null ? ":memory:" : getFile().getAbsolutePath()));
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish an SQLite connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish an SQLite connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {
@@ -186,7 +186,7 @@ public class SQLite extends FilenameDatabase {
 				return false;
 			}
 		} catch (SQLException e) {
-			this.writeError("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage(), true);
+			error("Could not check if table \"" + table + "\" exists, SQLException: " + e.getMessage());
 			return false;
 		}
 	}
@@ -197,7 +197,7 @@ public class SQLite extends FilenameDatabase {
 		String query = null;
 		try {
 			if (!this.isTable(table)) {
-				this.writeError("Table \"" + table + "\" does not exist.", true);
+				error("Table \"" + table + "\" does not exist.");
 				return false;
 			}
 			statement = connection.createStatement();
@@ -208,7 +208,7 @@ public class SQLite extends FilenameDatabase {
 		} catch (SQLException e) {
 			if (!(e.getMessage().toLowerCase().contains("locking") || e.getMessage().toLowerCase().contains("locked")) &&
 				!e.toString().contains("not return ResultSet"))
-					this.writeError("Error in wipeTable() query: " + e, false);
+					error("Error in wipeTable() query: " + e);
 			return false;
 		}
 	}

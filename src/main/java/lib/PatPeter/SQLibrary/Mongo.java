@@ -50,7 +50,7 @@ public class Mongo extends HostnameDatabase {
 			Class.forName("com.mongodb.jdbc.MongoDriver");
 			return true;
 	    } catch (ClassNotFoundException e) {
-	    	this.writeError("Mongo driver class missing: " + e.getMessage() + ".", true);
+	    	error("Mongo driver class missing: " + e.getMessage() + ".");
 	    	return false;
 	    }
 	}
@@ -63,7 +63,7 @@ public class Mongo extends HostnameDatabase {
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			} catch (SQLException e) {
-				this.writeError("Could not establish a Mongo connection, SQLException: " + e.getMessage(), true);
+				error("Could not establish a Mongo connection, SQLException: " + e.getMessage());
 				return false;
 			}
 		} else {
