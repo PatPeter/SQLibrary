@@ -29,8 +29,7 @@ public abstract class FilenameDatabase extends Database {
 			String directory,
 			String filename) {
 		super(log, prefix, dbms);
-		setDirectory(directory);
-		setFilename(filename);
+		setFile(directory, filename);
 	}
 	
 	public FilenameDatabase(Logger log, 
@@ -40,9 +39,7 @@ public abstract class FilenameDatabase extends Database {
 			String filename,
 			String extension) {
 		super(log, prefix, dbms);
-		setDirectory(directory);
-		setFilename(filename);
-		setExtension(extension);
+		setFile(directory, filename, extension);
 	}
 	
 	public String getDirectory() {
