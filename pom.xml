@@ -4,7 +4,7 @@
 
 	<groupId>lib.PatPeter.SQLibrary</groupId>
 	<artifactId>SQLibrary</artifactId>
-	<version>7.0</version>
+	<version>7.1</version>
 	<name>SQLibrary</name>
 	<url>http://dev.bukkit.org/bukkit-plugins/sqlibrary/</url>
 	<description>Database library for Bukkit with support for 13 databases, a factory, and a query builder.</description>
