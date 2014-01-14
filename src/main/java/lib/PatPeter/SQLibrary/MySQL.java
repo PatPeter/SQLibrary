@@ -124,15 +124,16 @@ public class MySQL extends HostnameDatabase {
 		try {
 			String url = "jdbc:mysql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			if (initialize()) {
-				com.mysql.jdbc.jdbc2.optional.MysqlDataSource ds = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource();
+				/*om.mysql.jdbc.jdbc2.optional.MysqlDataSource ds = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource();
 				
 				ds.setUrl(url);
 				this.connection = ds.getConnection(getUsername(), getPassword());
 				return true;
-			} else {
+			} else {*/
 				this.connection = DriverManager.getConnection(url, getUsername(), getPassword());
 				return true;
 			}
+			return false;
 		} catch (SQLException e) {
 			this.error("Could not establish a MySQL connection, SQLException: " + e.getMessage());
 			return false;
