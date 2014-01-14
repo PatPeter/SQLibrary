@@ -2,5 +2,6 @@ name: SQLibrary
 version: 7.0
 description: A facade similar to Vault that abstracts the coder from the JDBC and each database driver's implementation.
 author: PatPeter
+platform: server
 main: lib.PatPeter.SQLibrary.SQLibrarySpout
  
