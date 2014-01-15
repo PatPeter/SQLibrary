@@ -57,6 +57,17 @@
 	</dependencies>
 
 	<build>
+		<resources>
+        	<resource>
+            	<includes>
+                	<include>config.yml</include>
+					<include>plugin.yml</include>
+					<include>properties.yml</include>
+                </includes>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
