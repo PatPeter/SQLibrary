@@ -75,6 +75,7 @@ public abstract class FilenameDatabase extends Database {
 			throw new DatabaseException("Extension cannot be null or empty.");
 		if (extension.charAt(0) != '.')
 			throw new DatabaseException("Extension must begin with a period");
+		this.extension = extension;
 	}
 	
 	public File getFile() {
