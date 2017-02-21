@@ -196,7 +196,7 @@ public class MySQL extends HostnameDatabase {
 			return false;
 		}
 		try {
-			statement.executeQuery("SELECT * FROM " + table);
+			statement.executeQuery("SELECT 1 FROM " + table);
 			return true; // Result can never be null, bad logic from earlier versions.
 		} catch (SQLException e) {
 			return false; // Query failed, table does not exist.
