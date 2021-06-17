@@ -111,7 +111,7 @@ public class MySQL extends HostnameDatabase {
 	@Override
 	protected boolean initialize() {
 		try {
-			Class.forName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+			Class.forName("com.mysql.cj.jdbc.jdbc2.optional.MysqlDataSource");
 			return true;
 	    } catch (ClassNotFoundException e) {
 	    	this.warning("MySQL DataSource class missing: " + e.getMessage() + ".");
@@ -124,7 +124,7 @@ public class MySQL extends HostnameDatabase {
 		try {
 			String url = "jdbc:mysql://" + getHostname() + ":" + getPort() + "/" + getDatabase();
 			if (initialize()) {
-				/*om.mysql.jdbc.jdbc2.optional.MysqlDataSource ds = new com.mysql.jdbc.jdbc2.optional.MysqlDataSource();
+				/*om.mysql.cj.jdbc.jdbc2.optional.MysqlDataSource ds = new com.mysql.cj.jdbc.jdbc2.optional.MysqlDataSource();
 				
 				ds.setUrl(url);
 				this.connection = ds.getConnection(getUsername(), getPassword());

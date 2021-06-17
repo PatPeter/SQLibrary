@@ -26,7 +26,8 @@ public class SQLibrary extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
-	    SQLibrary.logger.log(Level.INFO, "SQLibrary loaded.");
+		SQLibrary.logger.log(Level.INFO, "SQLibrary loaded.");
+		SQLibrary.logger.log(Level.INFO, "Fork by MossCG.");
 	}
 	
 	/**
@@ -34,6 +35,7 @@ public class SQLibrary extends JavaPlugin {
 	 */
 	@Override
 	public void onDisable() {
-	    SQLibrary.logger.log(Level.INFO, "SQLibrary stopped.");
+		SQLibrary.logger.log(Level.INFO, "SQLibrary stopped.");
+		SQLibrary.logger.log(Level.INFO, "Fork by MossCG.");
 	}
 } 
