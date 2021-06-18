@@ -1,3 +1,9 @@
+Version 8.1 (release)
+- Built on Spigot 1.16.5-R0.1-SNAPSHOT
+- Built on JDK 16
+- Fix bug of jdbc library place change
+- Released 8.1 (2021-6-17)
+
 Version 7.0 (release)
 - Built on Bukkit 1.7.4-R0.2.
 - Removed bad design pattern and replaced with hierarchy (one of the original reasons for forking this library).
